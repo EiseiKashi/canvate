@@ -265,39 +265,15 @@ window.Canvate = function(element) {
         var _lineHeight;
         var _hasMouse;
         
-        var tileXsetCycle;
-        var tileYsetCycle;
-        var widthSetCycle;
-        var heightSetCycle;
-        var indexSetCycle;
-        var gapX;
-        var gapY;
-        var tempCanvas  = document.createElement("canvas");
-        var tempContext = tempCanvas.getContext("2d");
-        var lastWidth;
-        var indexFrame;
-        var fromIndexFrame;
-        var untilIndexFrame;
-        var indexRender;
-        var cropDataRender;
-        var nowRender;
-        var xRender;
-        var yRender;
-        var widthRender;
-        var heightRender;
-        var cropXrender;
-        var cropYrender;
-        var cropWidthRender;
-        var cropHeightRender;
-        var pivotXrender;
-        var pivotYrender;
-        var alphaRender;
-        var canvasRender;
-        var clipRender;
-        var rotationRender;
-        var scaleXrender;
-        var scaleYrender;
-        var bounds;
+        // HELPERS VARIABLES
+        var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
+        var indexSetCycle;var gapX;var gapY;var tempCanvas;var tempContext;
+        var lastWidth;var indexFrame;var fromIndexFrame;var untilIndexFrame;
+        var indexRender;var cropDataRender;var nowRender;var xRender;var yRender;
+        var widthRender;var heightRender;var cropXrender;var cropYrender;var bounds;
+        var cropWidthRender;var cropHeightRender;var pivotXrender;var pivotYrender;
+        var alphaRender;var canvasRender;var clipRender;var rotationRender;
+        var scaleXrender;var scaleYrender;
         
         // GETTERS
         this.findClipByName = function (name){
@@ -550,6 +526,8 @@ window.Canvate = function(element) {
         
         // IMAGE
         this.captureCrop = function(image, x, y, width, height){
+            tempCanvas  = document.createElement("canvas");
+            tempContext = tempCanvas.getContext("2d");
             if(null == image){
                 return;
             }
@@ -711,9 +689,7 @@ window.Canvate = function(element) {
                 return;
             }
             
-            var index1;
-            var index2;
-            var clip;
+            var index1; var index2; var clip;
             var index = _clipList.length;
             while(--index > -1){
                 clip = _clipList[index];
@@ -1252,6 +1228,7 @@ window.Canvate = function(element) {
     // ::: PROPERTIES MEMBER ::: //
     var _mainCanvas = element;
     var _context    = _mainCanvas.getContext("2d");
+    var hovering    = function(){};
     var _mainCanvasOff;
     var _mainContextOff;
     var _lastX;
@@ -1263,7 +1240,7 @@ window.Canvate = function(element) {
     var _clipMouse;
     var _stage;
     var mouseCursor;
-    var hovering = function(){};
+    
     var canvasUpdate;
     var canvasData;
     var clipMouse;

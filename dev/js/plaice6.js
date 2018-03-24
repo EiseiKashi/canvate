@@ -60,7 +60,7 @@ w.debug = debug;
 function onImageLoaded(event){
     g.visible = true;
     console.log("LOADED");
-    debugger;
+    
 }
 
 var g = canvatte.getClip();
