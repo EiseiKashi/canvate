@@ -1,0 +1,40 @@
+/* ************** */
+/* ELEMENTS
+/* ************** */
+
+* {
+	border    : 0;
+	margin    : 0;
+	padding   : 0;
+	text-align: center;
+}
+
+html {
+	font-size: 100.01%;
+	display  : block;
+}
+
+body {
+	font-size       : 87.5%;
+	line-height     : 1.5em;
+}
+
+hr {
+	background   : 0;
+	border       : 0;
+	border-top   : 1px solid rgba(255,255,255,.3);
+	border-bottom: 1px solid rgba(0,0,0,.8);
+	margin       : 0 0 25px;
+}
+
+section, header, nav, footer {
+	border : 0;
+	margin : 0;
+	padding: 0;
+	display: block;
+}
+
+ol, ul {
+	list-style     : none;
+	list-style-type: none;
+}

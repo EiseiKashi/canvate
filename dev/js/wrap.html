@@ -1,0 +1,62 @@
+<canvas id="Sakura" width="60" height="1200">
+<script>
+var canvas             = document.getElementById('Sakura');
+var _context           = canvas.getContext('2d');
+    _context.font      = '12px Arial';
+    _context.fillStyle = '#333';
+    
+this.text       = 'Seven hundred twelve counts of extortion. Eight hundred and forty-nine counts of racketeering. Two hundred and forty-six counts of fraud. Eighty-seven counts of conspiracy murder. Five hundred and twenty-seven counts of obstruction of justice. How do the defendants pleadkkkkkkjjjlllllllllllllllllllllllllllllllllllllllllllllljjjjjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk?';
+this.width      = 60;
+this.lineHeight = 25;
+var y           = lineHeight;
+
+function wrap (text, limit) {
+  if (text.length > limit) {
+    var e1 = text.slice(0, limit).lastIndexOf(' ');
+    var e2 = text.slice(0, limit).lastIndexOf('-');
+    var edge = Math.max(e1, e2);
+    if (edge > 0) {
+      var line = text.slice(0, edge + (e2==edge?1:0));
+      var remainder = text.slice(edge + 1);
+      _context.fillText(line, 0, y);
+      y += this.lineHeight;
+      wrap(remainder, limit);
+      return 
+    }else{
+        var e1 = text.indexOf('-');
+        var e2 = text.indexOf(' ');
+        var edge;
+        if(e1 == -1 || e2 == -1){
+            edge = (Math.max(e1, e2));
+        }else{
+            edge = (Math.min(e1, e2));
+        }
+        if(edge > 0){
+            var line      = text.slice(0, edge + (e2==edge?0:1));
+            var remainder = text.slice(edge + 1);
+            _context.fillText(line, 0, y);
+            y += this.lineHeight;
+            wrap(remainder, limit);
+            return 
+        }
+    }
+  }
+  _context.fillText(text, 0, y);
+  return text;
+}
+
+function mesure(maxWidth){
+    var wordWidth = 0;
+    var last = 0;
+    var m = "M";
+    while(wordWidth < maxWidth){
+        wordWidth = _context.measureText(m).width;
+        m += "M";
+    }
+    wrap(this.text, Math.max(m.length, 1));
+}
+
+mesure(canvas.width);
+
+    
+</script>

@@ -1,29 +1,3 @@
- // Credit to Douglas Crockford for this bind method​
-if (!Function.prototype.bind) {
-    Function.prototype.bind = function (oThis) {
-        if (typeof this !== "function") {
-            // closest thing possible to the ECMAScript 5 internal IsCallable function​
-            throw new TypeError ("Function.prototype.bind - what is trying to be bound is not callable");
-        }
-​
-        var aArgs = Array.prototype.slice.call (arguments, 1),
-                fToBind = this,
-                fNOP = function () {
-                },
-                fBound = function () {
-                    return fToBind.apply (this instanceof fNOP && oThis
-                            ? this​
-                            : oThis,
-                            aArgs.concat (Array.prototype.slice.call (arguments)));
-                };
-​
-        fNOP.prototype = this.prototype;
-        fBound.prototype = new fNOP ();
-​
-        return fBound;
-    };
-}
-
 window.Canvate = function(element) {
     window.check = true;
     var lastTime = 0;
@@ -50,7 +24,7 @@ window.Canvate = function(element) {
             clearTimeout(id);
         }
     }
-    
+
     var Emitter = function(target){
         var _click   = 0;
         var _over    = 0;
@@ -249,18 +223,18 @@ window.Canvate = function(element) {
                         // xor             : erases only intersection
                        }
     
-    var TEXT_SET     = "textSet";
-    var IMAGE_SET    = "imageSet";
-    var IMAGE_LOADED = "imageLoaded";
-    var IMAGE_ERROR  = "imageError";
-    var CLIP_ADDED   = "clipAdded";
-    var CLIP_REMOVED = "clipRemoved";
-    var FRAME_UPDATE = "frameUpdate";
-    var RENDER       = "render";
-    
     // ::: CLIP ::: //
     var Clip = function (image){
         ("VERSION 0.0.89")
+        
+        this.TEXT_SET     = "textSet";
+        this.IMAGE_SET    = "imageSet";
+        this.IMAGE_LOADED = "imageLoaded";
+        this.IMAGE_ERROR  = "imageError";
+        this.CLIP_ADDED   = "clipAdded";
+        this.CLIP_REMOVED = "clipRemoved";
+        this.FRAME_UPDATE = "frameUpdate";
+        this.RENDER       = "render";
         
         clipCounter++;
         var _id            = "clip" + clipCounter;
@@ -501,7 +475,7 @@ window.Canvate = function(element) {
             this.cropHeight = null == this.cropHeight || 0 == this.cropHeight ? _initialHeight : this.cropHeight;
             
             this.setCycle({x:this.cropX, y:this.cropY, width:this.cropWidth, height:this.cropHeight});
-            emit(IMAGE_SET, image)
+            emit(this.IMAGE_SET, {image:image})
         }
         
         this.setCycle = function(tile){
@@ -568,7 +542,7 @@ window.Canvate = function(element) {
             this.fontSize  = null == size  ? this.fontSize  : 12;
             this.font      = null == font  ? this.font      : font;
             this.fontColor = null == color ? this.fontColor : color;
-            emit(TEXT_SET, this.text);
+            emit(this.TEXT_SET, {text:this.text});
         }
         
         this.setRect = function(width, height, color){
@@ -639,11 +613,11 @@ window.Canvate = function(element) {
             var image        = new Image();
                 image.onload = function() {
                     _self.setImage(image, width, height);
-                    emit(IMAGE_LOADED, image)
+                    emit(this.IMAGE_LOADED, {image:image})
                 }
                 
-                image.onerror = function(){
-                    emit(IMAGE_ERROR, url)
+                image.onerror = function(event){
+                    emit(this.IMAGE_ERROR, {url:url})
                 }
                 
                 image.src = url + '?' + new Date().getTime();
@@ -701,7 +675,7 @@ window.Canvate = function(element) {
             }
             _clipList.splice(indexTarget, 0, clip);
             _parentClip[clip.id()] = this;
-            emit(CLIP_ADDED, clip);
+            emit(this.CLIP_ADDED, {parent:parent});
         }
         
         this.removeClip = function(clip){
@@ -723,8 +697,9 @@ window.Canvate = function(element) {
                 return;
             }
             var clip = _clipList.splice(indexTarget, 1)[0];
-            _parentClip[clip.id()] = null;
-            emit(CLIP_REMOVED, clip);
+            var parent = _parentClip[clip.id()];
+                _parentClip[clip.id()] = null;
+            emit(this.CLIP_REMOVED, {parent:parent});
             return clip;
         }
         
@@ -1059,7 +1034,7 @@ window.Canvate = function(element) {
                    this.frameIndex = Math.max(0, this.frameIndex);
                 }else if(this.increment != 0){
                     this.increment = 0;
-                    emit(FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
+                    emit(this.FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
                     
                     if(this.lastAction == "playLoop"){
                         this.frameIndex = 0;
@@ -1093,8 +1068,8 @@ window.Canvate = function(element) {
             var bounds;
             var clipBounds;
             var renderList = [];
-             ///////////////////////////////////////////////////////////////////
-             
+            ///////////////////////////////////////////////////////////////////
+            
             var renderNew = function(){
                 minX = null;
                 minY = null;
@@ -1225,9 +1200,9 @@ window.Canvate = function(element) {
                     _innerContext.textBaseline = _self.textBaseline;
                     _innerContext.fillStyle    = _self.fontColor;
                     _innerContext.font         = _self.fontSize + "px " + _self.font;
-                    var maxWidth          = _self.width;
-                    var wordWidth         = 0;
-                    var ems               = "M";
+                    var maxWidth  = _self.width;
+                    var wordWidth = 0;
+                    var ems       = "M";
                     while(wordWidth < maxWidth){
                         wordWidth = Math.round(_innerContext.measureText(ems).width);
                         ems += "M";
@@ -1294,19 +1269,13 @@ window.Canvate = function(element) {
             }
             ///////////////////////////////////////////////////////////////////
             var renderMe = renderNew;
+            //REMOVE ME when after refactor.
             renderMe();
-            _innerContext.moveTo(0,0);
-                _innerContext.lineTo(_innerCanvas.width,0);
-                _innerContext.lineTo(_innerCanvas.width,_innerCanvas.height);
-                _innerContext.lineTo(0,_innerCanvas.height);
-                _innerContext.lineTo(0,0);
-                _innerContext.lineWidth=stroke;
-                _innerContext.stroke();
             ///////////////////////////////////////////////////////////////////
             // RETURN CANVAS AND CLIP MOUSE
             _innerCanvas.id = _self.name;
             var data = {inner:_innerCanvas, clipMouse:_clipMouse, bounds:bounds, x:minX, y:minY};
-            emit(RENDER);
+            emit(_self.RENDER, {clip:_self});
             _self.debug(_clipMouse);
             return data;
         }

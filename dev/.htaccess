@@ -1,0 +1,2 @@
+AuthName "editor"
+AuthUserFile "/home/hgivtcyy/.htpasswds/public_html/editor/passwd"

@@ -1,0 +1,57 @@
+<canvas id="Sakura" width="60" height="1200">
+<script>
+var canvas             = document.getElementById('Sakura');
+var _context           = canvas.getContext('2d');
+    _context.font      = '12px Arial';
+    _context.fillStyle = '#333';
+    
+this.text       = 'Seven hundred twelve counts of extortion. Eight hundred and forty-nine counts of racketeering. Two hundred and forty-six counts of fraud. Eighty-seven counts of conspiracy murder. Five hundred and twenty-seven counts of obstruction of justice. How do the defendants pleadkkkkkkjjjlllllllllllllllllllllllllllllllllllllllllllllljjjjjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk?';
+this.lineHeight = 25;
+
+var wrapText = function(){
+    var end;
+    var wordWidth;
+    var frac;
+    var line   = "";
+    var y      = lineHeight;
+    var start  = 0;
+    var check  = "";
+    
+    while(true) {
+        end = this.text.indexOf(" ", start);
+        if(-1 == end ){
+            end = this.text.length;
+        }
+        
+        frac = this.text.substring(start, end);
+        check += frac;
+        start = end+1;
+        wordWidth = _context.measureText(check).width;
+        
+      if (wordWidth < canvas.width) {
+         line = check;
+         check += " ";
+      }else if(check.indexOf(" " == -1) && end != this.text.length){
+         _context.fillText(check, 0, y);
+         y += this.lineHeight;
+         line  = "";
+         check  = "";
+      }else{
+        _context.fillText(line, 0, y);
+        check = frac + " ";
+        if("" != line){
+            y += this.lineHeight;
+        }
+        line  = "";
+      }
+
+      if(end == this.text.length){
+        _context.fillText(frac, 0, y);
+        break;
+      }
+    }
+}
+
+wrapText();
+    
+</script>
