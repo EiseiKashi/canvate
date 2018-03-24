@@ -142,33 +142,11 @@ window.Canvate = function(element) {
         }
     }
     
-    var calculateBounds = function(theta,xx,yy,pivotX,pivotY,wwidth,hheight){
-        var pivotXX;
-        var pivotYY;
-        var minX;
-        var minY;
-        var maxX;
-        var maxY;
-        var cos;
-        var sin;
-        var pxc;
-        var pys;
-        var pxs;
-        var pyc;
-        var pxw;
-        var pyh
-        var pwc;
-        var pws;
-        var phs;
-        var phc;
-        var x1;
-        var y1;
-        var x2;
-        var y2;
-        var x3;
-        var y3;
-        var x4;
-        var y4;
+    var calculateBounds = function(theta, xx, yy, pivotX,pivotY, wwidth,hheight){
+        var pivotXX;var pivotYY;var minX;var minY;var maxX;var maxY;var cos;
+        var sin;var pxc;var pys;var pxs;var pyc;var pxw;var pyh;var pwc;var pws;
+        var phs;var phc;var x1;var y1;var x2;var y2;var x3;var y3;var x4;var y4;
+        
         pivotXX = pivotX - xx;
         pivotYY = pivotY - yy; 
         cos = Math.cos(theta);
