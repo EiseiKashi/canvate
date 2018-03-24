@@ -157,18 +157,18 @@ window.Canvate = function(element) {
         pyc = pivotY * cos;
         pxw = pivotX + wwidth;
         pyh = pivotY + hheight;
-        pwc = pxw * cos;
-        pws = pxw * sin;
-        phs = pyh * sin;
-        phc = pyh * cos;
-        x1  = pxc - pys + xx;
-        y1  = pxs + pyc + yy;
-        x2  = pwc - pys + xx;
-        y2  = pws + pyc + yy;
-        x3  = pwc- phs + xx;
-        y3  = pws + phc + yy;
-        x4  = pxc - phs + xx;
-        y4  = pxs + phc + yy;
+        pwc = pxw    * cos;
+        pws = pxw    * sin;
+        phs = pyh    * sin;
+        phc = pyh    * cos;
+        x1  = pxc    - pys + xx;
+        y1  = pxs    + pyc + yy;
+        x2  = pwc    - pys + xx;
+        y2  = pws    + pyc + yy;
+        x3  = pwc    - phs + xx;
+        y3  = pws    + phc + yy;
+        x4  = pxc    - phs + xx;
+        y4  = pxs    + phc + yy;
         
         minX = Math.min(Math.min(x1, x2), Math.min(x3, x4));
         minY = Math.min(Math.min(y1, y2), Math.min(y3, y4));
@@ -178,7 +178,7 @@ window.Canvate = function(element) {
         
         return { minX   : minX        ,minY    : minY, 
                  maxX   : maxX        ,maxY    : maxY, 
-                 width  : Math.abs(maxX-minX)   ,height  : Math.abs(maxY-minY)};
+                 width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
     }
     
     var clipCounter  = 0;
@@ -453,7 +453,7 @@ window.Canvate = function(element) {
             this.cropHeight = null == this.cropHeight || 0 == this.cropHeight ? _initialHeight : this.cropHeight;
             
             this.setCycle({x:this.cropX, y:this.cropY, width:this.cropWidth, height:this.cropHeight});
-            emit(this.IMAGE_SET, {image:image})
+            emit(_self.IMAGE_SET, {image:image})
         }
         
         this.setCycle = function(tile){
@@ -520,7 +520,7 @@ window.Canvate = function(element) {
             this.fontSize  = null == size  ? this.fontSize  : 12;
             this.font      = null == font  ? this.font      : font;
             this.fontColor = null == color ? this.fontColor : color;
-            emit(this.TEXT_SET, {text:this.text});
+            emit(_self.TEXT_SET, {text:this.text});
         }
         
         this.setRect = function(width, height, color){
@@ -591,11 +591,11 @@ window.Canvate = function(element) {
             var image        = new Image();
                 image.onload = function() {
                     _self.setImage(image, width, height);
-                    emit(this.IMAGE_LOADED, {image:image})
+                    emit(_self.IMAGE_LOADED, {image:image})
                 }
                 
                 image.onerror = function(event){
-                    emit(this.IMAGE_ERROR, {url:url})
+                    emit(_self.IMAGE_ERROR, {url:url})
                 }
                 
                 image.src = url + '?' + new Date().getTime();
@@ -653,7 +653,7 @@ window.Canvate = function(element) {
             }
             _clipList.splice(indexTarget, 0, clip);
             _parentClip[clip.id()] = this;
-            emit(this.CLIP_ADDED, {parent:parent});
+            emit(_self.CLIP_ADDED, {parent:parent});
         }
         
         this.removeClip = function(clip){
@@ -677,7 +677,7 @@ window.Canvate = function(element) {
             var clip = _clipList.splice(indexTarget, 1)[0];
             var parent = _parentClip[clip.id()];
                 _parentClip[clip.id()] = null;
-            emit(this.CLIP_REMOVED, {parent:parent});
+            emit(_self.CLIP_REMOVED, {parent:parent});
             return clip;
         }
         
@@ -1012,7 +1012,7 @@ window.Canvate = function(element) {
                    this.frameIndex = Math.max(0, this.frameIndex);
                 }else if(this.increment != 0){
                     this.increment = 0;
-                    emit(this.FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
+                    emit(_self.FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
                     
                     if(this.lastAction == "playLoop"){
                         this.frameIndex = 0;
