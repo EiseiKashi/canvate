@@ -1035,19 +1035,10 @@ window.Canvate = function(element) {
             cropHeightRender = this.cropHeight;
             rotationRender   = this.rotation * (Math.PI)/180;
             
-            ///////////////////////////////////////////////////////////////////
-            var minX;
-            var minY;
-            var maxX;
-            var maxY;
-            
-            var pivotX;
-            var pivotY;
-            var bounds;
-            var clipBounds;
+            var minX;var minY;var maxX;var maxY;var pivotX;var pivotY;
+            var bounds;var clipBounds;
             var renderList = [];
-            ///////////////////////////////////////////////////////////////////
-            
+
             var renderNew = function(){
                 minX = null;
                 minY = null;
@@ -1189,11 +1180,7 @@ window.Canvate = function(element) {
                     wrap(_self.text, Math.max(ems.length, 1), 0);
                 }
                 
-                var canvas;
-                var x;
-                var y;
-                var w;
-                var h;
+                var canvas;var x;var y;var w;var h;
                 
                 var clip;
                 var length = renderList.length;
