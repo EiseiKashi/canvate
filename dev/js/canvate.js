@@ -958,7 +958,9 @@ window.Canvate = function(element) {
                     if(this.isLoop){
                         switch(this.lastAction){
                             case "playBetween" :
-                                this.frameIndex = _fromIndexFrame;
+                            case "playUntil" :
+                            case "playFrom" :
+                            this.frameIndex = _fromIndexFrame;
                                 break;
                             case "play" :
                             case "nextFrame" :
