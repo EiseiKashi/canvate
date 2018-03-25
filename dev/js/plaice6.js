@@ -66,6 +66,7 @@ function onImageLoaded(event){
     
     g.setCycle(0, 0, width, height);
     g.isLoop = true;
+    g.play();
     g.setSize(200, "auto")
 }
 

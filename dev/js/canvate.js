@@ -808,8 +808,12 @@ window.Canvate = function(element) {
         
         this.nextFrame = function(){
             if(_self.frameIndex >= _framesList.length-1){
-                // Early return
-                return;
+                if(this.isLoop){
+                    _self.frameIndex = 0;
+                }else{
+                    // Early return
+                    return;
+                }
             }
             _self.lastTime     = Date.now();
             indexFrame         = Math.max(Math.min(_self.frameIndex+1, _framesList.length), 0);
@@ -821,8 +825,12 @@ window.Canvate = function(element) {
         
         this.prevFrame = function(){
             if(_self.frameIndex == 0){
-                // Early return
-                return;
+                if(this.isLoop){
+                    _self.frameIndex = _framesList.length-1;
+                }else{
+                    // Early return
+                    return;
+                }
             }
             _self.lastTime     = Date.now();
             indexFrame         = Math.max(Math.min(_self.frameIndex-1, _framesList.length), 0);
@@ -963,12 +971,7 @@ window.Canvate = function(element) {
                             this.frameIndex = _fromIndexFrame;
                                 break;
                             case "play" :
-                            case "nextFrame" :
                                 this.frameIndex = 0;
-                                break;
-                            case "prevFrame" :
-                                this.frameIndex = _framesList.length-1;
-                                break;
                         }
                     }else{
                         this.increment = 0;
