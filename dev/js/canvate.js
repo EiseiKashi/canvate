@@ -240,6 +240,7 @@ window.Canvate = function(element) {
         this.frameRate     = 60;
         this.increment     = 0;
         this.visible       = true;
+        this.isLoop        = false;
         this.background    = null;
         this.text;
         this.interline     = 1.313;
@@ -250,7 +251,6 @@ window.Canvate = function(element) {
         this.fontColor     = "black";
         
         var _self          = this;
-        var _isLoop        = false;
         var _emitter       = new Emitter(this);
         var _innerCanvas   = document.createElement("canvas");
         var _innerContext  = _innerCanvas.getContext('2d');
@@ -264,6 +264,7 @@ window.Canvate = function(element) {
         var _clipMouse;
         var _lineHeight;
         var _hasMouse;
+        var _fromIndexFrame;
         
         // HELPERS VARIABLES
         var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
@@ -747,97 +748,69 @@ window.Canvate = function(element) {
             return indexFrame;
         }
         
-        this.play = function(onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
+        this.play = function(){
             _self.lastTime   = Date.now();
             indexFrame       = _framesList.length-1;
             _self.lastAction = "play";
+            _fromIndexFrame  = 0;
             _playUntil(indexFrame);
         }
         
-        this.playLoop = function(onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
-            _self.lastTime   = Date.now();
-            indexFrame       = _framesList.length-1;
-            _self.lastAction = "playLoop";
-            _playUntil(indexFrame);
-        }
-        
-        this.playFrom = function(frame, onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
+        this.playFrom = function(frame){
             _self.lastTime     = Date.now();
             indexFrame         = getIndexByFrame(frame);
             _self.currentFrame = indexFrame+1;
             _self.frameIndex   = indexFrame;
-            _self.lastAction = "playFrom";
+            _fromIndexFrame    = indexFrame;
+            _self.lastAction   = "playFrom";
             _playUntil(_framesList.length-1);
         }
         
-        this.playUntil = function(frame, onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
+        this.playUntil = function(frame){
             _self.lastTime   = Date.now();
             indexFrame       = getIndexByFrame(frame);
+            _fromIndexFrame  = _self.frameIndex;
             _self.lastAction = "playUntil";
             _playUntil(indexFrame);
         }
         
-        this.playBetween = function(fromFrame, untilFrame, onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
-            _self.lastTime   = Date.now();
-            fromIndexFrame   = getIndexByFrame(fromFrame);
-            untilIndexFrame  = getIndexByFrame(untilFrame);
-            _self.frameIndex = fromIndexFrame;
-            if(_self.frameIndex == -1){
-                debugger;
-            }
+        this.playBetween = function(fromFrame, untilFrame){
+            _self.lastTime     = Date.now();
+            fromIndexFrame     = getIndexByFrame(fromFrame);
+            untilIndexFrame    = getIndexByFrame(untilFrame);
+            _self.frameIndex   = fromIndexFrame;
+            _fromIndexFrame    = fromIndexFrame;
             _self.currentFrame = fromIndexFrame+1;
             _self.lastAction   = "playBetween";
             _playUntil(untilIndexFrame);
         }
         
-        this.stop = function(onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
+        this.stop = function(){
             _self.lastTime     = Date.now();
             indexFrame         = _self.frameIndex;
             _self.currentFrame = indexFrame+1;
             _self.endIndex     = indexFrame;
             _self.lastAction   = "stop";
+            _self.currentFrame = null;
+            _self.lastAction   = null;
         }
         
-        this.stopAt = function(frame, onFrame){
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
+        this.stopAt = function(frame){
             _self.lastTime     = Date.now();
             indexFrame         = getIndexByFrame(frame);
             _self.currentFrame = indexFrame+1;
             _self.frameIndex   = Math.max(Math.min(indexFrame, _framesList.length), 0);
             _self.endIndex     = indexFrame;
             _self.lastAction   = "stopAt";
+            _self.currentFrame = null;
+            _self.lastAction   = null;
         }
         
-        this.nextFrame = function(onFrame){
+        this.nextFrame = function(){
             if(_self.frameIndex >= _framesList.length-1){
                 // Early return
                 return;
             }
-            
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
-            
             _self.lastTime     = Date.now();
             indexFrame         = Math.max(Math.min(_self.frameIndex+1, _framesList.length), 0);
             _self.currentFrame = indexFrame+1;
@@ -846,16 +819,11 @@ window.Canvate = function(element) {
             _self.lastAction   = "nextFrame";
         }
         
-        this.prevFrame = function(onFrame){
+        this.prevFrame = function(){
             if(_self.frameIndex == 0){
                 // Early return
                 return;
             }
-            
-            if(onFrame != null){
-                this.onFrame = onFrame;
-            }
-            
             _self.lastTime     = Date.now();
             indexFrame         = Math.max(Math.min(_self.frameIndex-1, _framesList.length), 0);
             _self.currentFrame = indexFrame+1;
@@ -987,13 +955,24 @@ window.Canvate = function(element) {
                    this.frameIndex += this.increment;
                    this.frameIndex = Math.max(0, this.frameIndex);
                 }else if(this.increment != 0){
-                    this.increment = 0;
-                    emit(_self.FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
-                    
-                    if(this.lastAction == "playLoop"){
-                        this.frameIndex = 0;
-                        this.playLoop(this.onFrame);
+                    if(this.isLoop){
+                        switch(this.lastAction){
+                            case "playBetween" :
+                                this.frameIndex = _fromIndexFrame;
+                                break;
+                            case "play" :
+                            case "nextFrame" :
+                                this.frameIndex = 0;
+                                break;
+                            case "prevFrame" :
+                                this.frameIndex = _framesList.length-1;
+                                break;
+                        }
+                    }else{
+                        this.increment = 0;
                     }
+                    
+                    emit(_self.FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
                 }
             }
             
