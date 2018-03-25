@@ -432,14 +432,14 @@ window.Canvate = function(element) {
             emit(_self.IMAGE_SET, {image:image})
         }
         
-        this.setCycle = function(x, y, width, height, totalFrames){
+        this.setCycle = function(x, y, width, height, totalFrames, gapX, gapY){
             tileXsetCycle  = this.cropX      = null == x      || isNaN(x)      ? this.cropX      : x;
             tileYsetCycle  = this.cropY      = null == y      || isNaN(y)      ? this.cropY      : y;
             widthSetCycle  = this.cropWidth  = null == width  || isNaN(width)  ? this.cropWidth  : width;
             heightSetCycle = this.cropHeight = null == height || isNaN(height) ? this.cropHeight : height;
             
-            gapX             = null == tile.gapX || isNaN(tile.gapX) ? 0 : tile.gapX;
-            gapY             = null == tile.gapY || isNaN(tile.gapY) ? 0 : tile.gapY;
+            gapX = null == gapX || isNaN(gapX) ? 0 : gapX;
+            gapY = null == gapY || isNaN(gapY) ? 0 : gapY;
             
             if(null == totalFrames || isNaN(totalFrames)){
                 var totalWidth  = Math.floor(this.image.width/widthSetCycle);
