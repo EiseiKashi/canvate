@@ -428,20 +428,20 @@ window.Canvate = function(element) {
             this.cropWidth  = null == this.cropWidth  || 0 == this.cropWidth  ? _initialWidth  : this.cropWidth;
             this.cropHeight = null == this.cropHeight || 0 == this.cropHeight ? _initialHeight : this.cropHeight;
             
-            this.setCycle({x:this.cropX, y:this.cropY, width:this.cropWidth, height:this.cropHeight});
+            this.setCycle(this.cropX, this.cropY, this.cropWidth, this.cropHeight);
             emit(_self.IMAGE_SET, {image:image})
         }
         
-        this.setCycle = function(tile){
-            tileXsetCycle  = this.cropX      = null == tile.x      || isNaN(tile.x)      ? this.cropX      : tile.x;
-            tileYsetCycle  = this.cropY      = null == tile.y      || isNaN(tile.y)      ? this.cropY      : tile.y;
-            widthSetCycle  = this.cropWidth  = null == tile.width  || isNaN(tile.width)  ? this.cropWidth  : tile.width;
-            heightSetCycle = this.cropHeight = null == tile.height || isNaN(tile.height) ? this.cropHeight : tile.height;
+        this.setCycle = function(x, y, width, height, totalFrames){
+            tileXsetCycle  = this.cropX      = null == x      || isNaN(x)      ? this.cropX      : x;
+            tileYsetCycle  = this.cropY      = null == y      || isNaN(y)      ? this.cropY      : y;
+            widthSetCycle  = this.cropWidth  = null == width  || isNaN(width)  ? this.cropWidth  : width;
+            heightSetCycle = this.cropHeight = null == height || isNaN(height) ? this.cropHeight : height;
             
             gapX             = null == tile.gapX || isNaN(tile.gapX) ? 0 : tile.gapX;
             gapY             = null == tile.gapY || isNaN(tile.gapY) ? 0 : tile.gapY;
             
-            if(null == tile.totalFrames || isNaN(tile.totalFrames)){
+            if(null == totalFrames || isNaN(totalFrames)){
                 var totalWidth  = Math.floor(this.image.width/widthSetCycle);
                 var totalHeight = Math.floor(this.image.height/heightSetCycle);
                 totalFrames     = this.totalFrames = totalWidth * totalHeight;
@@ -587,7 +587,7 @@ window.Canvate = function(element) {
             var height  = null == height ? this.cropHeight : height;
             this.width  = width;
             this.height = height;
-            this.setCycle({x:x, y:y, width:width, height:height});
+            this.setCycle(x, y, width, height);
         }
         
         //CHILDREN
