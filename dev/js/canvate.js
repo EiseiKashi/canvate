@@ -277,32 +277,48 @@ window.Canvate = function(element) {
         var scaleXrender;var scaleYrender;
         
         // GETTERS
-        this.findClipByName = function (name){
-            for(var id in _allClipList){
-                var clip = _allClipList[id];
-                if(clip.name == name){
-                    return _allClipList[id];
+
+        //Returns the first occurence of a Clip with the same property and value.
+        this.getClipByProp = function (propName, value){
+            var list = getClipListByProp(propName, value);
+            return list[0];
+        }
+
+        //Returns a list of Clip with the same property and value.
+        this.getClipListByProp = function (propName, value){
+            var length = _clipList.length;
+            var clip;
+            var list = [];
+            for(var index = 0; index < length; index++){
+                var clip = _clipList[index];
+                if(clip[propName] == value){
+                    list.push[clip];
                 }
             }
+            return list;
         }
         
+        // Returns the id
         this.id  = function(){
             return _id;
         }
         
+        // Returns the parent
         this.parent = function (){
             return _parentClip[_id];
         }
         
+        // Returns if is a mask
         this.isMask = function(){
             return _maskClip[_id];
         }
         
+        // Returns if has button event handler
         this.hasButton = function(){
             return _hasButton;
         }
         
-        // SETTERS
+        // Sets the same pivot X and Y
         this.setPivot = function(num){
             var isNum = !(num == null || isNaN(num));
             if(!isNum){
@@ -312,6 +328,7 @@ window.Canvate = function(element) {
             this.pivotX = this.pivotY = num;
         }
         
+        // Sets the same scale X and Y
         this.setScale = function(num){
             var isNum = !(num == null || isNaN(num));
             if(!isNum){
@@ -321,6 +338,7 @@ window.Canvate = function(element) {
             this.scaleX = this.scaleY = num;
         }
         
+        // Sets the same position X and Y
         this.setPosition = function(x, y){
             var isNum = !(x == null || isNaN(x));
             if(!isNum){
@@ -336,6 +354,7 @@ window.Canvate = function(element) {
             this.y = y;
         }
         
+        // Sets the same size width and height
         this.setSize = function(width, height){
             var isNotWidth  = (width  == null) || (isNaN(width)  && width  != "auto");
             var isNotHeight = (height == null) || (isNaN(height) && height != "auto");
@@ -358,6 +377,7 @@ window.Canvate = function(element) {
             this.height  = height;
         }
         
+        // Set the view port of the image
         this.setViewPort = function(width, height){
             if(null == width || null == height || isNaN(width) || isNaN(height)){
                 return;
@@ -366,11 +386,13 @@ window.Canvate = function(element) {
             _canvasHeight = height;
         }
         
-        this.resetViewPort = function(){
+        // Removes the view port
+        this.removeViewPort = function(){
             _canvasWidth  = null;
             _canvasHeight = null;
         }
         
+        //Fits an image into a specific area
         this.fitInto = function(maxWidth, maxHeight, offsetX, offsetY){
             if(null == maxWidth || null == maxHeight || isNaN(maxWidth) || isNaN(maxHeight)){
                 return;
@@ -397,14 +419,17 @@ window.Canvate = function(element) {
             this.y = y + (this.pivotY * height) + offsetY;
         }
         
-        this.fitHeight = function(){
+        // Set the width proportional to the height
+        this.setAutoWidth = function(){
             this.setSize("auto", this.height);
         }
-        
-        this.fitWidth = function(){
+
+        // Set the height proportional to the width
+        this.setAutoHeight = function(){
             this.setSize(this.width, "auto");
         }
         
+        // Sets the image Clip
         this.setImage = function(image, width, height){
             if(null == image){
                 // Early return
@@ -433,6 +458,7 @@ window.Canvate = function(element) {
             emit(_self.IMAGE_SET, {image:image})
         }
         
+        // Sets the Cycle animation
         this.setCycle = function(x, y, width, height, totalFrames, gapX, gapY){
             tileXsetCycle  = this.cropX      = null == x      || isNaN(x)      ? this.cropX      : x;
             tileYsetCycle  = this.cropY      = null == y      || isNaN(y)      ? this.cropY      : y;
@@ -488,10 +514,12 @@ window.Canvate = function(element) {
             }
         }
         
+        // Sets the background
         this.setBackground = function(fillStyle){
             this.background = fillStyle;
         }
         
+        // Sets the text
         this.setText = function(text, size, font, color){
             this.text      = text;
             this.fontSize  = null == size  ? this.fontSize  : 12;
@@ -500,6 +528,7 @@ window.Canvate = function(element) {
             emit(_self.TEXT_SET, {text:this.text});
         }
         
+        //Sets the rect
         this.setRect = function(width, height, color){
             if(null == width || null == height || isNaN(width) || isNaN(height)){
                 return;
@@ -526,42 +555,7 @@ window.Canvate = function(element) {
         }
         
         // IMAGE
-        this.captureCrop = function(image, x, y, width, height){
-            tempCanvas  = document.createElement("canvas");
-            tempContext = tempCanvas.getContext("2d");
-            if(null == image){
-                return;
-            }
-            image.crossOrigin = "Anonymous";
-            var x      = null == x      ? 0            : x;
-            var y      = null == y      ? 0            : y;
-            var width  = null == width  ? image.width  : width;
-            var height = null == height ? image.height : height;
-            
-            lastWidth         = this.canvas.width;
-            tempCanvas.width  = lastWidth + width;
-            tempCanvas.height = Math.max(this.canvas.height, height);
-            
-            tempContext.drawImage(this.canvas, 0,0);
-            
-            _framesList.push({
-                                    x      : lastWidth + x, 
-                                    y      : y, 
-                                    width  : width, 
-                                    height : height
-                                });
-                                
-            tempContext.drawImage(image, 
-                                  x, y, 
-                                  width, height, 
-                                  lastWidth + x, 0, 
-                                  width, height);
-            
-            this.canvas.width  = tempCanvas.width;
-            this.canvas.height = tempCanvas.height;
-            this.context.drawImage(tempCanvas, 0, 0);
-        }
-        
+        //Load image from URL
         this.loadImage = function(url, width, height){
             this.canvas = null;
             _initialWidth   = null;
@@ -581,7 +575,8 @@ window.Canvate = function(element) {
                 image.crossOrigin = "Anonymous";
         }
         
-        this.cropImage = function(x, y, width, height){
+        // Crop the Clip
+        this.crop = function(x, y, width, height){
             var x       = null == x      ? this.cropX      : x;
             var y       = null == y      ? this.cropY      : y;
             var width   = null == width  ? this.cropWidth  : width;
@@ -590,29 +585,32 @@ window.Canvate = function(element) {
             this.height = height;
             this.setCycle(x, y, width, height);
         }
-        
-        //CHILDREN
-        this.getRect = function(width, height, color){
-            var clip = this.getClip();
-                clip.setRect(width, height, color);
-            return clip;
+
+        // uncrop the Clip
+        this.unCrop = function(){
+            this.setCycle(x, y, _initialWidth, _initialHeight);
         }
         
-        this.getClip = function(image){
+        //CHILDREN
+        // Get new Clip
+        this.getNewClip = function(image){
             return new Clip(image);
         }
         
+        // Add new Clip
         this.addNewClip = function(image){
             var clip = new Clip(image);
             this.addClip(clip);
             return clip;
         }
         
+        // Get the Clip by depth
         this.getClipAt = function(index){
             return _clipList[index];
         }
         
-        this.addClip = function(clip, width, height){
+        // Add clip
+        this.addClip = function(clip){
             if(null == clip || clip == this){
                 // Early return
                 return;
@@ -621,6 +619,7 @@ window.Canvate = function(element) {
             this.addClipAt(clip, _clipList.length);
         }
         
+        // Add clip at specific depth
         this.addClipAt = function(clip, indexTarget){
             if(null == clip || clip == this || isNaN(indexTarget)){
                 return;
@@ -635,6 +634,7 @@ window.Canvate = function(element) {
             emit(_self.CLIP_ADDED, {parent:parent});
         }
         
+        // Remove Clip
         this.removeClip = function(clip){
             if(null == clip || clip == this){
                 return;
@@ -644,11 +644,12 @@ window.Canvate = function(element) {
             for(var index=0; index <length; index++){
                 clipTmp = _clipList[index];
                 if(clipTmp == clip){
-                     this.removeClipAt(index);
+                     return this.removeClipAt(index);
                 }
             }
         }
         
+        // Remove Clip at certaiin depth
         this.removeClipAt = function(indexTarget){
             if(isNaN(indexTarget || indexTarget < 0 || !(indexTarget < _clipList.length))){
                 return;
@@ -660,16 +661,19 @@ window.Canvate = function(element) {
             return clip;
         }
         
+        // Remove all Clips
         this.removeAllClips = function(){
             while(_clipList.length > 0){
                 this.removeClipAt(0);
             }
         }
         
+        // Get total clip
         this.getTotalClip = function(){
             return _clipList.length;
         }
         
+        // Set the depth of specific Clip
         this.setDepth = function(clip, indexTarget){
             if(null == clip || clip == this || isNaN(indexTarget)){
                 return;
@@ -685,6 +689,7 @@ window.Canvate = function(element) {
             }
         }
         
+        // Interchange the depth fo 2 Clips
         this.swapClips = function (clip1, clip2){
             if(null == clip1 || null == clip2){
                 return;
@@ -711,6 +716,7 @@ window.Canvate = function(element) {
             }
         }
         
+        // Bring a Clip to front
         this.toFront = function (clip){
             if(null == clip){
                 return;
@@ -718,6 +724,7 @@ window.Canvate = function(element) {
             this.setDepth(clip, _clipList.length-1);
         }
         
+        // Bring a Clip to back
         this.toBack = function (clip){
             if(null == clip){
                 return;
@@ -726,12 +733,6 @@ window.Canvate = function(element) {
         }
         
         // FRAME
-        this.clearFrames = function(){
-            _framesList.length  = 0;
-            this.canvas.width   = 0;
-            this.canvas.height  = 0;
-        }
-        
         var _playUntil = function (index){
             _self.increment = _self.frameIndex >= index ? -1 : 1;
             _self.endIndex  = index;
@@ -748,6 +749,7 @@ window.Canvate = function(element) {
             return indexFrame;
         }
         
+        // Play a cycle
         this.play = function(){
             _self.lastTime   = Date.now();
             indexFrame       = _framesList.length-1;
@@ -756,6 +758,7 @@ window.Canvate = function(element) {
             _playUntil(indexFrame);
         }
         
+        // Play a cycle from frame
         this.playFrom = function(frame){
             _self.lastTime     = Date.now();
             indexFrame         = getIndexByFrame(frame);
@@ -766,6 +769,7 @@ window.Canvate = function(element) {
             _playUntil(_framesList.length-1);
         }
         
+        // Play cycle until frame
         this.playUntil = function(frame){
             _self.lastTime   = Date.now();
             indexFrame       = getIndexByFrame(frame);
@@ -774,6 +778,7 @@ window.Canvate = function(element) {
             _playUntil(indexFrame);
         }
         
+        // Play cycle between frames
         this.playBetween = function(fromFrame, untilFrame){
             _self.lastTime     = Date.now();
             fromIndexFrame     = getIndexByFrame(fromFrame);
@@ -785,6 +790,7 @@ window.Canvate = function(element) {
             _playUntil(untilIndexFrame);
         }
         
+        // Stop cycle
         this.stop = function(){
             _self.lastTime     = Date.now();
             indexFrame         = _self.frameIndex;
@@ -795,6 +801,7 @@ window.Canvate = function(element) {
             _self.lastAction   = null;
         }
         
+        // Stop cycle at specific frame
         this.stopAt = function(frame){
             _self.lastTime     = Date.now();
             indexFrame         = getIndexByFrame(frame);
@@ -806,6 +813,7 @@ window.Canvate = function(element) {
             _self.lastAction   = null;
         }
         
+        // Move to the next frame
         this.nextFrame = function(){
             if(_self.frameIndex >= _framesList.length-1){
                 if(this.isLoop){
@@ -823,6 +831,7 @@ window.Canvate = function(element) {
             _self.lastAction   = "nextFrame";
         }
         
+        // Move to the prev frame
         this.prevFrame = function(){
             if(_self.frameIndex == 0){
                 if(this.isLoop){
@@ -841,6 +850,7 @@ window.Canvate = function(element) {
         }
         
         // RENDER
+        //Set mask wit another clip
         this.setMask = function(mask, type){
             if(null == mask){
                 // Early return
@@ -852,6 +862,7 @@ window.Canvate = function(element) {
             _mask                = mask;
         }
         
+        //Remove the mask
         this.removeMask = function(){
             _typeMask = "source-over";
             if(_mask == null){
@@ -905,15 +916,18 @@ window.Canvate = function(element) {
             }
         }
         
+        // Get is has button event handler
         this.hasMouse = function(){
             return _hasMouse;
         }
         
+        // Add listener
         this.addEventListener = function (type, listener, context){
             _emitter.addEventListener(type, listener, context);
             _hasMouse = _emitter.hasMouse();
         }
         
+        // Remove Listener
         this.removeEventListener = function (type, listener, context){
             _emitter.removeEventListener(type, listener, context);
             _hasMouse = _emitter.hasMouse();
