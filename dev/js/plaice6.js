@@ -70,7 +70,7 @@ function onImageLoaded(event){
     g.setSize(200, "auto")
 }
 
-var g = canvatte.getClip();
+var g = canvatte.getNewClip();
     g.visible = false;
     g.addEventListener(g.IMAGE_LOADED, onImageLoaded);
     g.addEventListener("click", onClick);
