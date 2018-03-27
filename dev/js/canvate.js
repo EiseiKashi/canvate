@@ -588,7 +588,7 @@ window.Canvate = function(element) {
 
         // uncrop the Clip
         this.unCrop = function(){
-            this.setCycle(x, y, _initialWidth, _initialHeight);
+            this.setCycle(0, 0, _initialWidth, _initialHeight);
         }
         
         //CHILDREN
@@ -910,7 +910,6 @@ window.Canvate = function(element) {
 
         // EVENT HANDLING
         this.emitMouseEvent = function(type, x, y){
-            _self.debug(type);
             if(_markToEmmit == this){
                 emit(type, {x:x-_self.x, y:y-_self.y});
             }
@@ -1215,7 +1214,7 @@ window.Canvate = function(element) {
             _innerCanvas.id = _self.name;
             var data = {inner:_innerCanvas, clipMouse:_clipMouse, bounds:bounds, x:minX, y:minY};
             emit(_self.RENDER, {clip:_self});
-            _self.debug(_clipMouse);
+            _self.debug(_innerCanvas, _self.name);
             return data;
         }
         
