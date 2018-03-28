@@ -586,9 +586,31 @@ window.Canvate = function(element) {
             this.setCycle(x, y, width, height);
         }
 
-        // uncrop the Clip
-        this.unCrop = function(){
-            this.setCycle(0, 0, _initialWidth, _initialHeight);
+        //Sets the rect
+        this.crop = function(x, y, width, height){
+            var x       = null == x      ? this.cropX      : x;
+            var y       = null == y      ? this.cropY      : y;
+            var width   = null == width  ? this.cropWidth  : width;
+            var height  = null == height ? this.cropHeight : height;
+            
+            _self.width        = null;
+            _self.height       = null;
+            _self.cropWidth    = null;
+            _self.cropHeight   = null;
+            
+            var canvas            = document.createElement("canvas");
+                canvas.width      = width;
+                canvas.height     = height;
+           
+            var context           = canvas.getContext("2d");
+                context.drawImage(_self.image, x, y, width, height, 0, 0, width, height);
+            
+            
+            var img               = document.createElement("img");
+                img.src           = canvas.toDataURL('image/png');
+                img.crossOrigin   = "Anonymous";
+            
+            this.setImage(canvas);
         }
         
         //CHILDREN
