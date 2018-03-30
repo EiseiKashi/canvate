@@ -39,8 +39,8 @@ clip.addEventListener("imageLoaded", onImageLoaded);
 clip.loadImage("img/sakura.png");
 ```
 ### Capturing image from the page
-Get the reference of the img, canvas, or video. Add a clip into the Canvate.<br>
-And set the image to the clip when is created.
+Get the reference of the img, canvas, or video. Add a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the Canvate.<br>
+And set the image to the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) when is created.
 ```jsx
 var image     = document.getElementById("MY_IMAGE");
 
@@ -49,7 +49,7 @@ var myCanvate = new Canvate(myCanvas);
 
 var clip      = myCanvate.addNewClip(image);
 ```
-At anytime the image of the clip can be set.
+At anytime the image of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) can be set.
 ```jsx
 clip.setImage(image);
 ```
@@ -58,20 +58,20 @@ clip.setImage(image);
 
 | Property | Description |
 | ------------- | ------------- |
-| **```name```** | And String that specifies the name of the clip. By default it takes the read only property: ```id```|
+| **```name```** | And String that specifies the name of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). By default it takes the read only property: ```id```|
 | **```width```** | Number in pixels that specifies the width.  |
 | **```height```** | Number in pixels that specifies the height.  |
-| **```x```** | Number in pixels that specifies the x position of a Clip, related to his parent.  |
-| **```y```** | Number in pixels that specifies the y position of a Clip, related to his parent.  |
+| **```x```** | Number in pixels that specifies the x position of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
+| **```y```** | Number in pixels that specifies the y position of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
 | **```scaleX```** | Specifies the scale X. Default value is 1.  Values between 0 and 1 represent values from 0 to 100%.  |
 | **```scaleY```** | Specifies the scale Y. Default value is 1.  Values between 0 and 1 represent values from 0 to 100%.  |
 | **```rotation```** | Number that specifies the angle of rotation in degrees.  |
-| **```pivotX```** | A related x point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 1 is the bottom right of the Clip. |
-| **```pivotY```** | A related y point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 1 is the bottom right of the Clip. |
+| **```pivotX```** | A related x point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), 1 is the bottom right of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). |
+| **```pivotY```** | A related y point based on the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), 1 is the bottom right of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). |
 | **```alpha```** | Number that specifies the transparency. Values between 0 and 1 represent values from 0 to 100%.  |
-| **```visible```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
+| **```visible```** | Boolean property. If its false, makes the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) invisible and it wont be rendered at all. |
 | **```isLoop ```** | Boolean property that specify if the cycle animation like:  ```play ```or ```playBetween```, shoud be in loop. |
-| **```background ```** | It sets or returns the color, gradient, or pattern used to fill the Clip. The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp) |
+| **```background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp) |
         this.text;
         this.interline     = 1.313;
         this.fontSize      = 12;
