@@ -60,6 +60,6 @@ The list of the property transformation.
 | Property | Description |
 | ------------- | ------------- |
 | **```width```** | Specifies the width of a Clip, in pixels.  |
-| height | The height property specifies the width of a Clip, in pixels.  |
-| x  | The x property specifies the width of a Clip, in pixels.  |
-| y  | Number, the unit is only in pixels  |
+| **```height```** | Specifies the height of a Clip, in pixels.  |
+| **```x```** | Specifies the x position of a Clip, in pixels related to his parent.  |
+| **```y```** | Specifies the y position of a Clip, in pixels related to his parent.  |
