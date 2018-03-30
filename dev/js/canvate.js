@@ -609,23 +609,26 @@ window.Canvate = function(element) {
         }
         
         //Crop
-        this.crop = function(x, y, width, height){
-            var x       = null == x      ? _cropX      : x;
-            var y       = null == y      ? _cropY      : y;
-            var width   = null == width  ? _cropWidth  : width;
-            var height  = null == height ? _cropHeight : height;
+        this.crop = function(x, y, width, height, finalWidth, finalHeight){
+            var x         = null == x      ? _cropX      : x;
+            var y         = null == y      ? _cropY      : y;
+            var width     = null == width  ? _cropWidth  : width;
+            var height    = null == height ? _cropHeight : height;
             
             _self.width   = null;
             _self.height  = null;
             _cropWidth    = null;
             _cropHeight   = null;
             
-            var canvas            = document.createElement("canvas");
-                canvas.width      = width;
-                canvas.height     = height;
+            var canvas        = document.createElement("canvas");
+                canvas.width  = width;
+                canvas.height = height;
            
-            var context           = canvas.getContext("2d");
-                context.drawImage(_image, x, y, width, height, 0, 0, width, height);
+            finalWidth  = null == finalWidth  || isNaN(finalWidth)  ? width  : finalWidth;
+            finalHeight = null == finalHeight || isNaN(finalHeight) ? height : finalHeight; 
+            
+            var context = canvas.getContext("2d");
+                context.drawImage(_image, x, y, width, height, 0, 0, finalWidth, finalHeight);
             
             
             var img               = document.createElement("img");
