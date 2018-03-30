@@ -55,7 +55,7 @@ clip.setImage(image);
 ```
 
 ### Clip transformation
-The properties that can be changed are:
+The properties that can be changed are:<br>
 | Command | Description |
 | --- | --- |
 | `git status` | List all *new or modified* files |
