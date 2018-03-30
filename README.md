@@ -36,7 +36,7 @@ var onImageLoaded = function(event){
 }
 clip.addEventListener("imageLoaded", onImageLoaded);
 
-clip.loadImage("imageLoaded", onImageLoaded);
+clip.loadImage("img/sakura.png");
 ```
 ### Capturing image from the page
 Get the reference of the img, canvas, or video. Add a clip into the Canvate.<br>
