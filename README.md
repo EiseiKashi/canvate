@@ -9,8 +9,8 @@ A Javascript library for multiple interactive Images and Sprite Sheet, using onl
 - **Pivot, point of rotation and transformation:** with Canvate, easly set the images' pivot inside the canvas to make transformation like rotation and resize arround a point.
 
 ## Usage
-Load the canvate-v0-0-1.js
-Always first, get a reference of the canvas in your page.<br>
+Load the canvate.js.
+Get a reference of the canvas in your page.<br>
 Pass this reference to the Canvate when is instantiated.
 ```jsx
 var myCanvas  = document.getElementById("myCanvasId");
