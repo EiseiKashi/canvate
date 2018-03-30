@@ -10,16 +10,23 @@ A Javascript library for multiple interactive Images and Sprite Sheet, using onl
 
 ## Usage
 Load the canvate-v0-0-1.js
-Always first, get a reference of the canvas in your page and instance with it the Canvate.
-
+Always first, get a reference of the canvas in your page.<br>
+Pass this reference to the Canvate when is instantiated.
 ```jsx
 var myCanvas  = document.getElementById("myCanvasId");
 var myCanvate = new Canvate(myCanvas);
 ```
-
+### What is a Clip?
+A Clip its a Canvate object that let manipulate images inside the Canvate.<br>
+You can think about the Clip as a container and manager of images and Sprite sheet of the Canvate.<br>
+Example of an empty clip.
+```jsx
+var myCanvas  = document.getElementById("myCanvasId");
+var myCanvate = new Canvate(myCanvas);
+var clip = myCanvate.addNewClip();
+```
 ### Loading external image
-A clip can be an image like png, svg, canvas or video.
-Add new clip to the canvas.
+ Canvate and add a new clip.
 ```jsx
 var clip = myCanvate.addNewClip();
 ```
@@ -33,9 +40,12 @@ var clip.addEventListener(canvatte.IMAGE_LOADED, onImageLoaded);
 
 ### Capturing image from the page
 Get the reference of the img, canvas, or video. Add a clip into the Canvate.<br>
-And set the image to the clip.
+
 ```jsx
 var image = document.getElementById("MY_IMAGE");
 var clip  = myCanvate.addNewClip();
+```
+And set the image to the clip.
+```jsx
 clip.setImage(image);
 ```
