@@ -26,19 +26,16 @@ var myCanvate = new Canvate(myCanvas);
 var clip      = myCanvate.addNewClip();
 ```
 ### Loading external image
-Once the Canvate was created, add an empty Clip.
 ```jsx
-var clip = myCanvate.addNewClip();
-```
-Add event handler.
-```jsx
+var myCanvas  = document.getElementById("myCanvasId");
+var myCanvate = new Canvate(myCanvas);
+var clip      = myCanvate.addNewClip();
+
 var onImageLoaded = function(event){
   console.log("Image loaded!!");
 }
 clip.addEventListener("imageLoaded", onImageLoaded);
-```
-Load the image.
-```jsx
+
 clip.loadImage("imageLoaded", onImageLoaded);
 ```
 ### Capturing image from the page
