@@ -72,7 +72,7 @@ clip.setImage(image);
 | **``` alpha ```** | Number that specifies the transparency. Values between 0 and 1 represent values from 0 to 100%.  |
 | **``` visible ```** | Boolean property. If its false, makes the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) invisible and it wont be rendered at all. |
 | **``` isLoop ```** | Boolean property that specify if the cycle animation like:  ```play ```or ```playBetween```, shoud be in loop. |
-| **`` background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp) |
+| **``` background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp) |
 | **``` text ```** | String that sets the text fort the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip).|
 | **``` interline ```** | Number if the inteline text. The default value is: 1.313|
 | **```fontSize ```** | Number that defines the fontSize of the text in pixels. The default value is: 12|
