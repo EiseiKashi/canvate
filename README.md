@@ -23,7 +23,7 @@ Example of an empty clip.
 ```jsx
 var myCanvas  = document.getElementById("myCanvasId");
 var myCanvate = new Canvate(myCanvas);
-var clip = myCanvate.addNewClip();
+var clip      = myCanvate.addNewClip();
 ```
 ### Loading external image
 Once the Canvate was created, add an empty Clip.
@@ -35,10 +35,11 @@ Add event handler.
 var onImageLoaded = function(event){
   console.log("Image loaded!!");
 }
+clip.addEventListener("imageLoaded", onImageLoaded);
 ```
 Load the image.
 ```jsx
-var clip.addEventListener(canvatte.IMAGE_LOADED, onImageLoaded);
+clip.loadImage("imageLoaded", onImageLoaded);
 ```
 ### Capturing image from the page
 Get the reference of the img, canvas, or video. Add a clip into the Canvate.<br>
