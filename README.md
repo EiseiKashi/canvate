@@ -1,5 +1,5 @@
 # CANVATE.JS
-Javascript library to manipulate interactive Images and Sprite Sheet, using only one cantas tag.
+Javascript library to manipulate interactive Images and Sprite Sheet, using only one canvas tag.
 Canvate.JS let use:
 Buttons with irregular shapes
 Masking
