@@ -54,8 +54,8 @@ At anytime the image of the clip can be set.
 clip.setImage(image);
 ```
 
-### Clip transformation
-The list of the property transformation.
+### Clip visual properties
+The list of the visual properties.
 
 | Property | Description |
 | ------------- | ------------- |
@@ -63,3 +63,10 @@ The list of the property transformation.
 | **```height```** | Specifies the height of a Clip, in pixels.  |
 | **```x```** | Specifies the x position of a Clip, in pixels related to his parent.  |
 | **```y```** | Specifies the y position of a Clip, in pixels related to his parent.  |
+| **```scaleX```** | Specifies the scale X. Default value is 1. For instance: the half is 0.5, the double is 2.  |
+| **```scaleY```** | Specifies the scale Y. Default value is 1. For instance: the half is 0.5, the double is 2.  |
+| **```rotation```** | Specifies the angle of rotation in degrees.  |
+| **```pivotX```** | A related x point based on the clip width. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip.|
+| **```pivotY```** | A related x point based on the clip height. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip.|
+| **```alpha```** | Specifies the transparency. Values between 0 and 1.  |
+| **```visible```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
