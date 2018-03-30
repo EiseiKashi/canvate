@@ -56,3 +56,7 @@ clip.setImage(image);
 
 ### Clip transformation
 The properties that can be changed are:
+| Property | Description |
+| --- | --- |
+| `width` | List all *new or modified* files |
+| `height` | Show file differences that **haven't been** staged |
