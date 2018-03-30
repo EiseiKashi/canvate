@@ -40,12 +40,13 @@ clip.loadImage("imageLoaded", onImageLoaded);
 ```
 ### Capturing image from the page
 Get the reference of the img, canvas, or video. Add a clip into the Canvate.<br>
-
-```jsx
-var image = document.getElementById("MY_IMAGE");
-var clip  = myCanvate.addNewClip();
-```
 And set the image to the clip.
 ```jsx
+var image     = document.getElementById("MY_IMAGE");
+
+var myCanvas  = document.getElementById("myCanvasId");
+var myCanvate = new Canvate(myCanvas);
+
+var clip      = myCanvate.addNewClip();
 clip.setImage(image);
 ```
