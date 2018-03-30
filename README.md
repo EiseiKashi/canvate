@@ -54,19 +54,30 @@ At anytime the image of the clip can be set.
 clip.setImage(image);
 ```
 
-### Clip visual properties
-The list of the visual properties.
+### Clip properties
 
 | Property | Description |
 | ------------- | ------------- |
+| **```name```** | And Striing that specifies the name of the clip. By default it takes the read only property: ```id```|
 | **```width```** | Specifies the width of a Clip, in pixels.  |
 | **```height```** | Specifies the height of a Clip, in pixels.  |
-| **```x```** | Specifies the x position of a Clip, in pixels related to his parent.  |
-| **```y```** | Specifies the y position of a Clip, in pixels related to his parent.  |
-| **```scaleX```** | Specifies the scale X. Default value is 1. For instance: the half is 0.5, the double is 2.  |
-| **```scaleY```** | Specifies the scale Y. Default value is 1. For instance: the half is 0.5, the double is 2.  |
-| **```rotation```** | Specifies the angle of rotation in degrees.  |
-| **```pivotX```** | A related x point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip. |
-| **```pivotY```** | A related y point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip. |
-| **```alpha```** | Specifies the transparency. Values between 0 and 1.  |
+| **```x```** | Number in pixels that specifies the x position of a Clip, related to his parent.  |
+| **```y```** | Number in pixels that specifies the y position of a Clip, related to his parent.  |
+| **```scaleX```** | Specifies the scale X. Default value is 1.  Values between 0 and 1 represent values from 0 to 100%.  |
+| **```scaleY```** | Specifies the scale Y. Default value is 1.  Values between 0 and 1 represent values from 0 to 100%.  |
+| **```rotation```** | Number that specifies the angle of rotation in degrees.  |
+| **```pivotX```** | A related x point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 1 is the bottom right of the Clip. |
+| **```pivotY```** | A related y point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 1 is the bottom right of the Clip. |
+| **```alpha```** | Number that specifies the transparency. Values between 0 and 1 represent values from 0 to 100%.  |
 | **```visible```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
+| **```isLoop ```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
+
+        this.isLoop        = false;
+        this.background    = null;
+        this.text;
+        this.interline     = 1.313;
+        this.fontSize      = 12;
+        this.font          = "sans-serif";
+        this.textAlign     = "start"; // end | center | left | right
+        this.textBaseline  = "top";//bottom | middle
+        this.fontColor     = "black";
