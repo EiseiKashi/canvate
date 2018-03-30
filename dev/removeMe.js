@@ -1,304 +1,8 @@
-window.Canvate = function(element) {
-    'use strict';
-    window.check = true;
-    var lastTime = 0;
-    var vendors  = ['ms', 'moz', 'webkit', 'o'];
-    
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame  = window[vendors[x]+'CancelAnimationFrame'] 
-                                     || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
-    
-    if (!window.requestAnimationFrame){
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime   = Date.now();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id         = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
-            lastTime       = currTime + timeToCall;
-            return id;
-        };
-    }
-    
-    if (!window.cancelAnimationFrame){
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        }
-    }
-
-    var Emitter = function(target){
-        'use strict';
-        
-        var _click   = 0;
-        var _over    = 0;
-        var _out     = 0;
-        var _down    = 0;
-        var _up      = 0;
-        var _hasMouse= false;
-        
-        var CONTEXT  = 0;
-        var LISTENER = 1;
-        var _target  = target;
-        
-        var _listenerTypes = {};
-        var _listenerList;
-        
-        var listener;
-        
-        this.addEventListener = function(type, listener, context){
-            if(null == type || type == "" || typeof listener !== "function" ){
-                return;
-            }
-            _listenerList = _listenerTypes[type];
-            if(null == _listenerList){
-                _listenerList = _listenerTypes[type] = [];
-            }
-            
-            var length = _listenerList.length;
-            for(var index=0; index < length; index++){
-                if(listener[LISTENER] == listener && 
-                   listener[CONTEXT]  == context){
-                    return;
-                }
-            }
-            _listenerTypes[type].push([context, listener]);
-            switch(type){
-                case "click" : 
-                    _click++;
-                    break;
-                case "over" : 
-                    _over++;
-                    break;
-                case "out" : 
-                    _out++;
-                    break;
-                case "down" : 
-                    _down++;
-                    break;
-                case "up" : 
-                    _up++;
-                    break;
-            }
-            _hasMouse = _click + _over + _out + _down + _up > 0;
-            return true;
-        }
-        
-        this.removeEventListener = function(type, listener, context){
-            if(null == type || type == "" || typeof listener !== "function" ){
-                return;
-            }
-            
-            _listenerList = _listenerTypes[type];
-            if(null == _listenerList){
-                return
-            }
-            
-            var length = _listenerList.length;
-            for(var index=0; index < length; index++){
-                listener = _listenerList[index];
-                if(listener[LISTENER] == listener && 
-                   listener[CONTEXT]  == context){
-                    _listenerTypes[type].splice(index, 1);
-                    switch(type){
-                        case "click" : 
-                            _click--;
-                            break;
-                        case "over" : 
-                            _over--;
-                            break;
-                        case "out" : 
-                            _out--;
-                            break;
-                        case "down" : 
-                            _down--;
-                            break;
-                        case "up" : 
-                            _up--;
-                            break;
-                    }
-                    _hasMouse = _click + _over + _out + _down + _up > 0;
-                    return true;
-                }
-            }
-        }
-        
-        this.emit = function(type, data){
-            if(null == type || type == ""){
-                return;
-            }
-            _listenerList = _listenerTypes[type];
-            if(null == _listenerList){
-                return
-            }
-            
-            data.type   = type;
-            data.target = _target;
-            var length  = _listenerList.length;
-            for(var index=0; index < length; index++){
-                listener = _listenerList[index];
-            listener[LISTENER].apply(listener[CONTEXT], [data]);
-            }
-        }
-        
-        this.hasMouse = function(){
-            return _hasMouse;
-        }
-    }
-    
-    var calculateBounds = function(theta, xx, yy, pivotX,pivotY, wwidth,hheight){
-        'use strict';
-        
-        var pivotXX;var pivotYY;var minX;var minY;var maxX;var maxY;var cos;
-        var sin;var pxc;var pys;var pxs;var pyc;var pxw;var pyh;var pwc;var pws;
-        var phs;var phc;var x1;var y1;var x2;var y2;var x3;var y3;var x4;var y4;
-        
-        pivotXX = pivotX - xx;
-        pivotYY = pivotY - yy; 
-        cos = Math.cos(theta);
-        sin = Math.sin(theta);
-        pxc = pivotX * cos;
-        pys = pivotY * sin;
-        pxs = pivotX * sin;
-        pyc = pivotY * cos;
-        pxw = pivotX + wwidth;
-        pyh = pivotY + hheight;
-        pwc = pxw    * cos;
-        pws = pxw    * sin;
-        phs = pyh    * sin;
-        phc = pyh    * cos;
-        x1  = pxc    - pys + xx;
-        y1  = pxs    + pyc + yy;
-        x2  = pwc    - pys + xx;
-        y2  = pws    + pyc + yy;
-        x3  = pwc    - phs + xx;
-        y3  = pws    + phc + yy;
-        x4  = pxc    - phs + xx;
-        y4  = pxs    + phc + yy;
-        
-        minX = Math.min(Math.min(x1, x2), Math.min(x3, x4));
-        minY = Math.min(Math.min(y1, y2), Math.min(y3, y4));
-        
-        maxX = Math.max(Math.max(x1, x2), Math.max(x3, x4));
-        maxY = Math.max(Math.max(y1, y2), Math.max(y3, y4));
-        
-        return { minX   : minX        ,minY    : minY, 
-                 maxX   : maxX        ,maxY    : maxY, 
-                 width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
-    }
-    
-    var clipCounter  = 0;
-    var _parentClip  = {};
-    var _allClipList = {};
-    var _markToEmmit;
-    var _maskClip    = {};
-    var _maskTypes   = {
-                           mask  : 'destination-in'
-                          ,slice : 'destination-out'
-                        // source-over     : default
-                        // source-in       : renders source only in the intersections
-                        // source-out      : renders source only in the non intersections
-                        
-                        // source-atop     : renders the base and the interseccion with source
-                        
-                        // destination-in  : renders base only in the intersections
-                        // destination-out : renders base only in the non intersection
-                        
-                        // xor             : erases only intersection
-                       }
-    
-    // ::: CLIP ::: //
-    var Clip = function (image){
-        ("VERSION 0.0.89")
-        
-        'use strict';
-        
-        var _self          = this;
-                           
-        this.TEXT_SET      = "textSet";
-        this.IMAGE_SET     = "imageSet";
-        this.IMAGE_LOADED  = "imageLoaded";
-        this.IMAGE_ERROR   = "imageError";
-        this.CLIP_ADDED    = "clipAdded";
-        this.CLIP_REMOVED  = "clipRemoved";
-        this.FRAME_UPDATE  = "frameUpdate";
-        this.RENDER        = "render";
-        
-        clipCounter++;
-        var _id            = "clip" + clipCounter;
-        _allClipList[_id]  = this;
-        
-        this.name          = _id;
-        this.x             = 0;
-        this.y             = 0;
-        this.width         = 0;
-        this.height        = 0;
-        this.alpha         = 1;
-        this.scaleX        = 1;
-        this.scaleY        = 1;
-        this.rotation      = 0;
-        this.pivotX        = 0;
-        this.pivotY        = 0;
-        this.visible       = true;
-        this.isLoop        = false;
-        this.background    = null;
-        this.text;
-        this.interline     = 1.313;
-        this.fontSize      = 12;
-        this.font          = "sans-serif";
-        this.textAlign     = "start"; // end | center | left | right
-        this.textBaseline  = "top";//bottom | middle
-        this.fontColor     = "black";
-        
-        //TODO  image
-        var _image;
-        var _canvas;
-        var _context;
-        var _increment     = 0;
-        var _frameIndex    = 0;
-        var _frameRate     = 60;
-        var _totalFrames   = 1;
-        var _cropX         = 0;
-        var _cropY         = 0;
-        var _cropWidth     = 0;
-        var _cropHeight    = 0;
-        var _emitter       = new Emitter(this);
-        var _innerCanvas   = document.createElement("canvas");
-        var _innerContext  = _innerCanvas.getContext('2d');
-        var _clipList      = [];
-        var _framesList    = [];
-        var _initialWidth  = null;
-        var _initialHeight = null;
-        var _canvasWidth;
-        var _canvasHeight;
-        var _mask;
-        var _clipMouse;
-        var _lineHeight;
-        var _hasMouse;
-        var _fromIndexFrame;
-        var _endIndex;
-        var _currentFrame;
-        var _lastTime;
-        var _lastAction
-        
-        // HELPERS VARIABLES
-        var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
-        var indexSetCycle;var gapX;var gapY;var tempCanvas;var tempContext;
-        var lastWidth;var indexFrame;var fromIndexFrame;var untilIndexFrame;
-        var indexRender;var cropDataRender;var nowRender;var xRender;var yRender;
-        var widthRender;var heightRender;var cropXrender;var cropYrender;var bounds;
-        var cropWidthRender;var cropHeightRender;var pivotXrender;var pivotYrender;
-        var alphaRender;var canvasRender;var clipRender;var rotationRender;
-        var scaleXrender;var scaleYrender; var clipData;
-        
-        // GETTERS
-
-        //Returns the first occurence of a Clip with the same property and value.
-        this.getClipByProp = function (propName, value){
+this.getClipByProp = function (propName, value){
             var list = getClipListByProp(propName, value);
             return list[0];
         }
 
-        //Returns a list of Clip with the same property and value.
         this.getClipListByProp = function (propName, value){
             var length = _clipList.length;
             var clip;
@@ -311,47 +15,7 @@ window.Canvate = function(element) {
             }
             return list;
         }
-        
-        // Returns the id
-        this.getId  = function(){
-            return _id;
-        }
-        
-        // Returns the totalFrames
-        this.getTotalFrames = function(){
-            return _totalFrames;
-        }
-        
-        // Returns the parent
-        this.getParent = function (){
-            return _parentClip[_id];
-        }
-        
-        // Returns if is a mask
-        this.isMask = function(){
-            return _maskClip[_id];
-        }
-        
-        // Returns if has button event handler
-        this.hasButton = function(){
-            return _hasButton;
-        }
-        
-        this.getCurrentFrame = function(){
-            return _currentFrame;
-        }
-        
-        this.setFrameRate = function(frameRate){
-            if(null == frameRate || isNaN(frameRate)){
-                //Early return
-                return;
-            }
-            _frameRate = frameRate;
-        }
-        
-        this.getFrameRate = function(){
-            return _frameRate;
-        }
+ 
         
         // Sets the same pivot X and Y
         this.setPivotXY = function(x, y){
@@ -376,20 +40,7 @@ window.Canvate = function(element) {
             }
         }
         
-        // Sets the same scale X and Y
-        this.setScaleXY = function(x, y){
-            var isNum
-            isNum = !(x == null || isNaN(x));
-            if(isNum){
-                this.scaleX = x;
-            }
-            
-            isNum = !(y== null || isNaN(y));
-            if(isNum){
-                this.scaleY = y;
-            }
-        }
-
+        
         // Sets the same scale X and Y
         this.setScale = function(num){
             var isNum = !(num == null || isNaN(num));
@@ -400,28 +51,20 @@ window.Canvate = function(element) {
             this.scaleX = this.scaleY = num;
         }
         
-        this.setPositionXY = function(x, y){
-            var isNum
-            isNum = !(x == null || isNaN(x));
-            if(isNum){
-                this.x = x;
-            }
-            
-            isNum = !(y== null || isNaN(y));
-            if(isNum){
-                this.y = y;
-            }
-        }
-
         // Sets the same position X and Y
-        this.setPosition = function(num){
-            var isNum = !(num == null || isNaN(num));
+        this.setPosition = function(x, y){
+            var isNum = !(x == null || isNaN(x));
             if(!isNum){
                 return;
             }
-
-            this.x = num;
-            this.y = num;
+            
+            var isNum = !(y == null || isNaN(y));
+            if(!isNum){
+                return;
+            }
+            
+            this.x = x;
+            this.y = y;
         }
         
         // Sets the same size width and height
@@ -814,12 +457,6 @@ window.Canvate = function(element) {
             this.setDepth(clip, 0);
         }
         
-        // FRAME
-        var _playUntil = function (index){
-            _increment = _frameIndex >= index ? -1 : 1;
-            _endIndex  = index;
-        }
-        
         var getIndexByFrame = function(frame){
             if(isNaN(frame)){
                 throw new Error("The frame must be a integer and is: " + frame);
@@ -953,41 +590,6 @@ window.Canvate = function(element) {
             }
             _maskClip[_mask.id()] = null;
             _mask = null;
-        }
-        
-        var wrap = function(text, limit, yText) {
-          if (text.length > limit) {
-            var e1 = text.slice(0, limit).lastIndexOf(' ');
-            var e2 = text.slice(0, limit).lastIndexOf('-');
-            var edge = Math.max(e1, e2);
-            if (edge > 0) {
-              var line      = text.slice(0, edge + (e2==edge?1:0));
-              var remainder = text.slice(edge + 1);
-              _innerContext.fillText(line, 0, yText);
-              yText += _lineHeight;
-              wrap(remainder, limit, yText);
-              return;
-            }else{
-                var e1 = text.indexOf('-');
-                var e2 = text.indexOf(' ');
-                var edge;
-                if(e1 == -1 || e2 == -1){
-                    edge = (Math.max(e1, e2));
-                }else{
-                    edge = (Math.min(e1, e2));
-                }
-                if(edge > 0){
-                    var line      = text.slice(0, edge + (e2==edge?0:1));
-                    var remainder = text.slice(edge + 1);
-                    _innerContext.fillText(line, 0, yText);
-                    yText += _lineHeight;
-                    wrap(remainder, limit, yText);
-                    return;
-                }
-            }
-          }
-          _innerContext.fillText(text, 0, yText);
-          return text;
         }
 
         // EVENT HANDLING
@@ -1302,155 +904,3 @@ window.Canvate = function(element) {
         // SET THE INITIAL IMAGE
         this.setImage(image);
     }
-    
-    // ::: PROPERTIES MEMBER ::: //
-    var _mainCanvas = element;
-    var _context    = _mainCanvas.getContext("2d");
-    var hovering    = function(){};
-    var _mainCanvasOff;
-    var _mainContextOff;
-    var _lastX;
-    var _lastY;
-    var _mouseX;
-    var _mouseY;
-    var _bounds;
-    var _lastClipOvered;
-    var _clipMouse;
-    var _stage;
-    var mouseCursor;
-    
-    var canvasUpdate;
-    var canvasData;
-    var clipMouse;
-    
-    // ::: BUTTON ::: //
-    var resolveOver = function(){
-        
-        if(undefined == _lastX || undefined == _lastY){
-            return;
-        }
-        
-        mouseCursor = "default";
-        if(Boolean(_clipMouse) && _clipMouse.hasMouse()){
-            mouseCursor = "pointer";
-           
-            if(_clipMouse != _lastClipOvered){
-                resolveOut();
-                _lastClipOvered = _clipMouse;
-
-                _markToEmmit = _clipMouse;
-                _clipMouse.emitMouseEvent("over");
-                _markToEmmit = null;
-             }
-             
-        }else {
-            resolveOut();
-        }
-        _mainCanvas.style.cursor = mouseCursor;
-    }
-    
-    var resolveOut = function(isLeave){
-        if(Boolean(_lastClipOvered) && _lastClipOvered.hasMouse()){
-            _markToEmmit = _lastClipOvered;
-            _lastClipOvered.emitMouseEvent("out", _lastX, _lastY);
-            if(isLeave){
-                _lastClipOvered.emitMouseEvent("up", _lastX, _lastY);
-            }
-            _lastClipOvered = null;
-            _clipMouse      = null;
-            _markToEmmit    = null;
-        }
-    }
-    
-    // ::: RENDER ::: //
-    var update = function (){
-        _clipMouse            = null;
-        _mainCanvas.width     = _stage.width;
-        _mainCanvas.height    = _stage.height;
-        _mainCanvasOff.width  = _stage.width;
-        _mainCanvasOff.height = _stage.height;
-       //                                      canvasWidth, canvasHeight, mouseX, mouseY, asMask
-        canvasData   = _stage.render(_mainCanvas.width, _mainCanvas.height, _lastX, _lastY, false);
-        canvasUpdate = canvasData.inner;
-
-        if(Boolean(canvasUpdate)){
-            
-            _context.drawImage(canvasUpdate, canvasData.x, canvasData.y);
-            clipMouse = canvasData.clipMouse;
-            if(null != clipMouse){
-                _clipMouse = clipMouse;
-            }
-        }
-        hovering();
-       // _context.drawImage(_mainCanvasOff, 0, 0);
-        requestAnimationFrame(update);
-    }
-    
-     // ::: INITIALIZATION ::: //
-    var initialize = function() {
-        _mainCanvas.width     = _mainCanvas.width;
-        _mainCanvas.height    = _mainCanvas.height;
-        
-        _mainCanvasOff        = _mainCanvas.cloneNode();
-        _mainContextOff       = _mainCanvasOff.getContext('2d');
-        _mainCanvasOff.width  = _mainCanvas.width;
-        _mainCanvasOff.height = _mainCanvas.height;
-        
-        _stage = new Clip();
-        _stage.name = "stage";
-        _stage.setImage(_mainCanvas);
-        
-        _mainCanvas.onmousemove = function(event) {
-            event.preventDefault();
-            _bounds = _mainCanvas.getBoundingClientRect();
-            _mouseX = event.clientX;
-            _mouseY = event.clientY;
-            _lastX  = (_mouseX - _bounds.left) * (_mainCanvas.width/_bounds.width);
-            _lastY  = (_mouseY - _bounds.top) * (_mainCanvas.width/_bounds.width);
-            hovering = resolveOver;
-        };
-        
-        _mainCanvas.onclick = function(event){
-            event.preventDefault();
-            if(Boolean(_clipMouse) && _clipMouse.hasMouse()){
-                _markToEmmit = _clipMouse;
-                _clipMouse.emitMouseEvent("click", _lastX, _lastY);
-                _markToEmmit = null;
-            }
-        };
-        
-        _mainCanvas.onmousedown = function(event){
-            event.preventDefault();
-            if(Boolean(_clipMouse)&& _clipMouse.hasMouse()){
-                _markToEmmit = _clipMouse;
-                _clipMouse.emitMouseEvent("down", _lastX, _lastY);
-                _markToEmmit = null;
-            }
-        };
-        
-        _mainCanvas.onmouseup = function(event){
-            event.preventDefault();
-            if(Boolean(_clipMouse)&& _clipMouse.hasMouse()){
-                _markToEmmit = _clipMouse;
-                _clipMouse.emitMouseEvent("up", _lastX, _lastY);
-                _markToEmmit = null;
-            }
-        };
-        
-        window.onmouseleave = function(event){
-            console.log("WINDOW LEFT!!");
-        };
-        
-        document.onmouseleave = _mainCanvas.onmouseleave = function(event){
-            resolveOut(true);
-            hovering = function(){};
-        };
-        
-        var _mainEmitter = new Emitter(_mainCanvas);
-        
-        update();
-    }
-    
-    initialize();
-    return _stage;
- };
