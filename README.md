@@ -40,13 +40,16 @@ clip.loadImage("img/sakura.png");
 ```
 ### Capturing image from the page
 Get the reference of the img, canvas, or video. Add a clip into the Canvate.<br>
-And set the image to the clip.
+And set the image to the clip when is created.
 ```jsx
 var image     = document.getElementById("MY_IMAGE");
 
 var myCanvas  = document.getElementById("myCanvasId");
 var myCanvate = new Canvate(myCanvas);
 
-var clip      = myCanvate.addNewClip();
+var clip      = myCanvate.addNewClip(image);
+```
+At anytime the image of the clip can be set if is needed.
+```jsx
 clip.setImage(image);
 ```
