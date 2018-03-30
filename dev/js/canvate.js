@@ -1,4 +1,5 @@
 window.Canvate = function(element) {
+    'use strict';
     window.check = true;
     var lastTime = 0;
     var vendors  = ['ms', 'moz', 'webkit', 'o'];
@@ -26,6 +27,8 @@ window.Canvate = function(element) {
     }
 
     var Emitter = function(target){
+        'use strict';
+        
         var _click   = 0;
         var _over    = 0;
         var _out     = 0;
@@ -143,6 +146,8 @@ window.Canvate = function(element) {
     }
     
     var calculateBounds = function(theta, xx, yy, pivotX,pivotY, wwidth,hheight){
+        'use strict';
+        
         var pivotXX;var pivotYY;var minX;var minY;var maxX;var maxY;var cos;
         var sin;var pxc;var pys;var pxs;var pyc;var pxw;var pyh;var pwc;var pws;
         var phs;var phc;var x1;var y1;var x2;var y2;var x3;var y3;var x4;var y4;
@@ -205,40 +210,34 @@ window.Canvate = function(element) {
     var Clip = function (image){
         ("VERSION 0.0.89")
         
-        this.TEXT_SET     = "textSet";
-        this.IMAGE_SET    = "imageSet";
-        this.IMAGE_LOADED = "imageLoaded";
-        this.IMAGE_ERROR  = "imageError";
-        this.CLIP_ADDED   = "clipAdded";
-        this.CLIP_REMOVED = "clipRemoved";
-        this.FRAME_UPDATE = "frameUpdate";
-        this.RENDER       = "render";
+        'use strict';
+        
+        var _self          = this;
+                           
+        this.TEXT_SET      = "textSet";
+        this.IMAGE_SET     = "imageSet";
+        this.IMAGE_LOADED  = "imageLoaded";
+        this.IMAGE_ERROR   = "imageError";
+        this.CLIP_ADDED    = "clipAdded";
+        this.CLIP_REMOVED  = "clipRemoved";
+        this.FRAME_UPDATE  = "frameUpdate";
+        this.RENDER        = "render";
         
         clipCounter++;
         var _id            = "clip" + clipCounter;
         _allClipList[_id]  = this;
+        
         this.name          = _id;
-        this.canvas;
-        this.image         = new Image();
-        this.image.crossOrigin = "Anonymous";
         this.x             = 0;
         this.y             = 0;
         this.width         = 0;
         this.height        = 0;
-        this.cropX         = 0;
-        this.cropY         = 0;
-        this.cropWidth     = 0;
-        this.cropHeight    = 0;
         this.alpha         = 1;
         this.scaleX        = 1;
         this.scaleY        = 1;
         this.rotation      = 0;
         this.pivotX        = 0;
         this.pivotY        = 0;
-        this.frameIndex    = 0;
-        this.totalFrames   = 1;
-        this.frameRate     = 60;
-        this.increment     = 0;
         this.visible       = true;
         this.isLoop        = false;
         this.background    = null;
@@ -250,7 +249,18 @@ window.Canvate = function(element) {
         this.textBaseline  = "top";//bottom | middle
         this.fontColor     = "black";
         
-        var _self          = this;
+        //TODO  image
+        var _image;
+        var _canvas;
+        var _context;
+        var _increment     = 0;
+        var _frameIndex    = 0;
+        var _frameRate     = 60;
+        var _totalFrames   = 1;
+        var _cropX         = 0;
+        var _cropY         = 0;
+        var _cropWidth     = 0;
+        var _cropHeight    = 0;
         var _emitter       = new Emitter(this);
         var _innerCanvas   = document.createElement("canvas");
         var _innerContext  = _innerCanvas.getContext('2d');
@@ -265,6 +275,10 @@ window.Canvate = function(element) {
         var _lineHeight;
         var _hasMouse;
         var _fromIndexFrame;
+        var _endIndex;
+        var _currentFrame;
+        var _lastTime;
+        var _lastAction
         
         // HELPERS VARIABLES
         var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
@@ -274,7 +288,7 @@ window.Canvate = function(element) {
         var widthRender;var heightRender;var cropXrender;var cropYrender;var bounds;
         var cropWidthRender;var cropHeightRender;var pivotXrender;var pivotYrender;
         var alphaRender;var canvasRender;var clipRender;var rotationRender;
-        var scaleXrender;var scaleYrender;
+        var scaleXrender;var scaleYrender; var clipData;
         
         // GETTERS
 
@@ -303,6 +317,11 @@ window.Canvate = function(element) {
             return _id;
         }
         
+        // Returns the totalFrames
+        this.getTotalFrames = function(){
+            return _totalFrames;
+        }
+        
         // Returns the parent
         this.parent = function (){
             return _parentClip[_id];
@@ -316,6 +335,22 @@ window.Canvate = function(element) {
         // Returns if has button event handler
         this.hasButton = function(){
             return _hasButton;
+        }
+        
+        this.getCurrentFrame = function(){
+            return _currentFrame;
+        }
+        
+        this.setFrameRate = function(frameRate){
+            if(null == frameRate || isNaN(frameRate)){
+                //Early return
+                return;
+            }
+            _frameRate = frameRate;
+        }
+        
+        this.getFrameRate = function(){
+            return _frameRate;
         }
         
         // Sets the same pivot X and Y
@@ -365,7 +400,7 @@ window.Canvate = function(element) {
             
             if(null != _initialWidth || null != _initialHeight){
                 if(width == "auto"){
-                    width  = (this.height / _initialHeight) * _initialWidth;
+                    width  = (height / _initialHeight) * _initialWidth;
                 }
                 
                 if(height == "auto"){
@@ -436,78 +471,76 @@ window.Canvate = function(element) {
                 return;
             }
             
-            this.image         = image;
-            this.image.crossOrigin = "Anonymous";
+            _image         = image;
+            _image.crossOrigin = "Anonymous";
             _initialWidth      = image.width;
             _initialHeight     = image.height;
-            this.canvas        = document.createElement('canvas');
-            this.canvas.width  = _initialWidth;
-            this.canvas.height = _initialHeight;
-            var imageContext   = this.canvas.getContext('2d');
-            imageContext.drawImage(image, 0, 0, _initialWidth, _initialHeight);
+            _canvas        = document.createElement('canvas');
+            _canvas.width  = _initialWidth;
+            _canvas.height = _initialHeight;
+            _context       = _canvas.getContext('2d');
+            _context.drawImage(image, 0, 0, _initialWidth, _initialHeight);
             
             this.setSize(width ==undefined?this.width :width, 
                          height==undefined?this.height:height);
             
-            this.width      = null == this.width      || 0 == this.width      ? _initialWidth  : this.width;
-            this.height     = null == this.height     || 0 == this.height     ? _initialHeight : this.height;
-            this.cropWidth  = null == this.cropWidth  || 0 == this.cropWidth  ? _initialWidth  : this.cropWidth;
-            this.cropHeight = null == this.cropHeight || 0 == this.cropHeight ? _initialHeight : this.cropHeight;
+            this.width  = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
+            this.height = null == this.height || 0 == this.height ? _initialHeight : this.height;
+            _cropWidth  = null == _cropWidth  || 0 == _cropWidth  ? _initialWidth  : _cropWidth;
+            _cropHeight = null == _cropHeight || 0 == _cropHeight ? _initialHeight : _cropHeight;
             
-            this.setCycle(this.cropX, this.cropY, this.cropWidth, this.cropHeight);
+            this.setCycle(_cropX, _cropY, _cropWidth, _cropHeight);
             emit(_self.IMAGE_SET, {image:image})
         }
         
         // Sets the Cycle animation
         this.setCycle = function(x, y, width, height, totalFrames, gapX, gapY){
-            tileXsetCycle  = this.cropX      = null == x      || isNaN(x)      ? this.cropX      : x;
-            tileYsetCycle  = this.cropY      = null == y      || isNaN(y)      ? this.cropY      : y;
-            widthSetCycle  = this.cropWidth  = null == width  || isNaN(width)  ? this.cropWidth  : width;
-            heightSetCycle = this.cropHeight = null == height || isNaN(height) ? this.cropHeight : height;
+            tileXsetCycle  = _cropX      = null == x      || isNaN(x)      ? _cropX      : x;
+            tileYsetCycle  = _cropY      = null == y      || isNaN(y)      ? _cropY      : y;
+            widthSetCycle  = _cropWidth  = null == width  || isNaN(width)  ? _cropWidth  : width;
+            heightSetCycle = _cropHeight = null == height || isNaN(height) ? _cropHeight : height;
             
             gapX = null == gapX || isNaN(gapX) ? 0 : gapX;
             gapY = null == gapY || isNaN(gapY) ? 0 : gapY;
             
             if(null == totalFrames || isNaN(totalFrames)){
-                var totalWidth  = Math.floor(this.image.width/widthSetCycle);
-                var totalHeight = Math.floor(this.image.height/heightSetCycle);
-                totalFrames     = this.totalFrames = totalWidth * totalHeight;
+                var totalWidth  = Math.floor(_image.width/widthSetCycle);
+                var totalHeight = Math.floor(_image.height/heightSetCycle);
+                totalFrames     = _totalFrames = totalWidth * totalHeight;
             }
             
-            if(this.totalFrames == 0){
-                this.totalFrames = 1;
+            if(_totalFrames == 0){
+                _totalFrames = 1;
             }
             
-            canvas        = document.createElement('canvas');
-            canvas.width  = widthSetCycle*this.totalFrames;
-            canvas.height = heightSetCycle;
-            context       = canvas.getContext('2d');
-            this.canvas   = canvas;
-            this.context  = context;
+            _canvas        = document.createElement('canvas');
+            _canvas.width  = widthSetCycle*_totalFrames;
+            _canvas.height = heightSetCycle;
+            _context       = _canvas.getContext('2d');
             
             _framesList.length = 0;
             var rowX;
-            for(indexSetCycle=0; indexSetCycle < this.totalFrames; indexSetCycle++){
+            for(indexSetCycle=0; indexSetCycle < _totalFrames; indexSetCycle++){
                 rowX = widthSetCycle*indexSetCycle;
                 
                 _framesList.push({
-                                        x      : rowX,
-                                        y      : 0,
-                                        width  : widthSetCycle,
-                                        height : heightSetCycle
-                                    });
+                                    x      : rowX,
+                                    y      : 0,
+                                    width  : widthSetCycle,
+                                    height : heightSetCycle
+                                });
                 
-                context.drawImage(this.image, 
-                                  tileXsetCycle, tileYsetCycle, 
-                                  widthSetCycle, heightSetCycle, 
-                                  rowX, 0, 
-                                  widthSetCycle, heightSetCycle);
+                _context.drawImage(_image, 
+                                   tileXsetCycle, tileYsetCycle, 
+                                   widthSetCycle, heightSetCycle, 
+                                   rowX, 0, 
+                                   widthSetCycle, heightSetCycle);
                 
                 tileXsetCycle += widthSetCycle;
                 if(tileXsetCycle >= _initialWidth){
                     tileXsetCycle = 0;
                     tileYsetCycle += heightSetCycle;
-                    if(this.cropY > _initialHeight){
+                    if(_cropY > _initialHeight){
                         throw new Error("The total frames is out of bound");
                     }
                 }
@@ -534,10 +567,10 @@ window.Canvate = function(element) {
                 return;
             }
             
-            _self.width        = null;
-            _self.height       = null;
-            _self.cropWidth    = null;
-            _self.cropHeight   = null;
+            _self.width   = null;
+            _self.height  = null;
+            _cropWidth    = null;
+            _cropHeight   = null;
             
             var canvas            = document.createElement("canvas");
                 canvas.width      = width;
@@ -557,7 +590,7 @@ window.Canvate = function(element) {
         // IMAGE
         //Load image from URL
         this.loadImage = function(url, width, height){
-            this.canvas = null;
+            _canvas = null;
             _initialWidth   = null;
             _initialHeight  = null;
             
@@ -575,35 +608,24 @@ window.Canvate = function(element) {
                 image.crossOrigin = "Anonymous";
         }
         
-        // Crop the Clip
+        //Crop
         this.crop = function(x, y, width, height){
-            var x       = null == x      ? this.cropX      : x;
-            var y       = null == y      ? this.cropY      : y;
-            var width   = null == width  ? this.cropWidth  : width;
-            var height  = null == height ? this.cropHeight : height;
-            this.width  = width;
-            this.height = height;
-            this.setCycle(x, y, width, height);
-        }
-
-        //Sets the rect
-        this.crop = function(x, y, width, height){
-            var x       = null == x      ? this.cropX      : x;
-            var y       = null == y      ? this.cropY      : y;
-            var width   = null == width  ? this.cropWidth  : width;
-            var height  = null == height ? this.cropHeight : height;
+            var x       = null == x      ? _cropX      : x;
+            var y       = null == y      ? _cropY      : y;
+            var width   = null == width  ? _cropWidth  : width;
+            var height  = null == height ? _cropHeight : height;
             
-            _self.width        = null;
-            _self.height       = null;
-            _self.cropWidth    = null;
-            _self.cropHeight   = null;
+            _self.width   = null;
+            _self.height  = null;
+            _cropWidth    = null;
+            _cropHeight   = null;
             
             var canvas            = document.createElement("canvas");
                 canvas.width      = width;
                 canvas.height     = height;
            
             var context           = canvas.getContext("2d");
-                context.drawImage(_self.image, x, y, width, height, 0, 0, width, height);
+                context.drawImage(_image, x, y, width, height, 0, 0, width, height);
             
             
             var img               = document.createElement("img");
@@ -711,7 +733,7 @@ window.Canvate = function(element) {
             }
         }
         
-        // Interchange the depth fo 2 Clips
+        // Interchange the depth of 2 Clips
         this.swapClips = function (clip1, clip2){
             if(null == clip1 || null == clip2){
                 return;
@@ -756,8 +778,8 @@ window.Canvate = function(element) {
         
         // FRAME
         var _playUntil = function (index){
-            _self.increment = _self.frameIndex >= index ? -1 : 1;
-            _self.endIndex  = index;
+            _increment = _frameIndex >= index ? -1 : 1;
+            _endIndex  = index;
         }
         
         var getIndexByFrame = function(frame){
@@ -773,102 +795,102 @@ window.Canvate = function(element) {
         
         // Play a cycle
         this.play = function(){
-            _self.lastTime   = Date.now();
-            indexFrame       = _framesList.length-1;
-            _self.lastAction = "play";
-            _fromIndexFrame  = 0;
+            _lastTime       = Date.now();
+            indexFrame      = _framesList.length-1;
+            _lastAction     = "play";
+            _fromIndexFrame = 0;
             _playUntil(indexFrame);
         }
         
         // Play a cycle from frame
         this.playFrom = function(frame){
-            _self.lastTime     = Date.now();
-            indexFrame         = getIndexByFrame(frame);
-            _self.currentFrame = indexFrame+1;
-            _self.frameIndex   = indexFrame;
-            _fromIndexFrame    = indexFrame;
-            _self.lastAction   = "playFrom";
+            _lastTime       = Date.now();
+            indexFrame      = getIndexByFrame(frame);
+            _currentFrame   = indexFrame+1;
+            _frameIndex     = indexFrame;
+            _fromIndexFrame = indexFrame;
+            _lastAction = "playFrom";
             _playUntil(_framesList.length-1);
         }
         
         // Play cycle until frame
         this.playUntil = function(frame){
-            _self.lastTime   = Date.now();
-            indexFrame       = getIndexByFrame(frame);
-            _fromIndexFrame  = _self.frameIndex;
-            _self.lastAction = "playUntil";
+            _lastTime       = Date.now();
+            indexFrame      = getIndexByFrame(frame);
+            _fromIndexFrame = _frameIndex;
+            _lastAction     = "playUntil";
             _playUntil(indexFrame);
         }
         
         // Play cycle between frames
         this.playBetween = function(fromFrame, untilFrame){
-            _self.lastTime     = Date.now();
-            fromIndexFrame     = getIndexByFrame(fromFrame);
-            untilIndexFrame    = getIndexByFrame(untilFrame);
-            _self.frameIndex   = fromIndexFrame;
-            _fromIndexFrame    = fromIndexFrame;
-            _self.currentFrame = fromIndexFrame+1;
-            _self.lastAction   = "playBetween";
+            _lastTime       = Date.now();
+            fromIndexFrame  = getIndexByFrame(fromFrame);
+            untilIndexFrame = getIndexByFrame(untilFrame);
+            _frameIndex     = fromIndexFrame;
+            _fromIndexFrame = fromIndexFrame;
+            _currentFrame   = fromIndexFrame+1;
+            _lastAction     = "playBetween";
             _playUntil(untilIndexFrame);
         }
         
         // Stop cycle
         this.stop = function(){
-            _self.lastTime     = Date.now();
-            indexFrame         = _self.frameIndex;
-            _self.currentFrame = indexFrame+1;
-            _self.endIndex     = indexFrame;
-            _self.lastAction   = "stop";
-            _self.currentFrame = null;
-            _self.lastAction   = null;
+            _lastTime     = Date.now();
+            indexFrame    = _frameIndex;
+            _currentFrame = indexFrame+1;
+            _endIndex     = indexFrame;
+            _lastAction   = "stop";
+            _currentFrame = null;
+            _lastAction   = null;
         }
         
         // Stop cycle at specific frame
         this.stopAt = function(frame){
-            _self.lastTime     = Date.now();
-            indexFrame         = getIndexByFrame(frame);
-            _self.currentFrame = indexFrame+1;
-            _self.frameIndex   = Math.max(Math.min(indexFrame, _framesList.length), 0);
-            _self.endIndex     = indexFrame;
-            _self.lastAction   = "stopAt";
-            _self.currentFrame = null;
-            _self.lastAction   = null;
+            _lastTime     = Date.now();
+            indexFrame    = getIndexByFrame(frame);
+            _currentFrame = indexFrame+1;
+            _frameIndex   = Math.max(Math.min(indexFrame, _framesList.length), 0);
+            _endIndex     = indexFrame;
+            _lastAction   = "stopAt";
+            _currentFrame = null;
+            _lastAction   = null;
         }
         
         // Move to the next frame
         this.nextFrame = function(){
-            if(_self.frameIndex >= _framesList.length-1){
+            if(_frameIndex >= _framesList.length-1){
                 if(this.isLoop){
-                    _self.frameIndex = 0;
+                    _frameIndex = 0;
                 }else{
                     // Early return
                     return;
                 }
             }
-            _self.lastTime     = Date.now();
-            indexFrame         = Math.max(Math.min(_self.frameIndex+1, _framesList.length), 0);
-            _self.currentFrame = indexFrame+1;
-            _self.frameIndex   = indexFrame;
-            _self.endIndex     = indexFrame;
-            _self.lastAction   = "nextFrame";
+            _lastTime     = Date.now();
+            indexFrame    = Math.max(Math.min(_frameIndex+1, _framesList.length), 0);
+            _currentFrame = indexFrame+1;
+            _frameIndex   = indexFrame;
+            _endIndex     = indexFrame;
+            _lastAction   = "nextFrame";
         }
         
         // Move to the prev frame
         this.prevFrame = function(){
-            if(_self.frameIndex == 0){
+            if(_frameIndex == 0){
                 if(this.isLoop){
-                    _self.frameIndex = _framesList.length-1;
+                    _frameIndex = _framesList.length-1;
                 }else{
                     // Early return
                     return;
                 }
             }
-            _self.lastTime     = Date.now();
-            indexFrame         = Math.max(Math.min(_self.frameIndex-1, _framesList.length), 0);
-            _self.currentFrame = indexFrame+1;
-            _self.frameIndex   = indexFrame;
-            _self.endIndex     = indexFrame;
-            _self.lastAction   = "prevFrame";
+            _lastTime     = Date.now();
+            indexFrame    = Math.max(Math.min(_frameIndex-1, _framesList.length), 0);
+            _currentFrame = indexFrame+1;
+            _frameIndex   = indexFrame;
+            _endIndex     = indexFrame;
+            _lastAction   = "prevFrame";
         }
         
         // RENDER
@@ -972,17 +994,17 @@ window.Canvate = function(element) {
         this.render = function(canvasWidth, canvasHeight, mouseX, mouseY, asMask, stroke){
             stroke -= 10;
             
-            if((_clipList.length == 0 && null == this.canvas) || false == this.visible || this.isMask() && !asMask){
+            if((_clipList.length == 0 && null == _canvas) || false == this.visible || this.isMask() && !asMask){
                 return {};
             }
             
-            indexRender     = this.frameIndex;
+            indexRender     = _frameIndex;
             cropDataRender  = _framesList[indexRender];
             try{
-                this.cropX      = cropDataRender.x;
-                this.cropY      = cropDataRender.y;
-                this.cropWidth  = cropDataRender.width;
-                this.cropHeight = cropDataRender.height;
+                _cropX      = cropDataRender.x;
+                _cropY      = cropDataRender.y;
+                _cropWidth  = cropDataRender.width;
+                _cropHeight = cropDataRender.height;
             }catch(error){
                 var name = this.name;
                 //debugger
@@ -992,24 +1014,24 @@ window.Canvate = function(element) {
             this.currentFrame = indexRender+1;
             nowRender         = Date.now();
             
-            if((nowRender - this.lastTime) >= 1000/this.frameRate){
+            if((nowRender - this.lastTime) >= 1000/_frameRate){
                 this.lastTime = nowRender;
-                if(this.frameIndex !=  this.endIndex){
-                   this.frameIndex += this.increment;
-                   this.frameIndex = Math.max(0, this.frameIndex);
-                }else if(this.increment != 0){
+                if(_frameIndex !=  this.endIndex){
+                   _frameIndex += _increment;
+                   _frameIndex = Math.max(0, _frameIndex);
+                }else if(_increment != 0){
                     if(this.isLoop){
                         switch(this.lastAction){
                             case "playBetween" :
                             case "playUntil" :
                             case "playFrom" :
-                            this.frameIndex = _fromIndexFrame;
+                            _frameIndex = _fromIndexFrame;
                                 break;
                             case "play" :
-                                this.frameIndex = 0;
+                                _frameIndex = 0;
                         }
                     }else{
-                        this.increment = 0;
+                        _increment = 0;
                     }
                     
                     emit(_self.FRAME_UPDATE, {frame:this.currentFrame, action:this.lastAction})
@@ -1024,10 +1046,10 @@ window.Canvate = function(element) {
             heightRender     = this.height * scaleYrender;
             pivotXrender     = this.pivotX * widthRender  *scaleXrender;
             pivotYrender     = this.pivotY * heightRender *scaleYrender;
-            cropXrender      = this.cropX;
-            cropYrender      = this.cropY;
-            cropWidthRender  = this.cropWidth;
-            cropHeightRender = this.cropHeight;
+            cropXrender      = _cropX;
+            cropYrender      = _cropY;
+            cropWidthRender  = _cropWidth;
+            cropHeightRender = _cropHeight;
             rotationRender   = this.rotation * (Math.PI)/180;
             
             var minX;var minY;var maxX;var maxY;var pivotX;var pivotY;
@@ -1039,7 +1061,7 @@ window.Canvate = function(element) {
                 minY = null;
                 maxX = null;
                 maxY = null;
-                if(null != _self.canvas){
+                if(null != _canvas){
                     bounds = calculateBounds ( 0
                                               ,xRender         ,yRender
                                               ,-(pivotXrender) ,-(pivotYrender)
@@ -1053,7 +1075,7 @@ window.Canvate = function(element) {
                 // RENDER CHILDREN
                 var rx;
                 var ry;
-                if(null != _self.canvas){
+                if(null != _canvas){
                     rx = widthRender  / _initialWidth;
                     ry = heightRender / _initialHeight;
                     rx = isNaN(rx) ? 1 : rx;
@@ -1133,7 +1155,7 @@ window.Canvate = function(element) {
                     _innerContext.fillRect(0, 0, _innerCanvas.width ,_innerCanvas.height );
                 }
                 
-                if(null != _self.canvas){
+                if(null != _canvas){
                     cropXrender      = (0.5 + cropXrender)      << 0;
                     cropYrender      = (0.5 + cropYrender)      << 0;
                     cropWidthRender  = (0.5 + cropWidthRender)  << 0;
@@ -1143,7 +1165,7 @@ window.Canvate = function(element) {
                     widthRender      = (0.5 + widthRender)      << 0;
                     heightRender     = (0.5 + heightRender)     << 0;
                     
-                    _innerContext.drawImage( _self.canvas
+                    _innerContext.drawImage( _canvas
                                             ,cropXrender     ,cropYrender
                                             ,cropWidthRender ,cropHeightRender
                                             ,-pivotXrender   ,-pivotYrender
