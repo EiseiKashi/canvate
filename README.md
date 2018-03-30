@@ -10,7 +10,7 @@ A Javascript library for multiple interactive Images and Sprite Sheet, using onl
 
 ##
 
-### USAGE
+### How to start?
 Load the canvate.js.
 Get a reference of the canvas in your page.<br>
 Pass this reference to the Canvate when is instantiated.
