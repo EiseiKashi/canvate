@@ -23,26 +23,19 @@ Add new clip to the canvas.
 ```jsx
 var clip = myCanvate.addNewClip();
 ```
-Add onImageLoaded handler when the image is loaded.
+Add event handler and load the image
 ```jsx
 var onImageLoaded = function(event){
   console.log("Image loaded!!");
 }
-
-```
-Load the image.
-```jsx
 var clip.addEventListener(canvatte.IMAGE_LOADED, onImageLoaded);
 ```
 
 ### Capturing image from the page
-Get the reference of the img, canvas, or video
+Get the reference of the img, canvas, or video and add a clip into the Canvate.
 ```jsx
 var image = document.getElementById("MY_IMAGE");
-```
-Create and add the clip inside the Cavate
-```jsx
-var clip = myCanvate.addNewClip();
+var clip  = myCanvate.addNewClip();
 ```
 Set the image to the clip.
 ```jsx
