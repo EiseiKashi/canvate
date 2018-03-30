@@ -61,7 +61,7 @@ clip.setImage(image);
 
 | Property | Description |
 | ------------- | ------------- |
-| **``` name ```** | And String that specifies the **name** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). By default it takes the read only property: ```id```|
+| **``` name ```** | And String that specifies the **name** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). By default it takes the read only property: ```id```.|
 | **``` width ```** | Number in pixels that specifies the **width**.  |
 | **``` height ```** | Number in pixels that specifies the **height**.  |
 | **``` x ```** | Number in pixels that specifies the **x position** of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
@@ -74,30 +74,38 @@ clip.setImage(image);
 | **``` alpha ```** | Number that specifies the **transparency**. Values between 0 and 1 represent values from 0 to 100%.  |
 | **``` visible ```** | Boolean property. If its ```false```, makes the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) invisible and it wont be rendered at all. |
 | **``` isLoop ```** | Boolean property that specify if the cycle animation like:  **```play ```**or **```playBetween```**, shoud be in loop. |
-| **``` background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) **background**. The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp) |
+| **``` background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) **background**. The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp). |
 | **``` text ```** | String that sets the **text** for the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip).|
-| **``` interline ```** | Number of the **inteline text**. The default value is: **1.313**|
-| **```fontSize ```** | Number that defines the **fontSize** of the text in pixels. The default value is: **12**|
-| **``` font ```** | String that defines the **font family** of the text|
-| **``` fontColor ```** | String or Number that defines the **text color**|
-| **``` textBaseline ```** | String that defines the **vertical alingment** of the text. The accepted values are:  ```top``` (default value)\|```bottom``` \| ```middle``` | 
-| **``` textAlign ```** | String that defines the **horizontal alingment** of the text. The accpeted values are: ```start``` (default value)\|```end``` \| ```center``` \| ```left``` \| ```right```\, the difference between ```start``` and ```left``` is: The ```start``` value does align left when you are using a LTR (left to right) browser. In RTL browsers, the start value aligns right. And the other way around with ```end``` and ```right```| 
+| **``` interline ```** | Number of the **inteline text**. The default value is: **1.313**.|
+| **```fontSize ```** | Number that defines the **fontSize** of the text in pixels. The default value is: **12**.|
+| **``` font ```** | String that defines the **font family** of the text.|
+| **``` fontColor ```** | String or Number that defines the **text color**.|
+| **``` textBaseline ```** | String that defines the **vertical alingment** of the text. The accepted values are:  ```top``` (default value)\|```bottom``` \| ```middle```. | 
+| **``` textAlign ```** | String that defines the **horizontal alingment** of the text. The accpeted values are: ```start``` (default value)\|```end``` \| ```center``` \| ```left``` \| ```right```\, the difference between ```start``` and ```left``` is: The ```start``` value does align left when you are using a LTR (left to right) browser. In RTL browsers, the start value aligns right. And the other way around with ```end``` and ```right```.| 
 
 ## Clip methods
 [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)
 
 | Property | Description |
 | ------------- | ------------- |
-| **``` getId() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **id**|
-| **``` getParent() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **parent**|
-| **``` getTotalFrames() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**|
-| **``` getCurrentFrame() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**|
-| **``` setFrameRate() ```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **frame rate**|
-| **``` getFrameRate() ```** | Gets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **frame rate**|
-| **``` isMask() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is **mask** and false if not|
-| **``` hasButton() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) has listening to any **mouse event** and false if not|
+| **``` getId() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **id**.|
+| **``` getParent() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **parent**.|
+| **``` getTotalFrames() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**.|
+| **``` getCurrentFrame() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**.|
+| **``` setFrameRate() ```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **frame rate**.|
+| **``` getFrameRate() ```** | Gets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **frame rate**.|
+| **``` isMask() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is **mask** and false if not.|
+| **``` hasButton() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) has listening to any **mouse event** and false if not.|
+| **``` setPivotXY(x, y) ```** | Sets the **x and y pivot**. |
+| **``` setPivot (pivot) ```** | Sets the same value for **x and y pivot**. |
+| **``` setScaleXY(x, y) ```** | Sets the **x and y scale**. |
+| **``` setScale(scale) ```** | Sets the same value for **x and y scale**. |
+| **``` setPositionXY(x, y) ```** | Sets the **x and y position** in pixels.  |
+| **``` setPositionXY(position) ```** | Sets the same value for **x and y position** in pixels.  |
+| **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
+| **``` setViewPort(width, height) ```** | Sets the **view port** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip).|
 
-
+setSize = function(width, height){
  //Returns the first occurence of a Clip with the same property and value.
         this.getClipByProp = function (propName, value){
             var list = getClipListByProp(propName, value);
@@ -116,141 +124,6 @@ clip.setImage(image);
                 }
             }
             return list;
-        }
-        
-        // Returns the id
-        this.getId  = function(){
-            return _id;
-        }
-        
-        // Returns the totalFrames
-        this.getTotalFrames = function(){
-            return _totalFrames;
-        }
-        
-        // Returns the parent
-        this.getParent = function (){
-            return _parentClip[_id];
-        }
-        
-        // Returns if is a mask
-        this.isMask = function(){
-            return _maskClip[_id];
-        }
-        
-        // Returns if has button event handler
-        this.hasButton = function(){
-            return _hasButton;
-        }
-        
-        this.getCurrentFrame = function(){
-            return _currentFrame;
-        }
-        
-        this.setFrameRate = function(frameRate){
-            if(null == frameRate || isNaN(frameRate)){
-                //Early return
-                return;
-            }
-            _frameRate = frameRate;
-        }
-        
-        this.getFrameRate = function(){
-            return _frameRate;
-        }
-        
-        // Sets the same pivot X and Y
-        this.setPivotXY = function(x, y){
-            var isNum
-            isNum = !(x == null || isNaN(x));
-            if(isNum){
-                this.pivotX = x;
-            }
-            
-            isNum = !(y== null || isNaN(y));
-            if(isNum){
-                this.pivotY = y;
-            }
-        }
-        
-        this.setPivot = function(num){
-            var isNum
-            isNum = !(num == null || isNaN(num));
-            if(isNum){
-                this.pivotX = num;
-                this.pivotY = num;
-            }
-        }
-        
-        // Sets the same scale X and Y
-        this.setScaleXY = function(x, y){
-            var isNum
-            isNum = !(x == null || isNaN(x));
-            if(isNum){
-                this.scaleX = x;
-            }
-            
-            isNum = !(y== null || isNaN(y));
-            if(isNum){
-                this.scaleY = y;
-            }
-        }
-
-        // Sets the same scale X and Y
-        this.setScale = function(num){
-            var isNum = !(num == null || isNaN(num));
-            if(!isNum){
-                return;
-            }
-            
-            this.scaleX = this.scaleY = num;
-        }
-        
-        this.setPositionXY = function(x, y){
-            var isNum
-            isNum = !(x == null || isNaN(x));
-            if(isNum){
-                this.x = x;
-            }
-            
-            isNum = !(y== null || isNaN(y));
-            if(isNum){
-                this.y = y;
-            }
-        }
-
-        // Sets the same position X and Y
-        this.setPosition = function(num){
-            var isNum = !(num == null || isNaN(num));
-            if(!isNum){
-                return;
-            }
-
-            this.x = num;
-            this.y = num;
-        }
-        
-        // Sets the same size width and height
-        this.setSize = function(width, height){
-            var isNotWidth  = (width  == null) || (isNaN(width)  && width  != "auto");
-            var isNotHeight = (height == null) || (isNaN(height) && height != "auto");
-            
-            if(isNotWidth || isNotHeight || (width == "auto" && height=="auto")){
-                return;
-            }
-            
-            if(null != _initialWidth || null != _initialHeight){
-                if(width == "auto"){
-                    width  = (height / _initialHeight) * _initialWidth;
-                }
-                
-                if(height == "auto"){
-                    height = (width / _initialWidth)   * _initialHeight;
-                }
-            }
-            
-            this.width   = width;
-            this.height  = height;
         }
         
         // Set the view port of the image
