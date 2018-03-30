@@ -53,3 +53,6 @@ At anytime the image of the clip can be set.
 ```jsx
 clip.setImage(image);
 ```
+
+### Clip transformation
+The properties that can be changed are:
