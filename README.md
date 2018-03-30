@@ -4,4 +4,4 @@ Highlights:
 - Buttons with irregular shapes.
 - Animation of interactive element inside the canvas.
 - Masking.
-- Animation of specific element inside the canvas.
+- Nesting and grouping images.
