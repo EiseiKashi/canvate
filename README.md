@@ -66,7 +66,7 @@ The list of the visual properties.
 | **```scaleX```** | Specifies the scale X. Default value is 1. For instance: the half is 0.5, the double is 2.  |
 | **```scaleY```** | Specifies the scale Y. Default value is 1. For instance: the half is 0.5, the double is 2.  |
 | **```rotation```** | Specifies the angle of rotation in degrees.  |
-| **```pivotX```** | A related x point based on the clip width. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip.|
-| **```pivotY```** | A related x point based on the clip height. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip.|
+| **```pivotX```** | A related x point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip. |
+| **```pivotY```** | A related y point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 0.5 is the center of the Clip. |
 | **```alpha```** | Specifies the transparency. Values between 0 and 1.  |
 | **```visible```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
