@@ -313,7 +313,7 @@ window.Canvate = function(element) {
         }
         
         // Returns the id
-        this.id  = function(){
+        this.getId  = function(){
             return _id;
         }
         
@@ -323,7 +323,7 @@ window.Canvate = function(element) {
         }
         
         // Returns the parent
-        this.parent = function (){
+        this.getParent = function (){
             return _parentClip[_id];
         }
         
