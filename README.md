@@ -70,10 +70,8 @@ clip.setImage(image);
 | **```pivotY```** | A related y point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the clip, 1 is the bottom right of the Clip. |
 | **```alpha```** | Number that specifies the transparency. Values between 0 and 1 represent values from 0 to 100%.  |
 | **```visible```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
-| **```isLoop ```** | Boolean property. If its false, makes the clip invisible and it wont be rendered at all. |
-
-        this.isLoop        = false;
-        this.background    = null;
+| **```isLoop ```** | Boolean property that specify if the cycle animation like:  ```play ```or ```playBetween```, shoud be in loop. |
+| **```background ```** | It sets or returns the color, gradient, or pattern used to fill the Clip. The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp) |
         this.text;
         this.interline     = 1.313;
         this.fontSize      = 12;
