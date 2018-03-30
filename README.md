@@ -8,7 +8,7 @@ A Javascript library for multiple interactive Images and Sprite Sheet, using onl
 - **Text wrap:** Canvate lets wrap the text inside the canvas.
 - **Pivot, point of rotation and transformation:** with Canvate, easly set the images' pivot inside the canvas to make transformation like rotation and resize arround a point.
 
-## CANVATE.JS Documentation
+##
 
 ### USAGE
 Load the canvate.js.
@@ -57,7 +57,7 @@ At anytime the image of the [clip](https://github.com/EiseiKashi/canvate/blob/ma
 clip.setImage(image);
 ```
 
-### Clip properties
+## Clip properties
 
 | Property | Description |
 | ------------- | ------------- |
