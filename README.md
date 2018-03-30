@@ -58,9 +58,9 @@ clip.setImage(image);
 
 | Property | Description |
 | ------------- | ------------- |
-| **```name```** | And Striing that specifies the name of the clip. By default it takes the read only property: ```id```|
-| **```width```** | Specifies the width of a Clip, in pixels.  |
-| **```height```** | Specifies the height of a Clip, in pixels.  |
+| **```name```** | And String that specifies the name of the clip. By default it takes the read only property: ```id```|
+| **```width```** | Number in pixels that specifies the width.  |
+| **```height```** | Number in pixels that specifies the height.  |
 | **```x```** | Number in pixels that specifies the x position of a Clip, related to his parent.  |
 | **```y```** | Number in pixels that specifies the y position of a Clip, related to his parent.  |
 | **```scaleX```** | Specifies the scale X. Default value is 1.  Values between 0 and 1 represent values from 0 to 100%.  |
