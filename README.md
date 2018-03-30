@@ -59,7 +59,7 @@ The list of the property transformation.
 
 | Property | Description |
 | ------------- | ------------- |
-| ```jsx width ``` | Specifies the width of a Clip, in pixels.  |
+| ```width``` | Specifies the width of a Clip, in pixels.  |
 | height | The height property specifies the width of a Clip, in pixels.  |
 | x  | The x property specifies the width of a Clip, in pixels.  |
 | y  | Number, the unit is only in pixels  |
