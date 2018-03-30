@@ -994,8 +994,7 @@ window.Canvate = function(element) {
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         
-        this.render = function(canvasWidth, canvasHeight, mouseX, mouseY, asMask, stroke){
-            stroke -= 10;
+        this.render = function(canvasWidth, canvasHeight, mouseX, mouseY, asMask){
             
             if((_clipList.length == 0 && null == _canvas) || false == this.visible || this.isMask() && !asMask){
                 return {};
@@ -1102,7 +1101,7 @@ window.Canvate = function(element) {
                     clipRender = _clipList[indexRender];
                     clipData   = clipRender.render(canvasWidth, canvasHeight, 
                                                    mouseX-_self.x, mouseY-_self.y, 
-                                                   false, stroke);
+                                                   false);
                     canvasRender = clipData.inner;
                     if(null != canvasRender){
                         clipBounds = clipData.bounds;
@@ -1228,7 +1227,7 @@ window.Canvate = function(element) {
                 // MASK RENDER
                 clipRender  = _mask;
                 if(null != clipRender){
-                    clipData= clipRender.render(canvasWidth, canvasHeight, mouseX-_self.x, mouseY-_self.y, true, stroke);
+                    clipData= clipRender.render(canvasWidth, canvasHeight, mouseX-_self.x, mouseY-_self.y, true);
                     canvasRender = clipData.inner;
                     if(null != canvasRender){
                         clipBounds = clipData.bounds;
@@ -1335,8 +1334,8 @@ window.Canvate = function(element) {
         _mainCanvas.height    = _stage.height;
         _mainCanvasOff.width  = _stage.width;
         _mainCanvasOff.height = _stage.height;
-       //                                      canvasWidth, canvasHeight, mouseX, mouseY, asMask, stroke
-        canvasData   = _stage.render(_mainCanvas.width, _mainCanvas.height, _lastX, _lastY, false, 30);
+       //                                      canvasWidth, canvasHeight, mouseX, mouseY, asMask
+        canvasData   = _stage.render(_mainCanvas.width, _mainCanvas.height, _lastX, _lastY, false);
         canvasUpdate = canvasData.inner;
 
         if(Boolean(canvasUpdate)){
