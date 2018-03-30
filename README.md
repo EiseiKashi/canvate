@@ -49,7 +49,7 @@ var myCanvate = new Canvate(myCanvas);
 
 var clip      = myCanvate.addNewClip(image);
 ```
-At anytime the image of the clip can be set if is needed.
+At anytime the image of the clip can be set.
 ```jsx
 clip.setImage(image);
 ```
