@@ -87,7 +87,7 @@ clip.setImage(image);
 [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)
 
 | Property | Description |
-| ----------------------- | ------------- |
+| -------------------------------- | ------------- |
 | **``` getId() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **id**.|
 | **``` getParent() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **parent**.|
 | **``` getTotalFrames() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**.|
