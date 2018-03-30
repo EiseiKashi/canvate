@@ -1,4 +1,5 @@
-# CANVATE.JS
+
+![CANVATE.JS](http://sakuracode.com/img/Ryu-github.svg)
 A Javascript library for interactive Images and Sprite Sheet, using only one canvas tag.
 Highlights:
 - Buttons with irregular shapes.
