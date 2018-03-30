@@ -55,6 +55,7 @@ clip.setImage(image);
 ```
 
 ### Clip transformation
+The list of the property transformation.
 | First Header  | Second Header |
 | ------------- | ------------- |
 | Content Cell  | Content Cell  |
