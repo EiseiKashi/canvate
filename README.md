@@ -128,6 +128,7 @@ clip.setImage(image);
 
 ### Children methods
 | Property | Description |
+| -------------------------------- | ------------- |
 | **``` addNewClip（image） ```** | Creates and add a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**．The **```image```** parameter is optional. Please see the method **```setImage```**. IIf the image parameter is null, an empty Clip is created. |
 | **``` getNewClip（image） ```** | Creates and return a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** without adding it．The **```image```** parameter is optional. Please see the method **```setImage```**. IIf the image parameter is null, an empty Clip is created.|
 | **``` getClipAt(depth) ```** | Gets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** at the specific depth, countinf from 0. |
