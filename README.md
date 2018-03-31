@@ -136,13 +136,12 @@ clip.setImage(image);
 ### Text methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: ```size```, ```font``` and ```color```. Please check the text properties.|
-setText = function(text, size, font, color)
+| **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: ```size```, ```font``` and ```color```. Please check the [text properties](https://github.com/EiseiKashi/canvate/blob/master/README.md#text-properties) property.|
+
 ### other methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties) property. |
-
         
         // Sets the text
         this.setText = function(text, size, font, color){
