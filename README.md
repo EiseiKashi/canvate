@@ -130,12 +130,14 @@ clip.setImage(image);
 | **``` getViewPortX() ```** | Gets the **view Port X**, if the view port wasnt set, returns **```null```**.|
 | **``` getViewPortY() ```** | Gets the **view Port Y**, if the view port wasnt set, returns **```null```**.|
 | **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
+| **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) using the parameters **```x```**, **```y```**,**```width```** and **```height```. The parameters **```finalWidth```** and **```finalWidth```** ar optional in order to set another size. |
 
 ### Image methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` setImage(image, width, height) ```** | Sets the **image** of the clip. The **```width```** and **```height```** are optional, the default value is the **image size**.|
 | **``` loadImage(url, width, height) ```** | Loads an image inside the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). The parameters **```width```** and ***```height```*** are optional, the default value is the **image size**.|
+
 
 ### Text methods
 | Property | Description |
@@ -147,44 +149,7 @@ clip.setImage(image);
 | -------------------------------- | ------------- |
 | **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties) property. |
 | **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
-        
-        this.getViewPortX = function(){
-            return _canvasWidth  = width;
-        }
 
-        this.setViewPortY = function(){
-            return _canvasHeight = height;
-        }
-        //Crop
-        this.crop = function(x, y, width, height, finalWidth, finalHeight){
-            var x         = null == x      ? _cropX      : x;
-            var y         = null == y      ? _cropY      : y;
-            var width     = null == width  ? _cropWidth  : width;
-            var height    = null == height ? _cropHeight : height;
-            
-            _self.width   = null;
-            _self.height  = null;
-            _cropWidth    = null;
-            _cropHeight   = null;
-            
-            var canvas        = document.createElement("canvas");
-                canvas.width  = width;
-                canvas.height = height;
-           
-            finalWidth  = null == finalWidth  || isNaN(finalWidth)  ? width  : finalWidth;
-            finalHeight = null == finalHeight || isNaN(finalHeight) ? height : finalHeight; 
-            
-            var context = canvas.getContext("2d");
-                context.drawImage(_image, x, y, width, height, 0, 0, finalWidth, finalHeight);
-            
-            
-            var img               = document.createElement("img");
-                img.src           = canvas.toDataURL('image/png');
-                img.crossOrigin   = "Anonymous";
-            
-            this.setImage(canvas);
-        }
-        
         //CHILDREN
         // Get new Clip
         this.getNewClip = function(image){
