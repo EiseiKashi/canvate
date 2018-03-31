@@ -120,6 +120,8 @@ clip.setImage(image);
 | -------------------------------- | ------------- |
 | **``` setImage(image, width, height) ```** | Sets the **image** of the clip. It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**. The **```width```** and **```height```** are optional, the default value is the **image size**.|
 | **``` loadImage(url, width, height) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```width```** and ***```height```*** are optional, the default value is the **image size**.|
+| **``` setMask(clip) ```** | Sets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
+| **``` removeMask() ```** | Removes a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
 
 ### Text methods
 | Property | Description |
@@ -152,10 +154,13 @@ clip.setImage(image);
 | **``` getFrameRate() ```** | Gets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **frame rate**.|
 | **``` setCycle(x, y, width, height, totalFrames, gapX, gapY) ```** | Lets work with a **sprite sheet**. Use the **```x```** and **```y```** to specify from where the cycle must be set. The **```width```** and **```height```** parameters indicates the **tile** size. The **```totalFrames```** parameter is optional, if no parameter is given it will use the maximun **tile** posible based on the size of the **image**. Use optional parameter **```gapX```** and **```gapY```** to specify e gap between **tiles**. After the **cycle** is set it can be used the frames method, for instance: ```play```, ```stop```, ```playBetween```, etc.|
 | **``` play() ```** | Plays the cycle.|
-| **``` playFrom(frame) ```** | Plays the cycle from specific frame.|
-| **``` playUntil(frame) ```** | Plays the cycle until specific **frame**. **If the frame is less than the currentFrame, it plays backwards**|
+| **``` playFrom(frame) ```** | Plays the cycle from specific frame, counting from 1.|
+| **``` playUntil(frame) ```** | Plays the cycle until specific **frame**, counting from 1. **If the frame is less than the currentFrame, it plays backwards**|
 | **``` playBetween(fromFrame, untilFrame) ```** | Plays the cycle between specific **frame**. **If the ```fromFrame``` is less than the ```untilFrame```, it plays backwards**|
-
+| **``` stop() ```** | Stops the cycle.|
+| **``` stopAt(frame) ```** | Stops the cycle at the specific **frame** counting from 1.|
+| **``` nextFrame() ```** | Stops at the **next frame**.|
+| **``` prevFrame() ```** | Stops at the **prev frame**.|
 
 ### Other methods
 | Property | Description |
@@ -166,97 +171,5 @@ clip.setImage(image);
 | **``` hasButton() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** has listening to any **mouse event** and false if not.|
 | **``` setBackground(fillStyle)```** | Sets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s**bakcgfround**. Please see the **[```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties)** property. |
 | **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
-        // Stop cycle
-        this.stop = function(){
-            _lastTime     = Date.now();
-            indexFrame    = _frameIndex;
-            _currentFrame = indexFrame+1;
-            _endIndex     = indexFrame;
-            _lastAction   = "stop";
-            _currentFrame = null;
-            _lastAction   = null;
-        }
-        
-        // Stop cycle at specific frame
-        this.stopAt = function(frame){
-            _lastTime     = Date.now();
-            indexFrame    = getIndexByFrame(frame);
-            _currentFrame = indexFrame+1;
-            _frameIndex   = Math.max(Math.min(indexFrame, _framesList.length), 0);
-            _endIndex     = indexFrame;
-            _lastAction   = "stopAt";
-            _currentFrame = null;
-            _lastAction   = null;
-        }
-        
-        // Move to the next frame
-        this.nextFrame = function(){
-            if(_frameIndex >= _framesList.length-1){
-                if(this.isLoop){
-                    _frameIndex = 0;
-                }else{
-                    // Early return
-                    return;
-                }
-            }
-            _lastTime     = Date.now();
-            indexFrame    = Math.max(Math.min(_frameIndex+1, _framesList.length), 0);
-            _currentFrame = indexFrame+1;
-            _frameIndex   = indexFrame;
-            _endIndex     = indexFrame;
-            _lastAction   = "nextFrame";
-        }
-        
-        // Move to the prev frame
-        this.prevFrame = function(){
-            if(_frameIndex == 0){
-                if(this.isLoop){
-                    _frameIndex = _framesList.length-1;
-                }else{
-                    // Early return
-                    return;
-                }
-            }
-            _lastTime     = Date.now();
-            indexFrame    = Math.max(Math.min(_frameIndex-1, _framesList.length), 0);
-            _currentFrame = indexFrame+1;
-            _frameIndex   = indexFrame;
-            _endIndex     = indexFrame;
-            _lastAction   = "prevFrame";
-        }
-        
-        // RENDER
-        //Set mask wit another clip
-        this.setMask = function(mask, type){
-            if(null == mask){
-                // Early return
-                return;
-            }
-            
-            _maskClip[mask.id()] = this;
-            _typeMask            = _maskTypes[type] || _maskTypes.mask;
-            _mask                = mask;
-        }
-        
-        //Remove the mask
-        this.removeMask = function(){
-            _typeMask = "source-over";
-            if(_mask == null){
-                // Early return
-                return;
-            }
-            _maskClip[_mask.id()] = null;
-            _mask = null;
-        }
-        
-        // Add listener
-        this.addEventListener = function (type, listener, context){
-            _emitter.addEventListener(type, listener, context);
-            _hasMouse = _emitter.hasMouse();
-        }
-        
-        // Remove Listener
-        this.removeEventListener = function (type, listener, context){
-            _emitter.removeEventListener(type, listener, context);
-            _hasMouse = _emitter.hasMouse();
-        }
+| **``` addEventListener(type, listener, context) ```** | Adds a ```listener``` to a specific event ```type```. The parameter ```context``` is optional, the listener can be called in a specific context.|
+| **``` removeEventListener(type, listener, context) ```** | Removes a ```listener``` to a specific event ```type```. To remove a listener that was added with a specific ```context```, use it to remove the listener.|
