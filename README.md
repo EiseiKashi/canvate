@@ -146,7 +146,7 @@ clip.setImage(image);
 | **``` toBack(clip) ```** | Bring the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** to back (the lowest depth). |
 | **``` getParent() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **parent**.|
 
-### Frame methods
+### Sprite sheet methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` getTotalFrames() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **total frames**.|
