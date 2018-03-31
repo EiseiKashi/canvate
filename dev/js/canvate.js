@@ -455,6 +455,22 @@ window.Canvate = function(element) {
             _canvasWidth  = width;
             _canvasHeight = height;
         }
+
+        this.getViewPortX = function(){
+            return _canvasWidth  = width;
+        }
+
+        this.setViewPortY = function(){
+            return _canvasHeight = height;
+        }
+
+        this.setViewPort = function(width, height){
+            if(null == width || null == height || isNaN(width) || isNaN(height)){
+                return;
+            }
+            _canvasWidth  = width;
+            _canvasHeight = height;
+        }
         
         // Removes the view port
         this.removeViewPort = function(){
