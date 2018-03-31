@@ -59,9 +59,9 @@ clip.setImage(image);
 
 ## Clip properties
 
+### Transformation properties
 | Property | Description |
 | ------------- | ------------- |
-| **``` name ```** | And String that specifies the **name** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). By default it takes the read only property: ```id```.|
 | **``` width ```** | Number in pixels that specifies the **width**.  |
 | **``` height ```** | Number in pixels that specifies the **height**.  |
 | **``` x ```** | Number in pixels that specifies the **x position** of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
@@ -71,10 +71,10 @@ clip.setImage(image);
 | **``` rotation ```** | Number that specifies the **angle of rotation in degrees**.  |
 | **``` pivotX ```** | A related **x** point based on the clip width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), 1 is the bottom right of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). |
 | **``` pivotY ```** | A related **y** point based on the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) width. The rotation and resizing it'll be based arround this point. For instance, 0 is top-left of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), 1 is the bottom right of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). |
-| **``` alpha ```** | Number that specifies the **transparency**. Values between 0 and 1 represent values from 0 to 100%.  |
-| **``` visible ```** | Boolean property. If its ```false```, makes the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) invisible and it wont be rendered at all. |
-| **``` isLoop ```** | Boolean property that specify if the cycle animation like:  **```play ```**or **```playBetween```**, shoud be in loop. |
-| **``` background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) **background**. The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp). |
+
+## Text properties
+| Property | Description |
+| ------------- | ------------- |
 | **``` text ```** | String that sets the **text** for the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip).|
 | **``` interline ```** | Number of the **inteline text**. The default value is: **1.313**.|
 | **```fontSize ```** | Number that defines the **fontSize** of the text in pixels. The default value is: **12**.|
@@ -83,19 +83,38 @@ clip.setImage(image);
 | **``` textBaseline ```** | String that defines the **vertical alingment** of the text. The accepted values are:  ```top``` (default value)\|```bottom``` \| ```middle```. | 
 | **``` textAlign ```** | String that defines the **horizontal alingment** of the text. The accpeted values are: ```start``` (default value)\|```end``` \| ```center``` \| ```left``` \| ```right```\, the difference between ```start``` and ```left``` is: The ```start``` value does align left when you are using a LTR (left to right) browser. In RTL browsers, the start value aligns right. And the other way around with ```end``` and ```right```.| 
 
+### Other properties
+| Property | Description |
+| ------------- | ------------- |
+| **``` name ```** | And String that specifies the **name** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). By default it takes the read only property: ```id```.|
+| **``` alpha ```** | Number that specifies the **transparency**. Values between 0 and 1 represent values from 0 to 100%.  |
+| **``` visible ```** | Boolean property. If its ```false```, makes the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) invisible and it wont be rendered at all. |
+| **``` isLoop ```** | Boolean property that specify if the cycle animation like:  **```play ```**or **```playBetween```**, shoud be in loop. |
+| **``` background ```** | It sets or returns the color, gradient, or pattern used to fill the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) **background**. The values could be color\|gradient\|pattern. For more information check please [fillStyle](https://www.w3schools.com/tags/canvas_fillstyle.asp). |
+
 ## Clip methods
 [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)
 
+### General methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` getId() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **id**.|
 | **``` getParent() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **parent**.|
+| **``` isMask() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is **mask** and false if not.|
+| **``` hasButton() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) has listening to any **mouse event** and false if not.|
+
+### Frame methods
+| Property | Description |
+| -------------------------------- | ------------- |
 | **``` getTotalFrames() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**.|
 | **``` getCurrentFrame() ```** | Returns the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **total frames**.|
 | **``` setFrameRate() ```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **frame rate**.|
 | **``` getFrameRate() ```** | Gets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s **frame rate**.|
-| **``` isMask() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is **mask** and false if not.|
-| **``` hasButton() ```** | Gets true if the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) has listening to any **mouse event** and false if not.|
+| **``` setCycle(x, y, width, height, totalFrames, gapX, gapY) ```** | Lets work with a **sprite sheet**. Use the **```x```** and **```y```** to specify from where the cycle must be set. The **```width```** and **```height```** parameters indicates the **tile** size. The **```totalFrames```** parameter is optional, if no parameter is given it will use the maximun **tile** posible based on the size of the **image**. Use optional parameter **```gapX```** and **```gapY```** to specify e gap between **tiles**. After the **cycle** is set it can be used the frames method, for instance: ```play```, ```stop```, ```playBetween```, etc.|
+
+### Transformation methods
+| Property | Description |
+| -------------------------------- | ------------- |
 | **``` setPivotXY(x, y) ```** | Sets the **x and y pivot**. |
 | **``` setPivot (pivot) ```** | Sets the same value for **x and y pivot**. |
 | **``` setScaleXY(x, y) ```** | Sets the **x and y scale**. |
@@ -106,10 +125,18 @@ clip.setImage(image);
 | **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his width.|
+
+### Image methods
+| Property | Description |
+| -------------------------------- | ------------- |
 | **``` removeViewPort() ```** | Remove the set **view port**.|
 | **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
 | **``` setImage(image, width, height) ```** | Sets the **image** of the clip. The **```width```** and **```height```** are optional, the default value is the **image size**.|
-| **``` setCycle(x, y, width, height, totalFrames, gapX, gapY) ```** | Lets work with a **sprite sheet**. Use the **```x```** and **```y```** to specify from where the cycle must be set. The **```width```** and **```height```** parameters indicates the **tile** size. The **```totalFrames```** parameter is optional, if no parameter is given it will use the maximun **tile** posible based on the size of the **image**. Use optional parameter **```gapX```** and **```gapY```** to specify e gap between **tiles**. After the **cycle** is set it can be used the frames method, for instance: ```play```, ```stop```, ```playBetween```, etc.|
+
+### other methods
+| Property | Description |
+| -------------------------------- | ------------- |
+
 
         // Sets the background
         this.setBackground = function(fillStyle){
