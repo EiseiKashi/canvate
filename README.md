@@ -125,6 +125,7 @@ clip.setImage(image);
 | **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his width.|
+ **``` setViewPort(width, height) ```** | Sets the **view port** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip).|
 | **``` removeViewPort() ```** | Remove the set **view port**.|
 | **``` getViewPortX() ```** | Gets the **view Port X**, if the view port wasnt set, returns **```null```**.|
 | **``` getViewPortY() ```** | Gets the **view Port Y**, if the view port wasnt set, returns **```null```**.|
