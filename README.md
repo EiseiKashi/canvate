@@ -133,15 +133,16 @@ clip.setImage(image);
 | **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
 | **``` setImage(image, width, height) ```** | Sets the **image** of the clip. The **```width```** and **```height```** are optional, the default value is the **image size**.|
 
+### Text methods
+| Property | Description |
+| -------------------------------- | ------------- |
+| **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: ```size```, ```font``` and ```color```. Please check the text properties.|
+setText = function(text, size, font, color)
 ### other methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) backround property. |
+| **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties) property. |
 
-        // Sets the background
-        this.setBackground = function(fillStyle){
-            this.background = fillStyle;
-        }
         
         // Sets the text
         this.setText = function(text, size, font, color){
