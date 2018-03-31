@@ -126,6 +126,8 @@ clip.setImage(image);
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his width.|
 | **``` removeViewPort() ```** | Remove the set **view port**.|
+| **``` getViewPortX() ```** | Gets the **view Port X**, if the view port wasnt set, returns **```null```**.|
+| **``` getViewPortY() ```** | Gets the **view Port Y**, if the view port wasnt set, returns **```null```**.|
 | **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
 | **``` setImage(image, width, height) ```** | Sets the **image** of the clip. The **```width```** and **```height```** are optional, the default value is the **image size**.|
 
