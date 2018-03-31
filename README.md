@@ -151,6 +151,11 @@ clip.setImage(image);
 | **``` setFrameRate() ```** | Sets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **frame rate**.|
 | **``` getFrameRate() ```** | Gets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **frame rate**.|
 | **``` setCycle(x, y, width, height, totalFrames, gapX, gapY) ```** | Lets work with a **sprite sheet**. Use the **```x```** and **```y```** to specify from where the cycle must be set. The **```width```** and **```height```** parameters indicates the **tile** size. The **```totalFrames```** parameter is optional, if no parameter is given it will use the maximun **tile** posible based on the size of the **image**. Use optional parameter **```gapX```** and **```gapY```** to specify e gap between **tiles**. After the **cycle** is set it can be used the frames method, for instance: ```play```, ```stop```, ```playBetween```, etc.|
+| **``` play() ```** | Plays the cycle.|
+| **``` playFrom(frame) ```** | Plays the cycle from specific frame.|
+| **``` playUntil(frame) ```** | Plays the cycle until specific **frame**. **If the frame is less than the currentFrame, it plays backwards**|
+| **``` playBetween(fromFrame, untilFrame) ```** | Plays the cycle between specific **frame**. **If the ```fromFrame``` is less than the ```untilFrame```, it plays backwards**|
+
 
 ### Other methods
 | Property | Description |
@@ -161,66 +166,6 @@ clip.setImage(image);
 | **``` hasButton() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** has listening to any **mouse event** and false if not.|
 | **``` setBackground(fillStyle)```** | Sets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s**bakcgfround**. Please see the **[```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties)** property. |
 | **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
-
-        
-        // FRAME
-        var _playUntil = function (index){
-            _increment = _frameIndex >= index ? -1 : 1;
-            _endIndex  = index;
-        }
-        
-        var getIndexByFrame = function(frame){
-            if(isNaN(frame)){
-                throw new Error("The frame must be a integer and is: " + frame);
-            }
-            indexFrame = frame - 1;
-            indexFrame = indexFrame < 0 ? 0 : indexFrame;
-            indexFrame = indexFrame >= _framesList.length ? _framesList.length-1 : indexFrame;
-            
-            return indexFrame;
-        }
-        
-        // Play a cycle
-        this.play = function(){
-            _lastTime       = Date.now();
-            indexFrame      = _framesList.length-1;
-            _lastAction     = "play";
-            _fromIndexFrame = 0;
-            _playUntil(indexFrame);
-        }
-        
-        // Play a cycle from frame
-        this.playFrom = function(frame){
-            _lastTime       = Date.now();
-            indexFrame      = getIndexByFrame(frame);
-            _currentFrame   = indexFrame+1;
-            _frameIndex     = indexFrame;
-            _fromIndexFrame = indexFrame;
-            _lastAction = "playFrom";
-            _playUntil(_framesList.length-1);
-        }
-        
-        // Play cycle until frame
-        this.playUntil = function(frame){
-            _lastTime       = Date.now();
-            indexFrame      = getIndexByFrame(frame);
-            _fromIndexFrame = _frameIndex;
-            _lastAction     = "playUntil";
-            _playUntil(indexFrame);
-        }
-        
-        // Play cycle between frames
-        this.playBetween = function(fromFrame, untilFrame){
-            _lastTime       = Date.now();
-            fromIndexFrame  = getIndexByFrame(fromFrame);
-            untilIndexFrame = getIndexByFrame(untilFrame);
-            _frameIndex     = fromIndexFrame;
-            _fromIndexFrame = fromIndexFrame;
-            _currentFrame   = fromIndexFrame+1;
-            _lastAction     = "playBetween";
-            _playUntil(untilIndexFrame);
-        }
-        
         // Stop cycle
         this.stop = function(){
             _lastTime     = Date.now();
@@ -302,12 +247,6 @@ clip.setImage(image);
             }
             _maskClip[_mask.id()] = null;
             _mask = null;
-        }
-       
-        
-        // Get is has button event handler
-        this.hasMouse = function(){
-            return _hasMouse;
         }
         
         // Add listener
