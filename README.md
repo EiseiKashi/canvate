@@ -62,10 +62,10 @@ clip.setImage(image);
 ### Transformation properties
 | Property | Description |
 | ------------- | ------------- |
-| **``` width ```** | Number in pixels that specifies the **width**.  |
-| **``` height ```** | Number in pixels that specifies the **height**.  |
 | **``` x ```** | Number in pixels that specifies the **x position** of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
 | **``` y ```** | Number in pixels that specifies the **y position** of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
+| **``` width ```** | Number in pixels that specifies the **width**.  |
+| **``` height ```** | Number in pixels that specifies the **height**.  |
 | **``` scaleX ```** | Specifies the **scale X**. Default value is **1**.  Values between 0 and 1 represent values from 0 to 100%.  |
 | **``` scaleY ```** | Specifies the **scale Y**. Default value is **1**.  Values between 0 and 1 represent values from 0 to 100%.  |
 | **``` rotation ```** | Number that specifies the **angle of rotation in degrees**.  |
@@ -98,22 +98,22 @@ clip.setImage(image);
 ### Transformation methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setPivotXY(x, y) ```** | Sets the **x and y pivot**. |
-| **``` setPivot (pivot) ```** | Sets the same value for **x and y pivot**. |
-| **``` setScaleXY(x, y) ```** | Sets the **x and y scale**. |
-| **``` setScale(scale) ```** | Sets the same value for **x and y scale**. |
 | **``` setPositionXY(x, y) ```** | Sets the **x and y position** in pixels.  |
 | **``` setPositionXY(position) ```** | Sets the same value for **x and y position** in pixels.  |
 | **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
 | **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
+| **``` setScaleXY(x, y) ```** | Sets the **x and y scale**. |
+| **``` setScale(scale) ```** | Sets the same value for **x and y scale**. |
+| **``` setPivotXY(x, y) ```** | Sets the **x and y pivot**. |
+| **``` setPivot (pivot) ```** | Sets the same value for **x and y pivot**. |
+| **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** based on his width.|
+| **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** using the parameters **```x```**, **```y```**,**```width```** and **```height```**. The parameters **```finalWidth```** and **```finalWidth```** are optional in order to set another size. |
  **``` setViewPort(width, height) ```** | Sets the **view port** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**.|
-| **``` removeViewPort() ```** | Remove the set **view port**.|
 | **``` getViewPortX() ```** | Gets the **view Port X**, if the view port wasnt set, returns **```null```**.|
 | **``` getViewPortY() ```** | Gets the **view Port Y**, if the view port wasnt set, returns **```null```**.|
-| **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
-| **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** using the parameters **```x```**, **```y```**,**```width```** and **```height```**. The parameters **```finalWidth```** and **```finalWidth```** are optional in order to set another size. |
+| **``` removeViewPort() ```** | Remove the set **view port**.|
 
 ### Image methods
 | Property | Description |
