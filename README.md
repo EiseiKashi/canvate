@@ -136,21 +136,14 @@ clip.setImage(image);
 ### Text methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: ```size```, ```font``` and ```color```. Please check the [text properties](https://github.com/EiseiKashi/canvate/blob/master/README.md#text-properties) property.|
+| **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: **```size```**, **```font```** and **```color```**. Please check the [text properties](https://github.com/EiseiKashi/canvate/blob/master/README.md#text-properties) property.|
 
 ### other methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties) property. |
-        
-        // Sets the text
-        this.setText = function(text, size, font, color){
-            this.text      = text;
-            this.fontSize  = null == size  ? this.fontSize  : 12;
-            this.font      = null == font  ? this.font      : font;
-            this.fontColor = null == color ? this.fontColor : color;
-            emit(_self.TEXT_SET, {text:this.text});
-        }
+| **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
+
         
         //Sets the rect
         this.setRect = function(width, height, color){
