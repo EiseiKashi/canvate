@@ -125,73 +125,33 @@ clip.setImage(image);
 | **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) based on his width.|
+| **``` removeViewPort() ```** | Remove the set **view port**.|
+| **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
+| **``` setImage(image, width, height) ```** | Sets the **image** of the clip. The **```width```** and **```height```** are optional, the default value is the **image size**.|
 
 ### Image methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` removeViewPort() ```** | Remove the set **view port**.|
-| **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
-| **``` setImage(image, width, height) ```** | Sets the **image** of the clip. The **```width```** and **```height```** are optional, the default value is the **image size**.|
+| **``` loadImage(url, width, height) ```** | Loads an image inside the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). The parameters **```width```** and ***```height```*** are optional, the default value is the **image size**.|
 
 ### Text methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: **```size```**, **```font```** and **```color```**. Please check the [text properties](https://github.com/EiseiKashi/canvate/blob/master/README.md#text-properties) property.|
 
-### other methods
+### Other methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties) property. |
 | **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
+        
+        this.getViewPortX = function(){
+            return _canvasWidth  = width;
+        }
 
-        
-        //Sets the rect
-        this.setRect = function(width, height, color){
-            if(null == width || null == height || isNaN(width) || isNaN(height)){
-                return;
-            }
-            
-            _self.width   = null;
-            _self.height  = null;
-            _cropWidth    = null;
-            _cropHeight   = null;
-            
-            var canvas            = document.createElement("canvas");
-                canvas.width      = width;
-                canvas.height     = height;
-           
-            var context           = canvas.getContext("2d");
-                context.fillStyle = color;
-                context.fillRect(0,0,width,height);
-            
-            var img = document.createElement("img");
-                img.src = canvas.toDataURL('image/png');
-                img.crossOrigin = "Anonymous";
-            
-            this.setImage(canvas);
+        this.setViewPortY = function(){
+            return _canvasHeight = height;
         }
-        
-        // IMAGE
-        //Load image from URL
-        this.loadImage = function(url, width, height){
-            _canvas = null;
-            _initialWidth   = null;
-            _initialHeight  = null;
-            
-            var image        = new Image();
-                image.onload = function() {
-                    _self.setImage(image, width, height);
-                    emit(_self.IMAGE_LOADED, {image:image})
-                }
-                
-                image.onerror = function(event){
-                    emit(_self.IMAGE_ERROR, {url:url})
-                }
-                
-                image.src = url + '?' + new Date().getTime();
-                image.crossOrigin = "Anonymous";
-        }
-        
         //Crop
         this.crop = function(x, y, width, height, finalWidth, finalHeight){
             var x         = null == x      ? _cropX      : x;
