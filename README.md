@@ -136,7 +136,7 @@ clip.setImage(image);
 ### other methods
 | Property | Description |
 | -------------------------------- | ------------- |
-
+| **``` setBackground(fillStyle)```** | Sets the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)'s**bakcgfround**. Please see the [```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) backround property. |
 
         // Sets the background
         this.setBackground = function(fillStyle){
