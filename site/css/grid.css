@@ -1,0 +1,176 @@
+/* CSS Resets */
+
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,address,cite,code,del,dfn,em,img,ins,q,small,strong,sub,sup,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{border:0;margin:0;padding:0}article,aside,figure,figure img,figcaption,hgroup,footer,header,nav,section,video,object{display:block}a img{border:0}figure{position:relative}figure img{width:100%}
+
+
+/* >> The Magnificent CLEARFIX << */
+.clearfix:after, 
+ul:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.clearfix, 
+ul { display: inline-block; }
+* html .clearfix,
+* html ul { height: 1%; } /* Hides from IE-mac \*/
+.clearfix,
+ul { display: block; }
+
+
+/* ==================================================================================================================== */
+/* ! The 1140px Grid V2 by Andy Taylor \ http://cssgrid.net \ http://www.twitter.com/andytlr \ http://www.andytlr.com   */
+/* ==================================================================================================================== */
+
+.container {
+padding-left: 20px;
+padding-right: 20px;
+}
+
+.row {
+width: 100%;
+max-width: 938px;
+min-width: 725px;
+margin: 0 auto;
+text-align: left;
+}
+
+.column-1, 
+.column-2, 
+.column-3, 
+.column-4, 
+.column-5, 
+.column-6, 
+.column-7, 
+.column-8, 
+.column-9, 
+.column-10, 
+.column-11,
+.column {
+margin-right: 3.8%;
+float: left;
+min-height: 1px;
+}
+
+.row .column-1 {
+width: 4.85%;
+}
+
+.row .column-2 {
+width: 13.45%;
+}
+
+.row .column-3 {
+width: 22.05%;
+}
+
+.row .column-4 {
+width: 30.75%;
+}
+
+.row .column-5 {
+width: 39.45%;
+}
+
+.row .column-6 {
+width: 48%;
+}
+
+.row .column-7 {
+width: 56.75%;
+}
+
+.row .column-8 {
+width: 65.4%;
+}
+
+.row .column-9 {
+width: 74.05%;
+}
+
+.row .column-10 {
+width: 82.7%;
+}
+
+.row .column-11 {
+width: 91.35%;
+}
+
+.row .column-12 {
+width: 100%;
+float: left;
+}
+
+.last {
+margin-right: 0px;
+}
+
+img, object, embed {
+max-width: 100%;
+}
+
+img {
+	height: auto;
+}
+
+.last {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+/* Smaller screens */
+
+@media only screen and (max-width: 1023px) {
+
+	body {
+	font-size: 0.8em;
+	line-height: 1.5em;
+	}
+	
+}
+
+
+/* Mobile */
+
+@media handheld, only screen and (max-width: 767px) {
+
+	body {
+	font-size: 16px;
+	-webkit-text-size-adjust: none;
+	}
+	
+	.container {
+		padding: 0;
+	}
+	
+	.row, body, .container {
+	min-width: 0;
+	}
+	
+	.row .column-1, 
+	.row .column-2, 
+	.row .column-3, 
+	.row .column-4, 
+	.row .column-5, 
+	.row .column-6, 
+	.row .column-7, 
+	.row .column-8, 
+	.row .column-9, 
+	.row .column-10, 
+	.row .column-11, 
+	.row .column-12,
+	.row .column {
+	width: auto !important;
+	float: none !important;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-left: 20px;
+	padding-right: 20px;
+	}
+
+}
+
+
+@media handheld, only screen and (max-width: 600px) {
+
+	.container {
+		padding: 0;
+	}
+
+}

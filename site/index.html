@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
-        <html manifest="ume.appcache">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CANVATE</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CANVATE</title>
+    
     </head>
-    <body class="main">
-        
+    <body>
+        <div class="main">
+        <header>
+            <nav>
+                <a>
+                    <img src=>
+                </a>
+            </nav>
+        </header>
+        </div>
         <script>
            function getParam(name) {
                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -24,8 +32,10 @@
                         ,'js/sakura.js?'+antiCache
                      /*',js/model.js'
                         ,'js/view.js'
-                        ,'js/controller.js'*/]);
+                        ,'js/controller.js'*/], 
+                        [ "css/grid.css"
+                         ,"css/general.css"]);
         }, 100);
         </script>
-    </body>
+	</body>
 </html>
