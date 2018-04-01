@@ -58,7 +58,7 @@ At anytime the image of the **[clip](https://github.com/EiseiKashi/canvate/blob/
 clip.setImage(image);
 ```
 
-## Clip properties
+## [Clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) properties
 
 ### Transformation properties
 | Property | Description |
@@ -93,8 +93,7 @@ clip.setImage(image);
 | **``` isLoop ```** | Boolean property that specify if the cycle animation like:  **```play ```**or **```playBetween```**, shoud be in loop. |
 | **``` background ```** | It sets or returns the color, gradient, or pattern used to fill the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** **background**. The values could be color\|gradient\|pattern. For more information check please **[```fillStyle```](https://www.w3schools.com/tags/canvas_fillstyle.asp)**. |
 
-## Clip methods
-[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)
+## [Clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) methods
 
 ### Transformation methods
 | Property | Description |
@@ -187,7 +186,3 @@ All the Event object has the properties:
 | **"cycleStart"** | This event is trigger when a cycle starts. The event has the prorperties: ```currentFrame``` and ```cycle```, that has the name of the cycle. The possible cycles are: ```play```, ```playFrom```, ```playUntil```, ```playBetween```, ```stop```, ```stopAt```, ```nextFrame``` and ```prevFrame```.|
 | **"cycleEnd"** | This event is trigger when a cycle ends. The event has the prorperties: ```currentFrame``` and ```cycle```, that has the name of the cycle. The possible cycles are: ```play```, ```playFrom```, ```playUntil```, ```playBetween```, ```stop```, ```stopAt```, ```nextFrame``` and ```prevFrame```.|
 | **"render"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) was rendered.|
-
-
-        this.RENDER        = "render";
-
