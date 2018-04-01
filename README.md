@@ -1,6 +1,6 @@
 
 ![CANVATE.JS](http://sakuracode.com/img/canvate.svg)<br>
-A Javascript library for multiple interactive Images and Sprite Sheet, using only one canvas.
+JavaScript library for canvas based interactive animation.
 - **Buttons with irregular shapes:** build buttons with irregular shapes with any kind of images for instance png, svg,  or other canvas. Canvate make it easy to build buttons "inside" de canvas.
 - **Animate images inside the canvas**  using JQuery, Greensock or your custom code to animate your sprite sheet and images.
 - **Masking:** is and easy task with Canvate. Images,other canvas and sprite sheet can be mnasked.
@@ -62,10 +62,10 @@ clip.setImage(image);
 ### Transformation properties
 | Property | Description |
 | ------------- | ------------- |
-| **``` width ```** | Number in pixels that specifies the **width**.  |
-| **``` height ```** | Number in pixels that specifies the **height**.  |
 | **``` x ```** | Number in pixels that specifies the **x position** of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
 | **``` y ```** | Number in pixels that specifies the **y position** of a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip), related to his parent.  |
+| **``` width ```** | Number in pixels that specifies the **width**.  |
+| **``` height ```** | Number in pixels that specifies the **height**.  |
 | **``` scaleX ```** | Specifies the **scale X**. Default value is **1**.  Values between 0 and 1 represent values from 0 to 100%.  |
 | **``` scaleY ```** | Specifies the **scale Y**. Default value is **1**.  Values between 0 and 1 represent values from 0 to 100%.  |
 | **``` rotation ```** | Number that specifies the **angle of rotation in degrees**.  |
@@ -98,30 +98,30 @@ clip.setImage(image);
 ### Transformation methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setPivotXY(x, y) ```** | Sets the **x and y pivot**. |
-| **``` setPivot (pivot) ```** | Sets the same value for **x and y pivot**. |
-| **``` setScaleXY(x, y) ```** | Sets the **x and y scale**. |
-| **``` setScale(scale) ```** | Sets the same value for **x and y scale**. |
-| **``` setPositionXY(x, y) ```** | Sets the **x and y position** in pixels.  |
-| **``` setPositionXY(position) ```** | Sets the same value for **x and y position** in pixels.  |
+| **``` setPosition(x, y) ```** | Sets the **x and y position** in pixels.  |
 | **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
-| **``` setSize(width, height) ```** | Sets the **width and height** in pixels. The accepted values are Number and the ```String``` **"auto"**|
+| **``` setScale(x, y) ```** | Sets the **x and y scale**. Default value is 1 and it represent the 100% of the size. |
+| **``` setPivot(x, y) ```** | Sets the **x and y pivot**. This value its a rate based on the width and heihgt of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. For instance **x** and **y** 0 is the top-left, 0.5 is the center, and 1 is the bottom rigth.|
+| **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** based on his width.|
+| **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** using the parameters **```x```**, **```y```**,**```width```** and **```height```**. The parameters **```finalWidth```** and **```finalWidth```** are optional in order to set another size. |
  **``` setViewPort(width, height) ```** | Sets the **view port** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**.|
-| **``` removeViewPort() ```** | Remove the set **view port**.|
 | **``` getViewPortX() ```** | Gets the **view Port X**, if the view port wasnt set, returns **```null```**.|
 | **``` getViewPortY() ```** | Gets the **view Port Y**, if the view port wasnt set, returns **```null```**.|
-| **``` fitInto(maxWidth, maxHeight, offsetX, offsetY) ```** | Fit the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** into the defined area from the parameters **```width```** and **```height```** without distortion and center it based on the current position. The parameters **```offsetX```** and **```offsetY```** ar optional, the default values is 0 for both. |
-| **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** using the parameters **```x```**, **```y```**,**```width```** and **```height```**. The parameters **```finalWidth```** and **```finalWidth```** are optional in order to set another size. |
+| **``` removeViewPort() ```** | Remove the set **view port**.|
 
 ### Image methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setImage(image, width, height) ```** | Sets the **image** of the clip. It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**. The **```width```** and **```height```** are optional, the default value is the **image size**.|
-| **``` loadImage(url, width, height) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```width```** and ***```height```*** are optional, the default value is the **image size**.|
+| **``` setImage(image) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**.|
+| **``` setImageById(id) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) using the ```id``` of the following HTML elements: **img**, **canvas** and **video**.|
+| **``` loadImage(src, isAntiCache) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```isAntiCache```** is optional to avoid the cache, the default value is false.|
 | **``` setMask(clip) ```** | Sets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
 | **``` removeMask() ```** | Removes a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
+| **``` isMask() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** is **mask** and false if not.|
+| **``` setBackground(fillStyle)```** | Sets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s**bakcgfround**. Please see the **[```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties)** property. |
+| **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
 
 ### Text methods
 | Property | Description |
@@ -131,6 +131,7 @@ clip.setImage(image);
 ### Children methods
 | Property | Description |
 | -------------------------------- | ------------- |
+| **``` getId() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **id**.|
 | **``` addNewClip（image） ```** | Creates and add a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**．The **```image```** parameter is optional. Please see the method **```setImage```**. IIf the image parameter is null, an empty Clip is created. |
 | **``` getNewClip（image） ```** | Creates and return a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** without adding it．The **```image```** parameter is optional. Please see the method **```setImage```**. IIf the image parameter is null, an empty Clip is created.|
 | **``` getClipAt(depth) ```** | Gets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** at the specific depth, countinf from 0. |
@@ -144,8 +145,9 @@ clip.setImage(image);
 | **``` swapClips(clip1, clip2) ```** | Interchange the depth of two **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. |
 | **``` toFront(clip) ```** | Bring the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** to front (the highest depth). |
 | **``` toBack(clip) ```** | Bring the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** to back (the lowest depth). |
+| **``` getParent() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **parent**.|
 
-### Frame methods
+### Sprite sheet methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` getTotalFrames() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **total frames**.|
@@ -162,14 +164,29 @@ clip.setImage(image);
 | **``` nextFrame() ```** | Stops at the **next frame**.|
 | **``` prevFrame() ```** | Stops at the **prev frame**.|
 
-### Other methods
+### Event methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` getId() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **id**.|
-| **``` getParent() ```** | Returns the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s **parent**.|
-| **``` isMask() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** is **mask** and false if not.|
 | **``` hasButton() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** has listening to any **mouse event** and false if not.|
-| **``` setBackground(fillStyle)```** | Sets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s**bakcgfround**. Please see the **[```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties)** property. |
-| **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
 | **``` addEventListener(type, listener, context) ```** | Adds a ```listener``` to a specific event ```type```. The parameter ```context``` is optional, the listener can be called in a specific context.|
 | **``` removeEventListener(type, listener, context) ```** | Removes a ```listener``` to a specific event ```type```. To remove a listener that was added with a specific ```context```, use it to remove the listener.|
+
+### Events
+All the Event object has the properties: 
+**```type```**: name of the Event.
+**```target```**: the emiter of the Event.
+
+| Property | Description |
+| -------------------------------- | ------------- |
+| **"imageSet"** | This event is trigger when an image is set. The event has the property ```image```, the reference to the imageset.|
+| **"imageLoaded"** | This event is trigger when an image is loaded by the method ```loadImage```. The event has the property ```image```, the reference to the image and the source in the property ```src```.|
+| **"imageError"** | This event is trigger when an image it can not be loaded by ```loadImage```. Ths event has the property ```src```.|
+| **"clipAdded"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is added inside another one. The event has the property ```parent```.|
+| **"clipRemoved"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is removed from another one. The event has the property ```parent```.|
+| **"cycleStart"** | This event is trigger when a cycle starts. The event has the prorperties: ```currentFrame``` and ```cycle```, that has the name of the cycle. The possible cycles are: ```play```, ```playFrom```, ```playUntil```, ```playBetween```, ```stop```, ```stopAt```, ```nextFrame``` and ```prevFrame```.|
+| **"cycleEnd"** | This event is trigger when a cycle ends. The event has the prorperties: ```currentFrame``` and ```cycle```, that has the name of the cycle. The possible cycles are: ```play```, ```playFrom```, ```playUntil```, ```playBetween```, ```stop```, ```stopAt```, ```nextFrame``` and ```prevFrame```.|
+| **"render"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) was rendered.|
+
+
+        this.RENDER        = "render";
+
