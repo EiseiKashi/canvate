@@ -1,5 +1,5 @@
 
-![CANVATE.JS](http://sakuracode.com/img/canvate.svg)<br>
+![CANVATE.JS](http://sakuracode.com/img/ryu-github.svg)<br>
 Canvate is a JavaScript library that provides straight forward solutions for working with rich graphics and interactivity with HTML5 canvas easily.
 
 - **Buttons with irregular shapes:** build buttons with irregular shapes with any kind of images for instance png, svg,  or other HTML5 canvas. Canvate make it easy to build buttons "inside" de HTML5 canvas.
