@@ -114,7 +114,8 @@ clip.setImage(image);
 ### Image methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setImage(image) ```** | Sets the **image** of the clip. It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**.|
+| **``` setImage(image) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**.|
+| **``` setImageById(id) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) using the ```id``` of the following HTML elements: **img**, **canvas** and **video**.|
 | **``` loadImage(url, isAntiCache) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```isAntiCache```** is optional to avoid the cache, the default value is false.|
 | **``` setMask(clip) ```** | Sets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
 | **``` removeMask() ```** | Removes a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
