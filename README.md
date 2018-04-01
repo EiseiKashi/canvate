@@ -116,7 +116,7 @@ clip.setImage(image);
 | -------------------------------- | ------------- |
 | **``` setImage(image) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**.|
 | **``` setImageById(id) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) using the ```id``` of the following HTML elements: **img**, **canvas** and **video**.|
-| **``` loadImage(url, isAntiCache) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```isAntiCache```** is optional to avoid the cache, the default value is false.|
+| **``` loadImage(src, isAntiCache) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```isAntiCache```** is optional to avoid the cache, the default value is false.|
 | **``` setMask(clip) ```** | Sets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
 | **``` removeMask() ```** | Removes a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
 | **``` isMask() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** is **mask** and false if not.|
@@ -170,3 +170,23 @@ clip.setImage(image);
 | **``` hasButton() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** has listening to any **mouse event** and false if not.|
 | **``` addEventListener(type, listener, context) ```** | Adds a ```listener``` to a specific event ```type```. The parameter ```context``` is optional, the listener can be called in a specific context.|
 | **``` removeEventListener(type, listener, context) ```** | Removes a ```listener``` to a specific event ```type```. To remove a listener that was added with a specific ```context```, use it to remove the listener.|
+
+### Events
+All the Event object has the properties: 
+**```type```**: name of the Event.
+**```target```**: the emiter of the Event.
+
+| Property | Description |
+| -------------------------------- | ------------- |
+| **"imageSet"** | This event is trigger when an image is set. The event has the property ```image```, the reference to the imageset.|
+| **"imageLoaded"** | This event is trigger when an image is loaded by the method ```loadImage```. The event has the property ```image```, the reference to the image and the source in the property ```src```.|
+| **"imageError"** | This event is trigger when an image it can not be loaded by ```loadImage```. Ths event has the property ```src```.|
+| **"clipAdded"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is added inside another one. The event has the property ```parent```.|
+| **"clipRemoved"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) is removed from another one. The event has the property ```parent```.|
+| **"cycleStart"** | This event is trigger when a cycle starts. The event has the prorperties: ```currentFrame``` and ```cycle```, that has the name of the cycle. The possible cycles are: ```play```, ```playFrom```, ```playUntil```, ```playBetween```, ```stop```, ```stopAt```, ```nextFrame``` and ```prevFrame```.|
+| **"cycleEnd"** | This event is trigger when a cycle ends. The event has the prorperties: ```currentFrame``` and ```cycle```, that has the name of the cycle. The possible cycles are: ```play```, ```playFrom```, ```playUntil```, ```playBetween```, ```stop```, ```stopAt```, ```nextFrame``` and ```prevFrame```.|
+| **"render"** | This event is trigger when a [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) was rendered.|
+
+
+        this.RENDER        = "render";
+
