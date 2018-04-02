@@ -1,3 +1,4 @@
+// "VERSION 0.1.0"
 window.Canvate = function(element) {
     'use strict';
     window.check = true;
@@ -208,8 +209,6 @@ window.Canvate = function(element) {
     
     // ::: CLIP ::: //
     var Clip = function (image){
-        ("VERSION 0.0.89")
-        
         'use strict';
         
         var _self          = this;
@@ -306,6 +305,7 @@ window.Canvate = function(element) {
         }
 
         this.setSize = function(width, height){
+            debugger
             var isNotWidth  = (width  == null) || (isNaN(width)  && width  != "auto");
             var isNotHeight = (height == null) || (isNaN(height) && height != "auto");
             
@@ -410,8 +410,8 @@ window.Canvate = function(element) {
             
             
             var img               = document.createElement("img");
-                img.src           = canvas.toDataURL('image/png');
                 img.crossOrigin   = "Anonymous";
+                img.src           = canvas.toDataURL('image/png');
             
             this.setImage(canvas);
         }
@@ -445,7 +445,7 @@ window.Canvate = function(element) {
                 return;
             }
             
-            _image         = image;
+            _image             = image;
             _image.crossOrigin = "Anonymous";
             _initialWidth      = image.width;
             _initialHeight     = image.height;
@@ -455,10 +455,14 @@ window.Canvate = function(element) {
             _context       = _canvas.getContext('2d');
             _context.drawImage(image, 0, 0, _initialWidth, _initialHeight);
             
+            this.setSize(this.width, this.height);
+            
             this.width  = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
             this.height = null == this.height || 0 == this.height ? _initialHeight : this.height;
             _cropWidth  = null == _cropWidth  || 0 == _cropWidth  ? _initialWidth  : _cropWidth;
             _cropHeight = null == _cropHeight || 0 == _cropHeight ? _initialHeight : _cropHeight;
+            
+            
             
             this.setCycle(_cropX, _cropY, _cropWidth, _cropHeight);
             emit(_self.IMAGE_SET, {image:image})
@@ -466,6 +470,7 @@ window.Canvate = function(element) {
         
         this.setImageById = function(id){
             var image = document.getElementById(id);
+                image.crossOrigin = "Anonymous";
             if(image == null){
                 throw "There is no element with the id: " + id;
                 return;
@@ -489,9 +494,9 @@ window.Canvate = function(element) {
                 image.onerror = function(event){
                     emit(_self.IMAGE_ERROR, {src:src})
                 }
-                var antiCache = isAntiCache ? '?' + new Date().getTime() : "";
-                image.src     = src + antiCache;
+                var antiCache     = isAntiCache ? '?' + new Date().getTime() : "";
                 image.crossOrigin = "Anonymous";
+                image.src         = src + antiCache;
         }
         
         //Set mask wit another clip
@@ -501,7 +506,7 @@ window.Canvate = function(element) {
                 return;
             }
             
-            _maskClip[mask.id()] = this;
+            _maskClip[mask.getId()] = this;
             _typeMask            = _maskTypes[type] || _maskTypes.mask;
             _mask                = mask;
         }
@@ -513,7 +518,7 @@ window.Canvate = function(element) {
                 // Early return
                 return;
             }
-            _maskClip[_mask.id()] = null;
+            _maskClip[_mask.getId()] = null;
             _mask = null;
         }
         
@@ -546,9 +551,9 @@ window.Canvate = function(element) {
                 context.fillStyle = color;
                 context.fillRect(0,0,width,height);
             
-            var img = document.createElement("img");
-                img.src = canvas.toDataURL('image/png');
+            var img             = document.createElement("img");
                 img.crossOrigin = "Anonymous";
+                img.src         = canvas.toDataURL('image/png');
             
             this.setImage(canvas);
         }
@@ -601,12 +606,12 @@ window.Canvate = function(element) {
                 return;
             }
             
-            var parent = clip.parent();
+            var parent = clip.getParent();
             if(parent != null){
                 parent.removeClip(clip);
             }
             _clipList.splice(indexTarget, 0, clip);
-            _parentClip[clip.id()] = this;
+            _parentClip[clip.getId()] = this;
             emit(_self.CLIP_ADDED, {parent:parent});
         }
         
@@ -631,8 +636,8 @@ window.Canvate = function(element) {
                 return;
             }
             var clip = _clipList.splice(indexTarget, 1)[0];
-            var parent = _parentClip[clip.id()];
-                _parentClip[clip.id()] = null;
+            var parent = _parentClip[clip.getId()];
+                _parentClip[clip.getId()] = null;
             emit(_self.CLIP_REMOVED, {parent:parent});
             return clip;
         }
