@@ -305,7 +305,6 @@ window.Canvate = function(element) {
         }
 
         this.setSize = function(width, height){
-            debugger
             var isNotWidth  = (width  == null) || (isNaN(width)  && width  != "auto");
             var isNotHeight = (height == null) || (isNaN(height) && height != "auto");
             
