@@ -1,4 +1,4 @@
-// "VERSION 0.1.1"
+// "VERSION 0.1.2"
 window.Canvate = function(element) {
     'use strict';
     window.check = true;
@@ -1183,11 +1183,19 @@ window.Canvate = function(element) {
                 _innerContext.save();
                 _innerContext.globalAlpha = _self.alpha;
                 
-                var translateX = (0.5 + xRender-minX) << 0;
-                var translateY = (0.5 + yRender-minY) << 0;
+                var xXscale    = scaleXrender < 0 ? -_innerCanvas.width  : 0;
+                var yYscale    = scaleYrender < 0 ? -_innerCanvas.height : 0;
+                
+                var translateX = (0.5 + xRender-minX+xXscale) << 0;
+                var translateY = (0.5 + yRender-minY+yYscale) << 0;
                 
                 _innerContext.translate(translateX, translateY);
                 _innerContext.rotate(rotationRender);
+                
+                scaleXrender = scaleXrender < 0 ? -1 : 1;
+                scaleYrender = scaleYrender < 0 ? -1 : 1;
+                
+                _innerContext.scale(scaleXrender, scaleYrender);
                 
                 if(_self.background != null){
                     _innerContext.fillStyle = _self.background;
@@ -1253,7 +1261,7 @@ window.Canvate = function(element) {
                 }
                 
                 if(_hasMouse){
-                    var pixel = _innerContext.getImageData(mouseX, mouseY, 1, 1).data;
+                    var pixel = _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data;
                     alphaRender = pixel[3];
                     
                     if(alphaRender > 0){
@@ -1264,7 +1272,7 @@ window.Canvate = function(element) {
                 // MASK RENDER
                 clipRender  = _mask;
                 if(null != clipRender){
-                    clipData= clipRender.render(canvasWidth, canvasHeight, mouseX-_self.x, mouseY-_self.y, true);
+                    clipData= clipRender.render(canvasWidth, canvasHeight, mouseX-minX, mouseY-minY, true);
                     canvasRender = clipData.inner;
                     if(null != canvasRender){
                         clipBounds = clipData.bounds;
@@ -1277,7 +1285,7 @@ window.Canvate = function(element) {
                         _innerContext.globalCompositeOperation = 'destination-in';
                         _innerContext.drawImage( canvasRender ,x ,y, w, h);
                         
-                        alphaRender= _innerContext.getImageData(mouseX, mouseY, 1, 1).data[3];
+                        alphaRender= _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data[3];
                         if(alphaRender == 0){
                             _clipMouse = null;
                         }

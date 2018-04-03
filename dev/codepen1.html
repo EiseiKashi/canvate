@@ -8,7 +8,33 @@
         
     </head>
     <body class="main">
-    <canvas id="Example1" width=600 height=300 ></canvas>
-        <script src=sample1.js></script>
+        <canvas id="Example" width=600 height=300 ></canvas>
+        <script src="js/canvate.js">
+        </script>
+        <script>
+            
+            // Get the HTML5 canvas reference.
+            var canvas   = document.getElementById("Example");
+
+            // Create the Canvate.
+            var canvate  = new Canvate(canvas);
+
+            // Add new Clip
+            var logo = canvate.addNewClip();
+
+            //Load the image into the clip
+            logo.loadImage("img/fujisan-sakura.png");
+
+            // Change the position
+            logo.setPosition(50, 50);
+
+            // Mouse Handler
+            var onLogoClick = function(event){
+              console.log("Logo was clicked!");
+            }
+
+            // Add the Mouse event listener
+            logo.addEventListener("click", onLogoClick);
+        </script>
     </body>
 </html>
