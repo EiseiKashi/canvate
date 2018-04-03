@@ -1,4 +1,4 @@
-//  "VERSION 0.1.2"
+// "VERSION 0.1.2"
 window.Canvate = function(element) {
     'use strict';
     window.check = true;
