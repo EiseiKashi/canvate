@@ -790,6 +790,8 @@ window.Canvate = function(element) {
                     }
                 }
             }
+            
+            this.setSize(widthSetCycle, "auto");
         }
         
         var _playUntil = function (index){
