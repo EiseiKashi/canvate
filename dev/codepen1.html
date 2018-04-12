@@ -1,40 +1,45 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <html manifest="ume.appcache">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CANVATE</title>
-        
-    </head>
-    <body class="main">
-        <canvas id="Example" width=600 height=300 ></canvas>
-        <script src="js/canvate0-1-2.js">
-        </script>
-        <script>
-            
-            // Get the HTML5 canvas reference.
-            var canvas   = document.getElementById("Example");
+<canvas id="Example" width=600 height=300 ></canvas>
 
-            // Create the Canvate.
-            var canvate  = new Canvate(canvas);
+<script src="https://cdn.rawgit.com/EiseiKashi/canvate/0.1.8/dev/js/canvate-0-1-8.js"></script>
 
-            // Add new Clip
-            var logo = canvate.addNewClip();
+<script>
+// Get the HTML5 canvas reference.
+var canvas   = document.getElementById("Example");
 
-            //Load the image into the clip
-            logo.loadImage("img/fujisan-sakura.png");
+// Create the Canvate.
+var canvate  = new Canvate(canvas);
 
-            // Change the position
-            logo.setPosition(50, 50);
+// Add an empty Clip to the main Canvas
+var container = canvate.addNewClip();
 
-            // Mouse Handler
-            var onLogoClick = function(event){
-              console.log("Logo was clicked!");
-            }
+// Add new Clip inside the container
+var background = container.addNewClip();
+//Load the image into the clip
+background.loadImage("http://www.sakuracode.com/canvate/img/fujisan-sakura.png");
+// Set the bacround position
+background.x = 220;
 
-            // Add the Mouse event listener
-            logo.addEventListener("click", onLogoClick);
-        </script>
-    </body>
-</html>
+// Add another Clip inside the container
+var logo = container.addNewClip();
+// Set the logo size
+logo.setSize(164, "auto");
+// Set the position
+logo.setPosition(17, 0);
+//Load the image into the clip
+logo.loadImage("http://www.sakuracode.com/canvate/img/sample1-3.svg");
+
+// Set the pivot of the container in the center.
+container.setPivot(0.5, 0.5);
+// Set the container size
+container.setSize("auto", 100);
+// Set the position
+container.setPosition(canvas.width/2, canvas.height/2);
+
+// Make the contaiiner rotate with all the clips inside
+var onContainerRender = function(){
+	container.rotation += 0.25;
+}
+container.addEventListener("render", onContainerRender);
+	
+	
+</script>
