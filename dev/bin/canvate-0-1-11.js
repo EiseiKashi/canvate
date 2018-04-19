@@ -1,5 +1,4 @@
 // "VERSION 0.1.11"
-// View port functionality, removed
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
