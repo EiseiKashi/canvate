@@ -1,5 +1,4 @@
 // "VERSION 0.1.12"
-// renderMe removed
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
