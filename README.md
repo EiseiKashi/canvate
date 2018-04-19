@@ -107,9 +107,9 @@ clip.setImage(image);
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** based on his width.|
 | **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** using the parameters **```x```**, **```y```**,**```width```** and **```height```**. The parameters **```finalWidth```** and **```finalWidth```** are optional in order to set another size. |
  **``` setViewPort(width, height) ```** | Sets the **view port** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**.|
-| **``` getViewPortX() ```** | Gets the **view Port X**, if the view port wasnt set, returns **```null```**.|
-| **``` getViewPortY() ```** | Gets the **view Port Y**, if the view port wasnt set, returns **```null```**.|
-| **``` removeViewPort() ```** | Remove the set **view port**.|
+| **``` getViewPortWidth() ```** | Gets the **view Port width**, if the view port wasnt set, returns **```null```**.|
+| **``` getViewPortHeight() ```** | Gets the **view Port height**, if the view port wasnt set, returns **```null```**.|
+| **``` removeViewPort() ```** | Make all the clip visible without the view port set before.|
 
 ### Image methods
 | Property | Description |
