@@ -1,5 +1,4 @@
 // "VERSION 0.1.10"
-// FIX of ViewPort 
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
