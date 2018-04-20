@@ -1,5 +1,4 @@
 // "VERSION 0.1.15"
-// Polishing
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
