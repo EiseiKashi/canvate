@@ -117,9 +117,8 @@ clip.setImage(image);
 | **``` setImage(image) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip). It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**.|
 | **``` setImageById(id) ```** | Sets the **image** of the [clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip) using the ```id``` of the following HTML elements: **img**, **canvas** and **video**.|
 | **``` loadImage(src, isAntiCache) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**. The parameters **```isAntiCache```** is optional to avoid the cache, the default value is false.|
-| **``` setMask(clip) ```** | Sets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
-| **``` removeMask() ```** | Removes a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask.|
-| **``` isMask() ```** | Gets true if the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** is **mask** and false if not.|
+| **``` setMask() ```** | Sets a **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** as a mask. The **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** acts as a mask of his children.|
+| **``` unsetMask() ```** | The **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)** render it self and his children in the normal way.|
 | **``` setBackground(fillStyle)```** | Sets the **[clip](https://github.com/EiseiKashi/canvate/blob/master/README.md#what-is-a-clip)**'s**bakcgfround**. Please see the **[```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties)** property. |
 | **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
 
