@@ -311,7 +311,7 @@ window.Canvate = function(element) {
             _context.fillText(text, 0, yText);
         }
         
-        this.getCanvas(){
+        this.getCanvas = function(){
             var isTheSame = true;
             for(index = 0; index < length; index++){
                 property = _textProperties[index];
