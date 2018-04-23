@@ -246,6 +246,7 @@ window.Canvate = function(element) {
         this.interline        = null == interline    ? DEFAULT_INTERLINE : interline;
         this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // end | center | left | right
         this.textBaseline     = null == textBaseline ? DEFAULT_BASE_LINE : textBaseline;//bottom | middle
+        this.autoSize         = false;
         this.width;
         this.height;
         this.naturalWidth;
@@ -262,101 +263,37 @@ window.Canvate = function(element) {
         var length = _textProperties.length;
         
         var property;var value;var index;var line;var e1;var e2;
-        var edge; var remainder;var wordWidth;
-        var lineList = [];
-        var wrap1 = function(text, limit, yText, lineHeight) {
-            if (text.length > limit) {
-                e1 = text.slice(0, limit).lastIndexOf(' ');
-                e2 = text.slice(0, limit).lastIndexOf('-');
-                edge = Math.max(e1, e2);
-                if (edge > 0) {
+        var edge; var remainder;
+        
+        var wrap = function(text, yText, lineHeight) {
+            var lineWidth  = Math.ceil(_context.measureText(_self.text).width);
+            var reminder   = "";
+            var line       = text;
+            
+            if(lineWidth > _maxWidth){
+                e1 = text.indexOf('-');
+                e2 = text.indexOf(' ');
+                
+                if(e1 > 0 || e2 > 0){
+                    if(e1 == -1 ){
+                        edge = e2;
+                    }else if(e2 == -1){
+                        edge = e1;
+                    }else{
+                        edge = Mat.min(e1, e2)
+                    }
                     line      = text.slice(0, edge + (e2==edge?1:0));
                     remainder = text.slice(edge + 1);
-                    if(_isMesure){
-                        wordWidth  = Math.ceil(_context.measureText(line).width);
-                        _maxWidth  = Math.max(_maxWidth, wordWidth);
-                        _maxHeight = Math.max(_maxHeight, yText + lineHeight);
-                    }else{
-						console.log("1. WRITE " + line);
-                        _context.fillText(line, 0, yText);
-                    }
                     yText += lineHeight;
-                    wrap(remainder, limit, yText, lineHeight);
-                    return;
-                }else{
-                    e1 = text.indexOf('-');
-                    e2 = text.indexOf(' ');
-                    edge;
-                    if(e1 == -1 || e2 == -1){
-                        edge = (Math.max(e1, e2));
-                    }else{
-                        edge = (Math.min(e1, e2));
-                    }
-                    if(edge > 0){
-                        line      = text.slice(0, edge + (e2==edge?0:1));
-                        remainder = text.slice(edge + 1);
-                        if(_isMesure){
-                            wordWidth  = Math.ceil(_context.measureText(line).width);
-                            _maxWidth  = Math.max(_maxWidth, wordWidth);
-                            _maxHeight = Math.max(_maxHeight, yText + lineHeight);
-                        }else{
-							console.log("2. WRITE " + line);
-                            _context.fillText(line, 0, yText);
-                        }
-                        yText += lineHeight;
-                        wrap(remainder, limit, yText, lineHeight);
-                        return;
-                    }
+                    wrap(remainder, yText, lineHeight);
                 }
             }
-            
-            if(_isMesure){
-                wordWidth  = Math.ceil(_context.measureText(text).width);
-                _maxWidth  = Math.max(_maxWidth, wordWidth);
-                _maxHeight = Math.max(_maxHeight, yText + lineHeight);
-            }else{
-				console.log("3. WRITE " + text);
-                _context.fillText(text, 0, yText + lineHeight);
-            }
-        }
-        
-		var wrap = function(text, limit, yText, lineHeight) {
-			e1   = text.indexOf('-');
-			e2   = text.indexOf(' ');
-			edge = Math.min(e1, e2);
-			
-			if (edge > 0) {
-				isWritable = true;
-			}else{
-				if(e1 == -1 || e2 == -1){
-					edge = (Math.max(e1, e2));
-				}else{
-					edge = (Math.min(e1, e2));
-				}
-				if(edge > 0){
-					isWritable = true;
-				}
-			}
-			
-			if(isWritable){
-				line      = text.slice(0, edge + (e2==edge?1:0));
-				remainder = text.slice(edge + 1);
-				if(_isMesure){
-					wordWidth  = Math.ceil(_context.measureText(line).width);
-					_maxWidth  = Math.max(_maxWidth, wordWidth);
-					_maxHeight = Math.max(_maxHeight, yText + lineHeight);
-				}else{
-					console.log("2. WRITE " + line);
-					_context.fillText(line, 0, yText);
-				}
-				yText += lineHeight;
-				wrap(remainder, limit, yText, lineHeight);
-				return;
-			}
+            _context.fillText(line, 0, yText);
         }
         
         this.getCanvas = function(){
             var isTheSame = true;
+            length = _textProperties.length;
             for(index = 0; index < length; index++){
                 property = _textProperties[index];
                 value    = _self[property];
@@ -371,66 +308,26 @@ window.Canvate = function(element) {
                 _context.textBaseline = _self.textBaseline;
                 _context.fillStyle    = _self.fontColor;
                 _context.font         = _self.fontSize + "px " + _self.font;
-				
-                var limit = _self.text.length;
-                
-                _maxWidth  = _self.width;
-                _maxHeight = _self.height;
                 
                 if(null == _self.width || null == _self.height){
-                    _isMesure  = true;
-                    _maxWidth  = 0;
-                    _maxHeight = 0;
-					
-                    wrap(_self.text, limit, 0, _self.interline * _self.fontSize);
-                    
-                    _self.width  = _maxWidth;
-                    _self.height = _maxHeight;
-                }
-				
-                var ems = "";
-                var wordWidth = 0;
-                while(wordWidth < _maxWidth){
-                    wordWidth = Math.ceil(_context.measureText(ems).width);
-                    ems += "M";
+                   _maxWidth  = Math.ceil(_context.measureText(_self.text).width);
+                   _maxHeight = _self.interline * _self.fontSize;
+                }else{
+                    _maxWidth  = _self.width;
+                    _maxHeight = _self.height;
                 }
                 
-                limit        = Math.max(ems.length, 1);
-                _isMesure    = false;
-				
-                _self.width  = _canvas.width  = _maxWidth;
-                _self.height = _canvas.height = 200;
-				console.log("FIRST: " + _maxWidth);
-				_context.textAlign    = _self.textAlign;
-				_context.textBaseline = _self.textBaseline;
-				_context.fillStyle    = _self.fontColor;
-				_context.font         = _self.fontSize + "px " + _self.font;
+                _canvas.width         = _maxWidth;
+                _canvas.height        = _maxHeight;
                 
-                wrap(_self.text, limit, 0, _self.interline * _self.fontSize);
+                _context.textAlign    = _self.textAlign;
+                _context.textBaseline = _self.textBaseline;
+                _context.fillStyle    = _self.fontColor;
+                _context.font         = _self.fontSize + "px " + _self.font;
+                
+                wrap(_self.text, 0, _self.interline * _self.fontSize);
             }
             
-            for(index = 0; index < length; index++){
-                property               = _textProperties[index];
-                value                  = _self[property];
-                _lastProperties[index] = value;
-            }
-			/*
-			_context.textAlign    = _self.textAlign;
-            _context.textBaseline = _self.textBaseline;
-            _context.fillStyle    = _self.fontColor;
-            _context.font         = _self.fontSize + "px " + _self.font;
-			_maxWidth             = Math.ceil(_context.measureText(_self.text).width);
-			
-			_canvas.width         = _maxWidth;
-            _canvas.height        = _maxHeight;
-			console.log("LAST: " + _maxWidth);
-			_context.textAlign    = _self.textAlign;
-            _context.textBaseline = _self.textBaseline;
-            _context.fillStyle    = _self.fontColor;
-            _context.font         = _self.fontSize + "px " + _self.font;
-			
-			_context.fillText(_self.text,0,0);
-            */
             return _canvas;
         }
     }
@@ -444,36 +341,36 @@ window.Canvate = function(element) {
     var Clip = function (image){
         'use strict';
         
-        var _self          = this;
+        var _self         = this;
         
-        this.TEXT_SET      = "textSet";
-        this.IMAGE_SET     = "imageSet";
-        this.IMAGE_LOADED  = "imageLoaded";
-        this.IMAGE_ERROR   = "imageError";
-        this.CLIP_ADDED    = "clipAdded";
-        this.CLIP_REMOVED  = "clipRemoved";
-        this.CYCLE_END     = "cycleEnd";
-        this.CYCLE_START   = "cycleStart";
-        this.RENDER        = "render";
+        this.TEXT_SET     = "textSet";
+        this.IMAGE_SET    = "imageSet";
+        this.IMAGE_LOADED = "imageLoaded";
+        this.IMAGE_ERROR  = "imageError";
+        this.CLIP_ADDED   = "clipAdded";
+        this.CLIP_REMOVED = "clipRemoved";
+        this.CYCLE_END    = "cycleEnd";
+        this.CYCLE_START  = "cycleStart";
+        this.RENDER       = "render";
         
         clipCounter++;
-        var _id            = CLIP + clipCounter;
-        _allClipList[_id]  = this;
+        var _id           = CLIP + clipCounter;
+        _allClipList[_id] = this;
         
-        this.name          = _id;
-        this.x             = 0;
-        this.y             = 0;
-        this.width         = 0;
-        this.height        = 0;
-        this.alpha         = 1;
-        this.scaleX        = 1;
-        this.scaleY        = 1;
-        this.rotation      = 0;
-        this.pivotX        = 0;
-        this.pivotY        = 0;
-        this.visible       = true;
-        this.isLoop        = false;
-        this.background    = null;
+        this.name         = _id;
+        this.x            = 0;
+        this.y            = 0;
+        this.width        = 0;
+        this.height       = 0;
+        this.alpha        = 1;
+        this.scaleX       = 1;
+        this.scaleY       = 1;
+        this.rotation     = 0;
+        this.pivotX       = 0;
+        this.pivotY       = 0;
+        this.visible      = true;
+        this.isLoop       = false;
+        this.background   = null;
         this.text;
         this.interline;
         this.fontSize;
@@ -485,8 +382,6 @@ window.Canvate = function(element) {
         var AUTO           = "auto";
         
         var _image;
-        var _canvas;
-        var _context;
         var _increment     = 0;
         var _frameIndex    = 0;
         var _frameRate     = 60;
@@ -511,6 +406,7 @@ window.Canvate = function(element) {
         var _lastTime;
         var _lastAction;
         var _isMask = false;
+		var _clipText;
         
         // HELPERS VARIABLES
         var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
@@ -655,7 +551,7 @@ window.Canvate = function(element) {
                 // Early return
                 return;
             }
-            
+            _clipText          = null;
             _image             = image;
             _image.crossOrigin = ANONYMOUS;
             
@@ -667,11 +563,6 @@ window.Canvate = function(element) {
             
             this.width         = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
             this.height        = null == this.height || 0 == this.height ? _initialHeight : this.height;
-            _canvas            = document.createElement(CANVAS);
-            _canvas.width      = this.width;
-            _canvas.height     = this.height;
-            _context           = _canvas.getContext(D2);
-            _context.drawImage(image, 0, 0, _initialWidth, _initialHeight);
             
             this.setSize(this.width, this.height);
             
@@ -682,6 +573,54 @@ window.Canvate = function(element) {
             
             this.setCycle(_cropX, _cropY, _cropWidth, _cropHeight);
             emit(_self.IMAGE_SET, {image:image})
+        }
+        
+        // CYCLE AND FRAME METHODS
+        // Sets the Cycle animation
+        this.setCycle = function(x, y, width, height, totalFrames, gapX, gapY){
+            tileXsetCycle  = _cropX      = null == x      || isNaN(x)      ? _cropX      : x;
+            tileYsetCycle  = _cropY      = null == y      || isNaN(y)      ? _cropY      : y;
+            widthSetCycle  = _cropWidth  = null == width  || isNaN(width)  ? _cropWidth  : width;
+            heightSetCycle = _cropHeight = null == height || isNaN(height) ? _cropHeight : height;
+            
+            gapX = null == gapX || isNaN(gapX) ? 0 : gapX;
+            gapY = null == gapY || isNaN(gapY) ? 0 : gapY;
+            
+            if(null == totalFrames || isNaN(totalFrames)){
+                var totalWidth  = Math.floor(_image.width/widthSetCycle);
+                var totalHeight = Math.floor(_image.height/heightSetCycle);
+                totalFrames     = _totalFrames = totalWidth * totalHeight;
+            }
+            
+            if(_totalFrames == 0){
+                _totalFrames = 1;
+            }
+            
+            _framesList.length = 0;
+            var rowX;
+            for(indexSetCycle=0; indexSetCycle < _totalFrames; indexSetCycle++){
+                rowX = widthSetCycle*indexSetCycle;
+                
+                _framesList.push({
+                                    x      : tileXsetCycle,
+                                    y      : tileYsetCycle,
+                                    width  : widthSetCycle,
+                                    height : heightSetCycle
+                                });
+                
+                tileXsetCycle += widthSetCycle;
+                if(tileXsetCycle >= _initialWidth){
+                    tileXsetCycle = 0;
+                    tileYsetCycle += heightSetCycle;
+                    if(_cropY > _initialHeight){
+                        throw new Error("The total frames is out of bound");
+                    }
+                }
+            }
+            
+            if(1 < _totalFrames){
+                this.setSize(widthSetCycle, AUTO);
+            }
         }
         
         this.setImageById = function(id){
@@ -753,17 +692,11 @@ window.Canvate = function(element) {
         }
         
         // Sets the text
-        this.setText1 = function(text, size, font, color){
-            this.text      = text;
-            this.fontSize  = null == size  ? this.fontSize  : 12;
-            this.font      = null == font  ? this.font      : font;
-            this.fontColor = null == color ? this.fontColor : color;
-            emit(_self.TEXT_SET, {text:this.text});
-        }
-        
         this.setText = function(text, size, font, color, width, height){
             var clipText = new ClipText(text, size, font, color, width, height);
             this.setImage(clipText.getCanvas());
+			_clipText    = clipText;
+            return clipText;
         }
         
         // CHILDREN METHODS
@@ -935,65 +868,6 @@ window.Canvate = function(element) {
                 }
             }
             return list;
-        }
-        
-        // CYCLE AND FRAME METHODS
-        // Sets the Cycle animation
-        this.setCycle = function(x, y, width, height, totalFrames, gapX, gapY){
-            tileXsetCycle  = _cropX      = null == x      || isNaN(x)      ? _cropX      : x;
-            tileYsetCycle  = _cropY      = null == y      || isNaN(y)      ? _cropY      : y;
-            widthSetCycle  = _cropWidth  = null == width  || isNaN(width)  ? _cropWidth  : width;
-            heightSetCycle = _cropHeight = null == height || isNaN(height) ? _cropHeight : height;
-            
-            gapX = null == gapX || isNaN(gapX) ? 0 : gapX;
-            gapY = null == gapY || isNaN(gapY) ? 0 : gapY;
-            
-            if(null == totalFrames || isNaN(totalFrames)){
-                var totalWidth  = Math.floor(_image.width/widthSetCycle);
-                var totalHeight = Math.floor(_image.height/heightSetCycle);
-                totalFrames     = _totalFrames = totalWidth * totalHeight;
-            }
-            
-            if(_totalFrames == 0){
-                _totalFrames = 1;
-            }
-            
-            _canvas        = document.createElement(CANVAS);
-            _canvas.width  = widthSetCycle*_totalFrames;
-            _canvas.height = heightSetCycle;
-            _context       = _canvas.getContext(D2);
-            
-            _framesList.length = 0;
-            var rowX;
-            for(indexSetCycle=0; indexSetCycle < _totalFrames; indexSetCycle++){
-                rowX = widthSetCycle*indexSetCycle;
-                
-                _framesList.push({
-                                    x      : rowX,
-                                    y      : 0,
-                                    width  : widthSetCycle,
-                                    height : heightSetCycle
-                                });
-                
-                _context.drawImage(_image, 
-                                   tileXsetCycle, tileYsetCycle, 
-                                   widthSetCycle, heightSetCycle, 
-                                   rowX,          0, 
-                                   widthSetCycle, heightSetCycle);
-                
-                tileXsetCycle += widthSetCycle;
-                if(tileXsetCycle >= _initialWidth){
-                    tileXsetCycle = 0;
-                    tileYsetCycle += heightSetCycle;
-                    if(_cropY > _initialHeight){
-                        throw new Error("The total frames is out of bound");
-                    }
-                }
-            }
-            
-            if(1 < _totalFrames){
-                this.setSize(widthSetCycle, AUTO);
-            }
         }
         
         var _playUntil = function (index){
@@ -1233,7 +1107,7 @@ window.Canvate = function(element) {
         
         this.render = function(canvasWidth, canvasHeight, mouseX, mouseY){
             
-            if((_clipList.length == 0 && null == _canvas) || false == this.visible){
+            if((_clipList.length == 0 && null == _image) || false == this.visible){
                 return {};
             }
             
@@ -1301,7 +1175,7 @@ window.Canvate = function(element) {
             minY = null;
             maxX = null;
             maxY = null;
-            if(null != _canvas){
+            if(null != _image){
                 bounds = calculateBounds ( 0
                                           ,xRender         ,yRender
                                           ,-(pivotXrender) ,-(pivotYrender)
@@ -1315,7 +1189,7 @@ window.Canvate = function(element) {
             // RENDER CHILDREN
             var rx;
             var ry;
-            if(null != _canvas){
+            if(null != _image){
                 rx = widthRender  / _initialWidth;
                 ry = heightRender / _initialHeight;
                 rx = isNaN(rx) ? 1 : rx;
@@ -1403,8 +1277,11 @@ window.Canvate = function(element) {
                 _innerContext.fillRect(0, 0, _innerCanvas.width ,_innerCanvas.height );
             }
             
-            if(null != _canvas){
-                _innerContext.drawImage( _canvas
+            if(null != _image){
+				if(null != _clipText){
+					_image = _clipText.getCanvas();
+				}
+                _innerContext.drawImage( _image
                                         ,cropXrender     ,cropYrender
                                         ,cropWidthRender ,cropHeightRender
                                         ,-pivotXrender   ,-pivotYrender
