@@ -230,7 +230,7 @@ window.Canvate = function(element) {
     
     var _textProperties = ["text", "fontSize", "font", "fontColor", "interline", "textAlign", "textBaseline", "width", "height"]
     
-    var ClipText = function(text, size, font, color, width, height){
+    var ClipText = function(text, size, font, color, interline, textAlign, textBaseline){
         var _self             = this;
         var DEFAULT_FONT      = "sans-serif";
         var DEFAULT_COLOR     = "black";
@@ -246,12 +246,12 @@ window.Canvate = function(element) {
         this.interline        = null == interline    ? DEFAULT_INTERLINE : interline;
         this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // end | center | left | right
         this.textBaseline     = null == textBaseline ? DEFAULT_BASE_LINE : textBaseline;//bottom | middle
-		this.width            = width;
-		this.height			  = height;
-		this.naturalWidth;
-		this.naturalHeight;
+        this.width;
+        this.height;
+        this.naturalWidth;
+        this.naturalHeight;
         
-        var _canvas           = document.createElement(canvas);
+        var _canvas           = document.createElement(CANVAS);
         var _context          = _canvas.getContext(D2);
         var _isMesure         = false;
         
@@ -262,9 +262,9 @@ window.Canvate = function(element) {
         var length = _textProperties.length;
         
         var property;var value;var index;var line;var e1;var e2;
-        var edge; var remainder;var heightLine;var wordWidth;
+        var edge; var remainder;var wordWidth;
         
-        var wrap = function(text, limit, yText) {
+        var wrap = function(text, limit, yText, lineHeight) {
             if (text.length > limit) {
                 e1 = text.slice(0, limit).lastIndexOf(' ');
                 e2 = text.slice(0, limit).lastIndexOf('-');
@@ -277,6 +277,7 @@ window.Canvate = function(element) {
                         _maxWidth  = Math.max(_maxWidth, wordWidth);
                         _maxHeight = Math.max(_maxHeight, yText + lineHeight);
                     }else{
+						console.log("1. WRITE " + line);
                         _context.fillText(line, 0, yText);
                     }
                     yText += lineHeight;
@@ -296,9 +297,10 @@ window.Canvate = function(element) {
                         remainder = text.slice(edge + 1);
                         if(_isMesure){
                             wordWidth  = Math.ceil(_context.measureText(line).width);
-							_maxWidth  = Math.max(_maxWidth, wordWidth);
-							_maxHeight = Math.max(_maxHeight, yText + lineHeight);
+                            _maxWidth  = Math.max(_maxWidth, wordWidth);
+                            _maxHeight = Math.max(_maxHeight, yText + lineHeight);
                         }else{
+							console.log("2. WRITE " + line);
                             _context.fillText(line, 0, yText);
                         }
                         yText += lineHeight;
@@ -308,7 +310,14 @@ window.Canvate = function(element) {
                 }
             }
             
-            _context.fillText(text, 0, yText);
+            if(_isMesure){
+                wordWidth  = Math.ceil(_context.measureText(text).width);
+                _maxWidth  = Math.max(_maxWidth, wordWidth);
+                _maxHeight = Math.max(_maxHeight, yText + lineHeight);
+            }else{
+				console.log("3. WRITE " + text);
+                _context.fillText(text, 0, yText + lineHeight);
+            }
         }
         
         this.getCanvas = function(){
@@ -327,43 +336,66 @@ window.Canvate = function(element) {
                 _context.textBaseline = _self.textBaseline;
                 _context.fillStyle    = _self.fontColor;
                 _context.font         = _self.fontSize + "px " + _self.font;
-                
+				
                 var limit = _self.text.length;
                 
-				_maxWidth  = _self.width;
-				_maxHeight = _self.height;
-				
+                _maxWidth  = _self.width;
+                _maxHeight = _self.height;
+                
                 if(null == _self.width || null == _self.height){
                     _isMesure  = true;
                     _maxWidth  = 0;
                     _maxHeight = 0;
-                    wrap(_self.text, limit, 0, _self.interline * _self.fontSize);
 					
-					_maxWidth  = null == _self.width  ? _maxWidth  : _self.width;
-					_maxHeight = null == _self.height ? _maxHeight : _self.height;
+                    wrap(_self.text, limit, 0, _self.interline * _self.fontSize);
+                    
+                    _self.width  = _maxWidth;
+                    _self.height = _maxHeight;
                 }
-                
+				
+                var ems = "";
                 var wordWidth = 0;
                 while(wordWidth < _maxWidth){
                     wordWidth = Math.ceil(_context.measureText(ems).width);
                     ems += "M";
                 }
+                
+                limit        = Math.max(ems.length, 1);
+                _isMesure    = false;
 				
-                limit      = Math.max(ems.length, 1);
-                _isMesure  = false;
-				
-				_self.width  = canvas.width  = _maxWidth;
-				_self.height = canvas.height = _maxHeight;
-				
+                _self.width  = _canvas.width  = _maxWidth;
+                _self.height = _canvas.height = 200;
+				console.log("FIRST: " + _maxWidth);
+				_context.textAlign    = _self.textAlign;
+				_context.textBaseline = _self.textBaseline;
+				_context.fillStyle    = _self.fontColor;
+				_context.font         = _self.fontSize + "px " + _self.font;
+                
                 wrap(_self.text, limit, 0, _self.interline * _self.fontSize);
             }
-			
-			for(index = 0; index < length; index++){
+            
+            for(index = 0; index < length; index++){
                 property               = _textProperties[index];
                 value                  = _self[property];
-				_lastProperties[index] = value;
+                _lastProperties[index] = value;
             }
-            
+			/*
+			_context.textAlign    = _self.textAlign;
+            _context.textBaseline = _self.textBaseline;
+            _context.fillStyle    = _self.fontColor;
+            _context.font         = _self.fontSize + "px " + _self.font;
+			_maxWidth             = Math.ceil(_context.measureText(_self.text).width);
+			
+			_canvas.width         = _maxWidth;
+            _canvas.height        = _maxHeight;
+			console.log("LAST: " + _maxWidth);
+			_context.textAlign    = _self.textAlign;
+            _context.textBaseline = _self.textBaseline;
+            _context.fillStyle    = _self.fontColor;
+            _context.font         = _self.fontSize + "px " + _self.font;
+			
+			_context.fillText(_self.text,0,0);
+            */
             return _canvas;
         }
     }
@@ -693,11 +725,11 @@ window.Canvate = function(element) {
             this.fontColor = null == color ? this.fontColor : color;
             emit(_self.TEXT_SET, {text:this.text});
         }
-		
-		this.setText = function(text, size, font, color, width, height){
-			var clipText = new ClipText(text, size, font, color, width, height);
-			setImage(clipText.getCanvas());
-		}
+        
+        this.setText = function(text, size, font, color, width, height){
+            var clipText = new ClipText(text, size, font, color, width, height);
+            this.setImage(clipText.getCanvas());
+        }
         
         // CHILDREN METHODS
         // Returns the id
@@ -1513,6 +1545,11 @@ window.Canvate = function(element) {
         _stage      = new Clip();
         _stage.name = STAGE;
         _stage.setImage(_mainCanvas);
+        
+        delete _stage.setImage;
+        delete _stage.setText;
+        delete _stage.setImageById;
+        delete _stage.loadImage;
         
         _mainCanvas.onmousemove = function(event) {
             event.preventDefault();
