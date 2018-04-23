@@ -263,8 +263,8 @@ window.Canvate = function(element) {
         
         var property;var value;var index;var line;var e1;var e2;
         var edge; var remainder;var wordWidth;
-        
-        var wrap = function(text, limit, yText, lineHeight) {
+        var lineList = [];
+        var wrap1 = function(text, limit, yText, lineHeight) {
             if (text.length > limit) {
                 e1 = text.slice(0, limit).lastIndexOf(' ');
                 e2 = text.slice(0, limit).lastIndexOf('-');
@@ -318,6 +318,41 @@ window.Canvate = function(element) {
 				console.log("3. WRITE " + text);
                 _context.fillText(text, 0, yText + lineHeight);
             }
+        }
+        
+		var wrap = function(text, limit, yText, lineHeight) {
+			e1   = text.indexOf('-');
+			e2   = text.indexOf(' ');
+			edge = Math.min(e1, e2);
+			
+			if (edge > 0) {
+				isWritable = true;
+			}else{
+				if(e1 == -1 || e2 == -1){
+					edge = (Math.max(e1, e2));
+				}else{
+					edge = (Math.min(e1, e2));
+				}
+				if(edge > 0){
+					isWritable = true;
+				}
+			}
+			
+			if(isWritable){
+				line      = text.slice(0, edge + (e2==edge?1:0));
+				remainder = text.slice(edge + 1);
+				if(_isMesure){
+					wordWidth  = Math.ceil(_context.measureText(line).width);
+					_maxWidth  = Math.max(_maxWidth, wordWidth);
+					_maxHeight = Math.max(_maxHeight, yText + lineHeight);
+				}else{
+					console.log("2. WRITE " + line);
+					_context.fillText(line, 0, yText);
+				}
+				yText += lineHeight;
+				wrap(remainder, limit, yText, lineHeight);
+				return;
+			}
         }
         
         this.getCanvas = function(){
