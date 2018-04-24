@@ -1,18 +1,12 @@
-<img id="sakura" src="http://sakuracode.com/canvate/img/sample1-2.png">
-<canvas id="text"></canvas>
+<canvas id="text" width="600" height="600"></canvas>
 <script src="canvate-0-1-18.js"></script>
 <script>
     var canvate = new Canvate("text");
-    
-    var pic     = canvate.addNewClip();
-        pic.setImageById("sakura");
-	  // pic.loadImage("http://sakuracode.com/canvate/img/sample1-2.png");
-	var url = "http://sakuracode.com/canvate/img/fujisan-sakura.png";
-	var sakura = document.getElementById("sakura");
-	
-    
-    var clip    = canvate.addNewClip();
-    var text    = clip.setText("Ganbatte 1!!!!", 30, "Arial");
+
+    var clip        = canvate.addNewClip();
+    var text        = clip.setText("Ganbatte kudasai yooo !!!!", 30, "Arial");
+		text.width  = 100;
+		text.height = 500;
 	 /*
 	var clip1_2 = canvate.addNewClip();
 
