@@ -1,12 +1,17 @@
+<canvas id="test" width="1000" height="150"></canvas>
 <canvas id="text" width="600" height="600"></canvas>
-<script src="canvate-0-1-18.js"></script>
+<script src="canvate-0-1-19.js"></script>
 <script>
     var canvate = new Canvate("text");
 
     var clip        = canvate.addNewClip();
+		clip.name   = "text";
     var text        = clip.setText("Ganbatte kudasai yooo !!!!", 30, "Arial");
-		text.width  = 100;
+		text.width  = 200;
 		text.height = 500;
+		
+		clip.width  = 200;
+		clip.height = 500;
 	 /*
 	var clip1_2 = canvate.addNewClip();
 
@@ -19,7 +24,13 @@
     clip1_2.addEventListener("imageLoaded", onBirdLoaded);
 	clip1_2.loadImage("http://sakuracode.com/canvate/img/sample1-2.png");*/ 
 	
-	
+	var test    = document.getElementById("test");
+	var context = test.getContext("2d");
+	function onRender(event){
+		test.width = test.width;
+		context.drawImage(text.getCanvas(),0, 0)
+	}
+	clip.addEventListener("render", onRender);
 </script>
 
 
