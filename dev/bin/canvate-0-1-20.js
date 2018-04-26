@@ -1,5 +1,4 @@
-// "VERSION 0.1.19"
-// Recursion by iteration
+// "VERSION 0.1.20"
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
