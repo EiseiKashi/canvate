@@ -1,5 +1,4 @@
 // "VERSION 0.1.19"
-// SetText refactored
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
