@@ -1,4 +1,5 @@
 // "VERSION 0.1.19"
+// SetText Fixed
 //minified by https://javascript-minifier.com/
 
 window.Canvate = function(element) {
@@ -270,7 +271,7 @@ window.Canvate = function(element) {
             var reminder   = "";
             var line       = text;
             
-            while(lineWidth > _maxWidth){
+            if(lineWidth > _maxWidth){
                 e1 = text.indexOf('-');
                 e2 = text.indexOf(' ');
                 
@@ -282,14 +283,12 @@ window.Canvate = function(element) {
                     }else{
                         edge = Mat.min(e1, e2)
                     }
-                    line       = text.slice(0, edge + (e2==edge?1:0));
-                    remainder  = text.slice(edge + 1);
+                    line      = text.slice(0, edge + (e2==edge?1:0));
+                    remainder = text.slice(edge + 1);
                     _context.fillText(line, 0, yText);
                     yText += lineHeight;
-					text       = remainder
-					yText      = yText
-					lineHeight = lineHeight
-                    continue;
+                    wrap(remainder, yText, lineHeight);
+                    return;
                 }
             }
             _context.fillText(line, 0, yText);
