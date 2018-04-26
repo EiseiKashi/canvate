@@ -256,7 +256,7 @@ window.Canvate = function(element) {
         
         var _canvas           = document.createElement(CANVAS);
         var _context          = _canvas.getContext(D2);
-		var _isTheSame        = false;
+        var _isTheSame        = false;
         
         var _lastProperties   = [];
         var _maxWidth;
@@ -286,14 +286,15 @@ window.Canvate = function(element) {
                     remainder = text.slice(edge + 1);
                     _context.fillText(line, 0, yText);
                     yText += lineHeight;
-					
-					lineWidth  = Math.ceil(_context.measureText(remainder).width);
-					text       = remainder;
+                    
+                    lineWidth  = Math.ceil(_context.measureText(remainder).width);
+                    text       = remainder;
                     continue;
                 }
-				break
+                break
             }
             _context.fillText(text, 0, yText);
+            return yText + lineHeight;
         }
         
         this.getCanvas = function(){
@@ -308,19 +309,24 @@ window.Canvate = function(element) {
                 _lastProperties[index] = value;
             }
             
-			if(isTheSame && _isTheSame){
-				return _canvas;
-			}
-			
-            if(null == _self.width || null == _self.height){ 
+            if(isTheSame && _isTheSame){
+                return _canvas;
+            }
+            
             _context.textAlign    = _self.textAlign;
             _context.textBaseline = _self.textBaseline;
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
-               _maxWidth  = Math.ceil(_context.measureText(_self.text).width);
-               _maxHeight = _self.interline * _self.fontSize;
+            
+            if(null == _self.width || isNaN(_self.width)){ 
+               _maxWidth = Math.ceil(_context.measureText(_self.text).width);
             }else{
-                _maxWidth  = _self.width;
+               _maxWidth = _self.width;
+            }
+            
+            if(null == _self.height || isNaN(_self.height)){ 
+                _maxHeight = _self.interline * _self.fontSize;
+            }else{
                 _maxHeight = _self.height;
             }
 
@@ -336,9 +342,9 @@ window.Canvate = function(element) {
             _context.font         = _self.size + "px " + _self.font;
             
             wrap(_self.text, 0, _self.interline * _self.size);
-			
+            
             _isTheSame = isTheSame;
-			
+            
             return _canvas;
         }
     }
@@ -408,6 +414,8 @@ window.Canvate = function(element) {
         var _framesList    = [];
         var _initialWidth  = null;
         var _initialHeight = null;
+        var _isMask        = false;
+        var _isfitToText   = false;
         var _clipMouse;
         var _lineHeight;
         var _hasMouse;
@@ -416,7 +424,6 @@ window.Canvate = function(element) {
         var _currentFrame;
         var _lastTime;
         var _lastAction;
-        var _isMask = false;
         var _clipText;
         
         // HELPERS VARIABLES
@@ -714,6 +721,10 @@ window.Canvate = function(element) {
                 return          }
             this.setImage(clipText.getCanvas());
             _clipText = clipText;
+        }
+        
+        this.fitToText = function(value){
+            _isfitToText = value;
         }
         
         // CHILDREN METHODS
@@ -1169,18 +1180,29 @@ window.Canvate = function(element) {
                     }
                 }
             }
-			
-			if(null != _clipText){
-				if(_clipText.autoSize){
-					_clipText.width  = _self.width;
-					_clipText.height = _self.height;
-				}
-				_image         = _clipText.getCanvas();
-				_initialWidth  = _clipText.naturalWidth;
-				_initialHeight = _clipText.naturalHeight;
-				_cropX         = _initialWidth;
-				_cropY         = _initialHeight;
-			}
+            
+            if(null != _clipText){
+                _image = _clipText.getCanvas();
+                if(_isfitToText){
+                    _self.width    = _clipText.width;
+                    _self.height   = _clipText.height;
+                    
+                    _initialWidth  = _clipText.width;
+                    _initialHeight = _clipText.height;
+                    
+                    _cropWidth     = _clipText.width;
+                    _cropHeight    = _clipText.height;
+                }else(_clipText.autoSize){
+                    _clipText.width  = _self.width;
+                    _clipText.height = _self.height;
+                    
+                    _initialWidth    = _clipText.naturalWidth;
+                    _initialHeight   = _clipText.naturalHeight;
+                    
+                    _cropWidth       = _initialWidth;
+                    _cropHeight      = _initialHeight;
+                }
+            }
             
             xRender          = this.x;
             yRender          = this.y;

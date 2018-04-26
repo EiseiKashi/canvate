@@ -294,6 +294,7 @@ window.Canvate = function(element) {
 				break
             }
             _context.fillText(text, 0, yText);
+			return yText + lineHeight;
         }
         
         this.getCanvas = function(){
@@ -312,15 +313,20 @@ window.Canvate = function(element) {
 				return _canvas;
 			}
 			
-            if(null == _self.width || null == _self.height){ 
-            _context.textAlign    = _self.textAlign;
+			_context.textAlign    = _self.textAlign;
             _context.textBaseline = _self.textBaseline;
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
-               _maxWidth  = Math.ceil(_context.measureText(_self.text).width);
-               _maxHeight = _self.interline * _self.fontSize;
+			
+            if(null == _self.width || isNaN(_self.width)){ 
+               _maxWidth = Math.ceil(_context.measureText(_self.text).width);
             }else{
-                _maxWidth  = _self.width;
+               _maxWidth = _self.width;
+            }
+			
+			if(null == _self.height || isNaN(_self.height)){ 
+				_maxHeight = _self.interline * _self.fontSize;
+            }else{
                 _maxHeight = _self.height;
             }
 
@@ -408,6 +414,8 @@ window.Canvate = function(element) {
         var _framesList    = [];
         var _initialWidth  = null;
         var _initialHeight = null;
+        var _isMask        = false;
+		var _isfitToText   = false;
         var _clipMouse;
         var _lineHeight;
         var _hasMouse;
@@ -416,7 +424,6 @@ window.Canvate = function(element) {
         var _currentFrame;
         var _lastTime;
         var _lastAction;
-        var _isMask = false;
         var _clipText;
         
         // HELPERS VARIABLES
@@ -714,6 +721,10 @@ window.Canvate = function(element) {
                 return          }
             this.setImage(clipText.getCanvas());
             _clipText = clipText;
+        }
+		
+		this.fitToText = function(value){
+            _isfitToText = value;
         }
         
         // CHILDREN METHODS
@@ -1178,8 +1189,8 @@ window.Canvate = function(element) {
 				_image         = _clipText.getCanvas();
 				_initialWidth  = _clipText.naturalWidth;
 				_initialHeight = _clipText.naturalHeight;
-				_cropX         = _initialWidth;
-				_cropY         = _initialHeight;
+				_cropWidth     = _initialWidth;
+				_cropHeight    = _initialHeight;
 			}
             
             xRender          = this.x;
