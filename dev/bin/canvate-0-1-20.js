@@ -249,7 +249,7 @@ window.Canvate = function(element) {
                                 isNaN(interline)     ? DEFAULT_INTERLINE : interline;
         this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // end | center | left | right
         this.textBaseline     = null == textBaseline ? DEFAULT_BASE_LINE : textBaseline;//bottom | middle
-        this.autoSize         = false;
+        this.autoSize         = true;
         this.width;
         this.height;
         this.naturalWidth;
@@ -269,7 +269,7 @@ window.Canvate = function(element) {
         var wrap = function(text, yText, lineHeight) {
             var lineWidth  = Math.ceil(_context.measureText(text).width);
             var reminder   = "";
-            var line       = text;
+            var line;
             
             while(lineWidth > _maxWidth){
                 e1 = text.indexOf('-');
@@ -288,11 +288,13 @@ window.Canvate = function(element) {
                     _context.fillText(line, 0, yText);
                     yText += lineHeight;
 					
-					lineWidth  = Math.ceil(_context.measureText(reminder).width);
-					continue;
+					lineWidth  = Math.ceil(_context.measureText(remainder).width);
+					text       = remainder;
+                    continue;
                 }
+				break
             }
-            _context.fillText(line, 0, yText);
+            _context.fillText(text, 0, yText);
         }
         
         this.getCanvas = function(){
@@ -699,7 +701,7 @@ window.Canvate = function(element) {
             this.setImage(canvas);
         }
         
-        // Sets the text
+        // CLIP TEXT
         this.setText = function(text, size, font, color, width, height){
             var clipText = new ClipText(text, size, font, color, width, height);
             this.setImage(clipText.getCanvas());
@@ -1194,6 +1196,10 @@ window.Canvate = function(element) {
             
             if(null != _image){
                 if(null != _clipText){
+					if(_clipText.autoSize){
+						_clipText.width  = _self.width;
+						_clipText.height = _self.height;
+					}
                     _image           = _clipText.getCanvas();
                     _initialWidth    = _clipText.naturalWidth;
                     _initialHeight   = _clipText.naturalHeight;
