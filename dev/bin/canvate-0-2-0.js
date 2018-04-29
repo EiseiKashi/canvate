@@ -293,7 +293,7 @@ window.Canvate = function(element) {
             var text              = _self.text;
 
             maxWidth              = null == this.width  ? Math.ceil(_context.measureText(text).width) : this.width;
-            maxHeight             = null == this.height ? _self.interline * _self.fontSize            : this.height;
+            maxHeight             = null == this.height ? _self.interline * _self.size                : this.height;
             
             /* START OF WRAPPING */
             if(this.isWordWrap){
@@ -406,8 +406,8 @@ window.Canvate = function(element) {
         this.name           = _id;
         this.x              = 0;
         this.y              = 0;
-        this.width          = 0;
-        this.height         = 0;
+        this.width          = null;
+        this.height         = null;
         this.alpha          = 1;
         this.scaleX         = 1;
         this.scaleY         = 1;
@@ -448,7 +448,7 @@ window.Canvate = function(element) {
         var _initialWidth    = null;
         var _initialHeight   = null;
         var _isMask          = false;
-        var _isFitTextToClip = false;
+        var _isFitTextToClip = true;
         var _isFitClipToText = false;
         var _clipMouse;
         var _lineHeight;
@@ -1203,7 +1203,19 @@ window.Canvate = function(element) {
                 _clipText.size         = this.fontSize;
                 _clipText.font         = this.font;
                 _clipText.color        = this.fontColor;
-				
+                /*
+                    clip size undefined
+                    text size undefined
+
+                    clip defined
+                    text undefned
+
+                    - clip defined
+                    - text defined
+					
+					
+                */
+_isFitClipToText = true;
                 if(_isFitTextToClip){
                     _clipText.width  = this.width;
                     _clipText.height = this.height;

@@ -1,19 +1,20 @@
 <canvas id="test" width="1000" height="150"></canvas>
 <canvas id="text" width="600" height="600"></canvas>
-<script src="dev/bin/canvate-0-1-26.js"></script>
-<script>
-    var canvate        = new Canvate("text");
-    var clip           = canvate.addNewClip();
-		   clip.name       = "text";
-    var text           = clip.setText("Ganbatte kudasai yooo !!!!", 30, "Arial");
-		    text.maxWidth  = 200;
-		    text.maxheight = 120;
+<script src="dev/bin/canvate-0-2-0.js"></script>
+<script>    
+    var canvate            = new Canvate("text");
+    var clip               = canvate.addNewClip();
+		clip.name          = "text";
+    	clip.setText("Ganbatte kudasai yooo !!!!", 30, "Arial");
 		
-		    clip.width     = 200;
-		    clip.height    = 120;
+		clip.textWidth  = 50;
+		clip.textHeight = 120;
+		
+		clip.width     	= 400;
+		clip.height    	= 240;
 		    
-		    clip.fitToText();
-		    
-		    clip.setPivot(0.5, 0.5);
-		    clip.setPosition(200, 100);
+		//clip.fitTextToClip();
+		
+		clip.setPivot(0.5, 0.5);
+		clip.setPosition(200, 100);
 </script>
