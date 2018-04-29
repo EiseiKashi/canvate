@@ -1208,8 +1208,6 @@ window.Canvate = function(element) {
             }
             
             if(null != _clipText){
-                _image                 = _clipText.getCanvas();
-
                 _clipText.text         = this.text;
                 _clipText.font         = this.font;
                 _clipText.size         = this.fontSize;
@@ -1219,8 +1217,8 @@ window.Canvate = function(element) {
                 _clipText.interline    = this.interline;
                 _clipText.textAlign    = this.textAlign;
                 _clipText.textBaseline = this.textBaseline;
-				_clipText.width        = this.width;
-				_clipText.height       = this.height;
+                
+                _image                 = _clipText.getCanvas();                
 				
 				_initialWidth          = _clipText.naturalWidth;
 				_initialHeight         = _clipText.naturalHeight;
