@@ -227,7 +227,7 @@ window.Canvate = function(element) {
                  width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
     }
     
-    var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "textBaseline", "width", "height"]
+    var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "textBaseline", "maxWidth", "maxHeight"]
     
     var ClipText = function(text, size, font, color, width, height, interline, textAlign, textBaseline){
         'use strict';
@@ -1208,15 +1208,25 @@ window.Canvate = function(element) {
             }
             
             if(null != _clipText){
-                _image           = _clipText.getCanvas();
-				_clipText.width  = _self.width;
-				_clipText.height = _self.height;
+                _image                 = _clipText.getCanvas();
+
+                _clipText.text         = this.text;
+                _clipText.font         = this.font;
+                _clipText.size         = this.fontSize;
+                _clipText.color        = this.fontColor;
+                _clipText.maxWidth     = this.width;
+                _clipText.maxHeight    = this.height;
+                _clipText.interline    = this.interline;
+                _clipText.textAlign    = this.textAlign;
+                _clipText.textBaseline = this.textBaseline;
+				_clipText.width        = this.width;
+				_clipText.height       = this.height;
 				
-				_initialWidth    = _clipText.naturalWidth;
-				_initialHeight   = _clipText.naturalHeight;
+				_initialWidth          = _clipText.naturalWidth;
+				_initialHeight         = _clipText.naturalHeight;
 				
-				_cropWidth       = _initialWidth;
-				_cropHeight      = _initialHeight;
+				_cropWidth             = _initialWidth;
+				_cropHeight            = _initialHeight;
             }
             
             xRender          = this.x;
