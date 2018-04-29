@@ -229,7 +229,7 @@ window.Canvate = function(element) {
     
     var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "textBaseline", "width", "height"]
     
-    var ClipText = function(text, size, font, color, interline, textAlign, textBaseline){
+    var ClipText = function(text, size, font, color, width, height, interline, textAlign, textBaseline){
         'use strict';
         var _self             = this;
         var DEFAULT_FONT      = "sans-serif";
@@ -248,8 +248,8 @@ window.Canvate = function(element) {
                                 isNaN(interline)     ? DEFAULT_INTERLINE : interline;
         this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // end | center | left | right
         this.textBaseline     = null == textBaseline ? DEFAULT_BASE_LINE : textBaseline;//bottom | middle
-        this.width;
-        this.height;
+        this.maxWidth         = null == width  || isNaN(width)  ? null : width;
+        this.maxHeight        = null == height || isNaN(height) ? null : height;
         this.naturalWidth;
         this.naturalHeight;
 		
@@ -294,16 +294,16 @@ window.Canvate = function(element) {
             
             var text              = _self.text;
             
-            if(null == _self.width || isNaN(_self.width)){ 
+            if(null == _self.maxWidth || isNaN(_self.maxWidth)){ 
                _maxWidth = Math.ceil(_context.measureText(text).width);
             }else{
-               _maxWidth = _self.width;
+               _maxWidth = _self.maxWidth;
             }
             
-            if(null == _self.height || isNaN(_self.height)){ 
+            if(null == _self.maxHeight || isNaN(_self.maxHeight)){ 
                 _maxHeight = _self.interline * _self.fontSize;
             }else{
-                _maxHeight = _self.height;
+                _maxHeight = _self.maxHeight;
             }
             
             _lineHeight      = _self.interline * _self.size;
@@ -426,13 +426,16 @@ window.Canvate = function(element) {
         this.visible      = true;
         this.isLoop       = false;
         this.background   = null;
+        
         this.text;
-        this.interline;
-        this.fontSize;
         this.font;
+        this.fontSize;
+        this.fontColor;
+        this.interline;
         this.textAlign;
         this.textBaseline;
-        this.fontColor;
+        this.maxWidthText;
+        this.maxHeightText;
         
         var AUTO           = "auto";
         
@@ -745,10 +748,25 @@ window.Canvate = function(element) {
         }
         
         // CLIP TEXT
-        this.setText = function(text, size, font, color, width, height){
-            var clipText = new ClipText(text, size, font, color, width, height);
+        this.setText = function(text, size, font, color, width, height, 
+                                interline, textAlign, textBaseline){
+            var clipText = new ClipText(text, size, font, color, width, height, 
+                                interline, textAlign, textBaseline);
+
             this.setImage(clipText.getCanvas());
-            _clipText    = clipText;
+
+            this.text          = clipText.text;
+            this.font          = clipText.font;
+            this.fontSize      = clipText.size;
+            this.fontColor     = clipText.color;
+            this.maxWidthText  = clipText.maxWidth;
+            this.maxHeightText = clipText.maxHeight;
+            this.interline     = clipText.interline;
+            this.textAlign     = clipText.textAlign;
+            this.textBaseline  = clipText.textBaseline;
+        
+            _clipText         = clipText;
+
             return clipText;
         }
         
