@@ -258,6 +258,9 @@ window.Canvate = function(element) {
         var _context          = _canvas.getContext(D2);
         var _isTheSame        = false;
         
+        var _textHeight;
+        var _textWidth;
+        
         var _lastProperties   = [];
         var _maxWidth;
         var _maxHeight;
@@ -266,7 +269,11 @@ window.Canvate = function(element) {
         var edge; var remainder;
         
         var wrap = function(text, yText, lineHeight) {
+            _textHeight = 0;
+            _textWidth  = 0;
+            
             var lineWidth  = Math.ceil(_context.measureText(text).width);
+                _textWidth = Math.max(lineWidth, _textWidth);
             var reminder   = "";
             var line;
             
@@ -288,13 +295,19 @@ window.Canvate = function(element) {
                     yText += lineHeight;
                     
                     lineWidth  = Math.ceil(_context.measureText(remainder).width);
+                    _textWidth = Math.max(lineWidth, _textWidth);
+                    
                     text       = remainder;
                     continue;
                 }
                 break
             }
+            
             _context.fillText(text, 0, yText);
-            return yText + lineHeight;
+            
+            _textHeight  = yText + lineHeight;
+            
+            return _textHeight;
         }
         
         this.getCanvas = function(){
@@ -346,6 +359,20 @@ window.Canvate = function(element) {
             _isTheSame = isTheSame;
             
             return _canvas;
+        }
+        
+        this.getTextHeight = function(){
+            if(_textHeight == null){
+                this.getCanvas();
+            }
+            return _textHeight;
+        }
+        
+        this.getTextWidth  = function(){
+            if(_textHeight == null){
+                this.getCanvas();
+            }
+            return _textWidth;
         }
     }
     
@@ -415,7 +442,6 @@ window.Canvate = function(element) {
         var _initialWidth  = null;
         var _initialHeight = null;
         var _isMask        = false;
-        var _isfitToText   = false;
         var _clipMouse;
         var _lineHeight;
         var _hasMouse;
@@ -718,13 +744,19 @@ window.Canvate = function(element) {
         this.setClipText = function(clipText){
             if(null == clipText){
                 _clipText = clipText;
-                return          }
+                return
+            }
             this.setImage(clipText.getCanvas());
             _clipText = clipText;
         }
         
-        this.fitToText = function(value){
-            _isfitToText = value;
+        this.fitToText = function(){
+            if(null == _clipText){
+                return
+            }
+            _clipText.getCanvas();
+            //this.width  = _clipText.textWidth;
+            //this.height = _clipText.textHeight;
         }
         
         // CHILDREN METHODS
@@ -1183,16 +1215,7 @@ window.Canvate = function(element) {
             
             if(null != _clipText){
                 _image = _clipText.getCanvas();
-                if(_isfitToText){
-                    _self.width    = _clipText.width;
-                    _self.height   = _clipText.height;
-                    
-                    _initialWidth  = _clipText.width;
-                    _initialHeight = _clipText.height;
-                    
-                    _cropWidth     = _clipText.width;
-                    _cropHeight    = _clipText.height;
-                }else(_clipText.autoSize){
+                if(_clipText.autoSize){
                     _clipText.width  = _self.width;
                     _clipText.height = _self.height;
                     

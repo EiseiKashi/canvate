@@ -248,69 +248,28 @@ window.Canvate = function(element) {
                                 isNaN(interline)     ? DEFAULT_INTERLINE : interline;
         this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // end | center | left | right
         this.textBaseline     = null == textBaseline ? DEFAULT_BASE_LINE : textBaseline;//bottom | middle
-        this.autoSize         = true;
         this.width;
         this.height;
         this.naturalWidth;
         this.naturalHeight;
+		
+		//this.text, size, font, color, width, height
         
         var _canvas           = document.createElement(CANVAS);
         var _context          = _canvas.getContext(D2);
         var _isTheSame        = false;
         var _lastProperties   = [];
-		var _lineList         = [];
+        var _lineList         = [];
         
         var _textHeight;
         var _textWidth;
+        var _lineHeight;
         
         var _maxWidth;
         var _maxHeight;
         
         var property;var value;var index;var line;var e1;var e2;
         var edge; var remainder;
-        
-        var wrap = function(text, lineHeight) {
-            var lineWidth  = Math.ceil(_context.measureText(text).width);
-                _textWidth = lineWidth;
-			var yText      = 0;
-            var reminder   = "";
-			var isLarger   = false;
-            var line;
-            while(lineWidth > _maxWidth){
-				if(!isLarger){
-					isLarger   = true;
-					_textWidth = 0;
-				}
-				
-                e1 = text.indexOf('-');
-                e2 = text.indexOf(' ');
-                
-                if(e1 > 0 || e2 > 0){
-                    if(e1 == -1 ){
-                        edge = e2;
-                    }else if(e2 == -1){
-                        edge = e1;
-                    }else{
-                        edge = Mat.min(e1, e2)
-                    }
-                    line      = text.slice(0, edge + (e2==edge?1:0));
-                    remainder = text.slice(edge + 1);
-					
-                    yText += lineHeight;
-                    
-                    lineWidth  = Math.ceil(_context.measureText(remainder).width);
-                    _textWidth = Math.max(Math.ceil(_context.measureText(line).width), _textWidth);
-                    _lineList.push(line);
-                    text       = remainder;
-                    continue;
-                }
-                break
-            }
-            
-			_lineList.push(line);
-            _textHeight  = yText + lineHeight;
-            return _textHeight;
-        }
         
         this.getCanvas = function(){
             var isTheSame = true;
@@ -333,8 +292,10 @@ window.Canvate = function(element) {
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
             
+            var text              = _self.text;
+            
             if(null == _self.width || isNaN(_self.width)){ 
-               _maxWidth = Math.ceil(_context.measureText(_self.text).width);
+               _maxWidth = Math.ceil(_context.measureText(text).width);
             }else{
                _maxWidth = _self.width;
             }
@@ -344,9 +305,48 @@ window.Canvate = function(element) {
             }else{
                 _maxHeight = _self.height;
             }
-			var lineHeight        = _self.interline * _self.size;
-			wrap(_self.text, lineHeight);
-			
+            
+            _lineHeight      = _self.interline * _self.size;
+            _lineList.length = 0;
+            var yText        = 0;
+            var lineWidth    = Math.ceil(_context.measureText(text).width);
+                _textWidth   = lineWidth;
+            var reminder     = "";
+            var isLarger     = false;
+            var line;
+            while(lineWidth > _maxWidth){
+                if(!isLarger){
+                    isLarger   = true;
+                    _textWidth = 0;
+                }
+                
+                e1 = text.indexOf('-');
+                e2 = text.indexOf(' ');
+                
+                if(e1 > 0 || e2 > 0){
+                    if(e1 == -1 ){
+                        edge = e2;
+                    }else if(e2 == -1){
+                        edge = e1;
+                    }else{
+                        edge = Mat.min(e1, e2)
+                    }
+                    line      = text.slice(0, edge + (e2==edge?1:0));
+                    remainder = text.slice(edge + 1);
+                    _lineList.push(line);
+                    yText += _lineHeight;
+                    
+                    lineWidth  = Math.ceil(_context.measureText(remainder).width);
+                    _textWidth = Math.max(Math.ceil(_context.measureText(line).width), _textWidth);
+                    
+                    text       = remainder;
+                    continue;
+                }
+                break
+            }
+            _lineList.push(text);
+            _textHeight  = yText + _lineHeight;
+            
             _canvas.width         = _textWidth;
             _canvas.height        = _textHeight;
             
@@ -358,14 +358,14 @@ window.Canvate = function(element) {
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
             
-			var line;
-			var yText  = 0;
-			var length = _lineList.length;
-			for(var index=0; index < length; index++){
-				line = _lineList[index];
-				_context.fillText(line, 0, yText);
-				yText += lineHeight 
-			}
+            var length = _lineList.length;
+            var yText  = 0;
+            var line;
+            for(var index=0; index < length; index++){
+                line = _lineList[index];
+                _context.fillText(line, 0, yText);
+                yText += _lineHeight;
+            }
             
             _isTheSame = isTheSame;
             
@@ -1190,17 +1190,15 @@ window.Canvate = function(element) {
             }
             
             if(null != _clipText){
-                _image = _clipText.getCanvas();
-                if(_clipText.autoSize){
-                    _clipText.width  = _self.width;
-                    _clipText.height = _self.height;
-                    
-                    _initialWidth    = _clipText.naturalWidth;
-                    _initialHeight   = _clipText.naturalHeight;
-                    
-                    _cropWidth       = _initialWidth;
-                    _cropHeight      = _initialHeight;
-                }
+                _image           = _clipText.getCanvas();
+				_clipText.width  = _self.width;
+				_clipText.height = _self.height;
+				
+				_initialWidth    = _clipText.naturalWidth;
+				_initialHeight   = _clipText.naturalHeight;
+				
+				_cropWidth       = _initialWidth;
+				_cropHeight      = _initialHeight;
             }
             
             xRender          = this.x;
