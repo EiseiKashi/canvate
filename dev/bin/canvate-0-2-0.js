@@ -363,14 +363,14 @@ window.Canvate = function(element) {
             return _canvas;
         }
         
-        this.getTextHeight = function(){
+        this.getHeight = function(){
             if(_textHeight == null){
                 this.getCanvas();
             }
             return _textHeight;
         }
         
-        this.getTextWidth  = function(){
+        this.getWidth  = function(){
             if(_textHeight == null){
                 this.getCanvas();
             }
@@ -425,9 +425,7 @@ window.Canvate = function(element) {
         this.fontColor;     
         this.interline;     
         this.textAlign;     
-        this.textBaseline;  
-        this.textWidth;     
-        this.textHeight;    
+        this.textBaseline;   
                             
         var AUTO             = "auto";
                             
@@ -448,8 +446,6 @@ window.Canvate = function(element) {
         var _initialWidth    = null;
         var _initialHeight   = null;
         var _isMask          = false;
-        var _isFitTextToClip = false;
-        var _isFitClipToText = false;
         var _clipMouse;
         var _lineHeight;
         var _hasMouse;
@@ -611,12 +607,10 @@ window.Canvate = function(element) {
             
             _initialWidth      = null == _initialWidth  ? image.width  : _initialWidth;
             _initialHeight     = null == _initialHeight ? image.height : _initialHeight;
-           // TODO - width no koto
-           // if(null != _clipText){
-                this.width         = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
-                this.height        = null == this.height || 0 == this.height ? _initialHeight : this.height;
-                this.setSize(this.width, this.height);
-            //}
+
+            this.width         = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
+            this.height        = null == this.height || 0 == this.height ? _initialHeight : this.height;
+            this.setSize(this.width, this.height);
             
             _clipText          = null;
             
@@ -749,7 +743,7 @@ window.Canvate = function(element) {
             var clipText = new ClipText(text, size, font, color, width, height, 
                                 interline, textAlign, textBaseline);
             
-            if(_isFitTextToClip){
+            if(null != this.width && null != this.height){
                 clipText.width  = this.width;
                 clipText.height = this.height;
             }
@@ -770,15 +764,27 @@ window.Canvate = function(element) {
 
             return clipText;
         }
-        
-        this.fitTextToClip = function(){
-            _isFitTextToClip = true;
-            _isFitClipToText = false;
+
+        this.getTextWidth = function(){
+            if(_clipText == null){
+                return null
+            }
+            return _clipText.getWidth();
         }
 
-        this.fitClipToText = function(){
-            _isFitTextToClip = false;
-            _isFitClipToText = true;
+        this.getTextHeight = function(){
+            if(_clipText == null){
+                return null
+            }
+            return _clipText.getHeight();
+        }
+        
+        this.fitToTextSize = function(){
+            if(null == _clipText){
+                return;
+            }
+            this.width  = _clipText.getWidth();
+            this.height = _clipText.getHeight();
         }
         
         // CHILDREN METHODS
@@ -1205,26 +1211,14 @@ window.Canvate = function(element) {
                 _clipText.size         = this.fontSize;
                 _clipText.font         = this.font;
                 _clipText.color        = this.fontColor;
-                
-                if(_isFitTextToClip){
-                    _clipText.width  = this.width;
-                    _clipText.height = this.height;
-                }else{
-                    _clipText.width  = this.textWidth;
-                    _clipText.height = this.textHeight;
-                }
-
                 _clipText.interline    = this.interline;
                 _clipText.textAlign    = this.textAlign;
                 _clipText.textBaseline = this.textBaseline;
                 _clipText.isWordWrap   = this.isWordWrap;
+                _clipText.width        = this.width;
+                _clipText.height       = this.height;
                 
                 _image                 = _clipText.getCanvas();
-
-                if(_isFitClipToText){
-                    this.width  = _clipText.getTextWidth();
-                    this.height = _clipText.getTextHeight();
-                }
 
                 _initialWidth          = _cropWidth  = _clipText.naturalWidth;
                 _initialHeight         = _cropHeight = _clipText.naturalHeight;
