@@ -740,6 +740,15 @@ window.Canvate = function(element) {
         // CLIP TEXT
         this.setText = function(text, size, font, color, width, height, 
                                 interline, textAlign, textBaseline){
+            size         = null == size         ? this.fontSize     : size;
+            font         = null == font         ? this.font         : font;
+            color        = null == color        ? this.fontColor    : color;
+            width        = null == width        ? this.textWidth    : width;
+            height       = null == height       ? this.textHeight   : height;
+            interline    = null == interline    ? this.interline    : interline;
+            textAlign    = null == textAlign    ? this.textAlign    : textAlign;
+            textBaseline = null == textBaseline ? this.textBaseline : textBaseline;
+            
             var clipText = new ClipText(text, size, font, color, width, height, 
                                 interline, textAlign, textBaseline);
             
@@ -764,6 +773,7 @@ window.Canvate = function(element) {
         }
 
         this.textToImage = function(){
+            _clipText.getCanvas();
             this.setImage(_clipText.getCanvas());
         }
 
@@ -1123,14 +1133,14 @@ window.Canvate = function(element) {
         
         var _isDraging = false;
         var _onMouseDown = function(event){
-
+        
         }
 
         var _onMouseUp = function(event){
-
+        
         }
 
-        this.setDragAndDrop = function(){
+        this.setDragDrop = function(){
             _isDraging = true;
             this.addEventListener(MOUSE_DOWN, _onMouseDown);
             this.addEventListener(MOUSE_UP, _onMouseUp);
