@@ -448,7 +448,7 @@ window.Canvate = function(element) {
         var _initialWidth    = null;
         var _initialHeight   = null;
         var _isMask          = false;
-        var _isFitTextToClip = true;
+        var _isFitTextToClip = false;
         var _isFitClipToText = false;
         var _clipMouse;
         var _lineHeight;
@@ -603,7 +603,6 @@ window.Canvate = function(element) {
                 // Early return
                 return;
             }
-            _clipText          = null;
             _image             = image;
             _image.crossOrigin = ANONYMOUS;
             
@@ -612,11 +611,14 @@ window.Canvate = function(element) {
             
             _initialWidth      = null == _initialWidth  ? image.width  : _initialWidth;
             _initialHeight     = null == _initialHeight ? image.height : _initialHeight;
+           // TODO - width no koto
+           // if(null != _clipText){
+                this.width         = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
+                this.height        = null == this.height || 0 == this.height ? _initialHeight : this.height;
+                this.setSize(this.width, this.height);
+            //}
             
-            this.width         = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
-            this.height        = null == this.height || 0 == this.height ? _initialHeight : this.height;
-            
-            this.setSize(this.width, this.height);
+            _clipText          = null;
             
             _cropWidth  = null == _cropWidth  || 0 == _cropWidth  ? _initialWidth  : _cropWidth;
             _cropHeight = null == _cropHeight || 0 == _cropHeight ? _initialHeight : _cropHeight;
@@ -1203,19 +1205,7 @@ window.Canvate = function(element) {
                 _clipText.size         = this.fontSize;
                 _clipText.font         = this.font;
                 _clipText.color        = this.fontColor;
-                /*
-                    clip size undefined
-                    text size undefined
-
-                    clip defined
-                    text undefned
-
-                    - clip defined
-                    - text defined
-					
-					
-                */
-_isFitClipToText = true;
+                
                 if(_isFitTextToClip){
                     _clipText.width  = this.width;
                     _clipText.height = this.height;
