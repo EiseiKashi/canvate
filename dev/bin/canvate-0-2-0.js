@@ -227,7 +227,7 @@ window.Canvate = function(element) {
                  width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
     }
     
-    var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "textBaseline", "width", "height", "isAutoSize", "isWordWrap"]
+    var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "textBaseline", "width", "height", "isWordWrap"]
     
     var ClipText = function(text, size, font, color, width, height, interline, textAlign, textBaseline){
         'use strict';
@@ -761,8 +761,6 @@ window.Canvate = function(element) {
             this.textBaseline = clipText.textBaseline;
      
             _clipText         = clipText;
-
-            return clipText;
         }
 
         this.textToImage = function(){
@@ -783,10 +781,16 @@ window.Canvate = function(element) {
             return _clipText.getHeight();
         }
         
-        this.fitToTextSize = function(){
+        this.fitToText = function(){
             if(null == _clipText){
                 return;
             }
+            
+            _clipText.width  = this.width;
+            _clipText.height = this.height;
+
+            _clipText.getCanvas();
+            
             this.width  = _clipText.getWidth();
             this.height = _clipText.getHeight();
         }
@@ -1117,10 +1121,31 @@ window.Canvate = function(element) {
             return _frameRate;
         }
         
+        var _isDraging = false;
+        var _onMouseDown = function(event){
+
+        }
+
+        var _onMouseUp = function(event){
+
+        }
+
+        this.setDragAndDrop = function(){
+            _isDraging = true;
+            this.addEventListener(MOUSE_DOWN, _onMouseDown);
+            this.addEventListener(MOUSE_UP, _onMouseUp);
+        }
+
         // EVENT HANDLING
         this.emitMouseEvent = function(type, x, y){
             if(_markToEmmit == this){
                 emit(type, {x:x-_self.x, y:y-_self.y});
+            }
+
+            if(_isDraging){
+                console.log(type);
+                console.log(x + " - " + y);
+                console.log("---------")
             }
         }
         
@@ -1224,8 +1249,8 @@ window.Canvate = function(element) {
                 
                 _image                 = _clipText.getCanvas();
 
-                _initialWidth          = _cropWidth  = _clipText.naturalWidth;
-                _initialHeight         = _cropHeight = _clipText.naturalHeight;
+                _initialWidth          = _cropWidth  = this.width;
+                _initialHeight         = _cropHeight = this.height;
             }
             
             xRender          = this.x;
