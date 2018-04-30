@@ -765,6 +765,10 @@ window.Canvate = function(element) {
             return clipText;
         }
 
+        this.textToImage = function(){
+            this.setImage(_clipText.getCanvas());
+        }
+
         this.getTextWidth = function(){
             if(_clipText == null){
                 return null
