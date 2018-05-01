@@ -1,6 +1,5 @@
-// "VERSION 0.2.1"
+// "VERSION 0.2.5"
 //minified by https://javascript-minifier.com/
-
 window.Canvate = function(element) {
     'use strict';
     
@@ -42,8 +41,10 @@ window.Canvate = function(element) {
     var MOUSE_OUT       = "mouseOut";
     var MOUSE_UP        = "mouseUp";
     var MOUSE_DOWN      = "mouseDown";
-    var MOUSE_LEAVE     = "mouseLeave"
+    var MOUSE_LEAVE     = "mouseLeave";
     var CLICK           = "click";
+    var DRAG            = "drag";
+    var DROP            = "drop";
     var FUNCTION        = "function";
     var OBJECT          = "object";
     var CANVAS          = "canvas";
@@ -67,7 +68,7 @@ window.Canvate = function(element) {
     var DEFAULT         = "default";
     var POINTER         = "pointer";
     var STAGE           = "canvateStage";
-    var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "textBaseline", "width", "height", "isWordWrap"]
+    var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "width", "height", "isWordWrap"]
     var clipCounter     = 0;
     var _parentClip     = {};
     var _allClipList    = {};
@@ -92,12 +93,7 @@ window.Canvate = function(element) {
 
     var Emitter = function(target){
         'use strict';
-        var _click         = 0;
-        var _over          = 0;
-        var _out           = 0;
-        var _down          = 0;
-        var _up            = 0;
-        var _leave         = 0;
+        var _typeCounter   = 0;
         var _hasMouse      = false;
                            
         var CONTEXT        = 0;
@@ -128,26 +124,20 @@ window.Canvate = function(element) {
             _listenerTypes[type].push([context, listener]);
             switch(type){
                 case CLICK : 
-                    _click++;
-                    break;
-                case MOUSE_OVER : 
-                    _over++;
-                    break;
-                case MOUSE_OUT : 
-                    _out++;
-                    break;
+                case MOUSE_OVER :
+                case MOUSE_OUT :
                 case MOUSE_DOWN : 
-                    _down++;
-                    break;
-                case MOUSE_UP : 
-                    _up++;
-                    break;
+                case MOUSE_UP :
                 case MOUSE_LEAVE : 
-                    _leave++;
-                    break;
+                case MOUSE_LEAVE : 
+                case DRAG :
+                case DROP :
+                _typeCounter++;
+                break;
             }
-            _hasMouse = _click + _over + _out + _down + _up + _leave > 0;
-            return true;
+            
+            _hasMouse = true;
+            return _hasMouse;
         }
         
         this.removeEventListener = function(type, listener, context){
@@ -168,25 +158,19 @@ window.Canvate = function(element) {
                     _listenerTypes[type].splice(index, 1);
                     switch(type){
                         case CLICK : 
-                            _click--;
-                            break;
-                        case MOUSE_OVER : 
-                            _over--;
-                            break;
-                        case MOUSE_OUT : 
-                            _out--;
-                            break;
+                        case MOUSE_OVER :
+                        case MOUSE_OUT :
                         case MOUSE_DOWN : 
-                            _down--;
-                            break;
-                        case MOUSE_UP : 
-                            _up--;
-                            break;
+                        case MOUSE_UP :
                         case MOUSE_LEAVE : 
-                            _leave--;
-                            break;
+                        case MOUSE_LEAVE : 
+                        case DRAG :
+                        case DROP :
+                        _typeCounter--;
+                        break;
                     }
-                    _hasMouse = _click + _over + _out + _down + _up + _leave > 0;
+                    _typeCounter = Math.min(_typeCounter, 0);
+                    _hasMouse = _typeCounter > 0;
                     return true;
                 }
             }
@@ -257,14 +241,17 @@ window.Canvate = function(element) {
     }
     
     // ::: CLIP TEXT ::: //
-    var ClipText = function(text, size, font, color, width, height, interline, textAlign, textBaseline){
+    var ClipText = function(text, size, font, color, textAlign, width, height, interline){
         'use strict';
         var _self             = this;
+        var LEFT              = "left";
+        var CENTER            = "center";
+        var RIGHT             = "right";
         var DEFAULT_FONT      = "sans-serif";
         var DEFAULT_COLOR     = "black";
         var DEFAULT_SIZE      = 12;
         var DEFAULT_INTERLINE = 1.313;
-        var DEFAULT_ALIGN     = "start";
+        var DEFAULT_ALIGN     = LEFT;
         var DEFAULT_BASE_LINE = "top";
         
         this.text             = text;
@@ -276,8 +263,7 @@ window.Canvate = function(element) {
         this.height           = null == height || isNaN(height) ? null : height;
         this.interline        = null == interline || 
                                 isNaN(interline)     ? DEFAULT_INTERLINE : interline;
-        this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // end | center | left | right
-        this.textBaseline     = null == textBaseline ? DEFAULT_BASE_LINE : textBaseline;//bottom | middle
+        this.textAlign        = null == textAlign    ? DEFAULT_ALIGN     : textAlign; // center | left | right
         this.isWordWrap       = true;
         this.naturalWidth;
         this.naturalHeight;
@@ -314,7 +300,7 @@ window.Canvate = function(element) {
             }
             
             _context.textAlign    = _self.textAlign;
-            _context.textBaseline = _self.textBaseline;
+            _context.textBaseline = DEFAULT_BASE_LINE;
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
             
@@ -334,11 +320,6 @@ window.Canvate = function(element) {
                 var isLarger     = false;
                 var line;
                 while(lineWidth > maxWidth){
-                    if(!isLarger){
-                        isLarger   = true;
-                        _textWidth = 0;
-                    }
-                    
                     e1 = text.indexOf('-');
                     e2 = text.indexOf(' ');
                     
@@ -354,7 +335,10 @@ window.Canvate = function(element) {
                         remainder = text.slice(edge + 1);
                         _lineList.push(line);
                         yText += _lineHeight;
-                        
+                        if(!isLarger){
+                            isLarger   = true;
+                            _textWidth = 0;
+                        }
                         lineWidth  = Math.ceil(_context.measureText(remainder).width);
                         _textWidth = Math.max(Math.ceil(_context.measureText(line).width), _textWidth);
                         
@@ -366,23 +350,33 @@ window.Canvate = function(element) {
                 _lineList.push(text);
             }
             /* END OF WRAPPING */
-
             _textHeight           = yText + _lineHeight;
             
             _canvas.width         = this.naturalWidth  = maxWidth;
             _canvas.height        = this.naturalHeight = maxHeight;
             
             _context.textAlign    = _self.textAlign;
-            _context.textBaseline = _self.textBaseline;
+            _context.textBaseline = DEFAULT_BASE_LINE;
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
             
             var length = _lineList.length;
             var yText  = 0;
             var line;
+            switch(_self.textAlign){
+                case LEFT:
+                    x = 0
+                break
+                case CENTER:
+                    x = _canvas.width/2;
+                break;
+                case RIGHT:
+                    x = _canvas.width
+                break;
+            }
             for(var index=0; index < length; index++){
                 line = _lineList[index];
-                _context.fillText(line, 0, yText);
+                _context.fillText(line, x, yText);
                 yText += _lineHeight;
             }
             
@@ -392,16 +386,10 @@ window.Canvate = function(element) {
         }
         
         this.getHeight = function(){
-            if(_textHeight == null){
-                this.getCanvas();
-            }
             return _textHeight;
         }
         
         this.getWidth  = function(){
-            if(_textHeight == null){
-                this.getCanvas();
-            }
             return _textWidth;
         }
     }
@@ -448,7 +436,6 @@ window.Canvate = function(element) {
         this.fontColor;
         this.interline;
         this.textAlign;
-        this.textBaseline;
         
         this.bounds;
 
@@ -471,6 +458,7 @@ window.Canvate = function(element) {
         var _initialWidth    = null;
         var _initialHeight   = null;
         var _isMask          = false;
+        var _isDraging       = false;
         var _mouseX;
         var _mouseY;
         var _clipMouse;
@@ -483,6 +471,8 @@ window.Canvate = function(element) {
         var _lastAction;
         var _clipText;
         var _isConvertion;
+        var _dragX;
+        var _dragY;
         
         // HELPERS VARIABLES
         var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
@@ -766,8 +756,7 @@ window.Canvate = function(element) {
         }
         
         // CLIP TEXT
-        this.setText = function(text, size, font, color, width, height, 
-                                interline, textAlign, textBaseline){
+        this.setText = function(text, size, font, color, textAlign, width, height, interline){
             size         = null == size         ? this.fontSize     : size;
             font         = null == font         ? this.font         : font;
             color        = null == color        ? this.fontColor    : color;
@@ -775,10 +764,8 @@ window.Canvate = function(element) {
             height       = null == height       ? this.height       : height;
             interline    = null == interline    ? this.interline    : interline;
             textAlign    = null == textAlign    ? this.textAlign    : textAlign;
-            textBaseline = null == textBaseline ? this.textBaseline : textBaseline;
             
-            var clipText = new ClipText(text, size, font, color, width, height, 
-                                interline, textAlign, textBaseline);
+            var clipText = new ClipText(text, size, font, color, textAlign, width, height, interline);
             
             this.setImage(clipText.getCanvas());
 
@@ -788,7 +775,6 @@ window.Canvate = function(element) {
             this.fontColor    = clipText.color;
             this.interline    = clipText.interline;
             this.textAlign    = clipText.textAlign;
-            this.textBaseline = clipText.textBaseline;
      
             _clipText         = clipText;
         }
@@ -819,11 +805,7 @@ window.Canvate = function(element) {
                 return;
             }
             
-            _clipText.width  = this.width;
-            _clipText.height = this.height;
-
             _clipText.getCanvas();
-            
             this.width  = _clipText.getWidth();
             this.height = _clipText.getHeight();
         }
@@ -1153,28 +1135,28 @@ window.Canvate = function(element) {
         this.getFrameRate = function(){
             return _frameRate;
         }
-        var _dragX;
-        var _dragY;
-        var _isDraging = false;
+        
         var _onMouseDown = function(event){
             _isDraging = true;
             _dragX = _mouseX - _self.x;
             _dragY = _mouseY - _self.y;
+            emit(DRAG);
         }
 
         var _onMouseUp = function(event){
             _isDraging = false;
+            emit(DROP);
         }
 
-        this.activateDrag = function(){
-            this.addEventListener(MOUSE_DOWN, _onMouseDown);
-            this.addEventListener(MOUSE_UP, _onMouseUp);
+        this.startDrag = function(){
+            this.addEventListener(MOUSE_DOWN, _onMouseDown, this);
+            this.addEventListener(MOUSE_UP, _onMouseUp, this);
         }
         
-        this.deactiveteDrag = function(){
+        this.stopDrag = function(){
             _isDraging = false;
-            this.removeEventListener(MOUSE_DOWN, _onMouseDown);
-            this.removeEventListener(MOUSE_UP, _onMouseUp);
+            this.removeEventListener(MOUSE_DOWN, _onMouseDown, this);
+            this.removeEventListener(MOUSE_UP, _onMouseUp, this);
         }
 
         // EVENT HANDLING
@@ -1278,7 +1260,6 @@ window.Canvate = function(element) {
                 _clipText.color        = this.fontColor;
                 _clipText.interline    = this.interline;
                 _clipText.textAlign    = this.textAlign;
-                _clipText.textBaseline = this.textBaseline;
                 _clipText.isWordWrap   = this.isWordWrap;
                 _clipText.width        = this.width;
                 _clipText.height       = this.height;
@@ -1420,7 +1401,7 @@ window.Canvate = function(element) {
                 _innerContext.fillRect(0, 0, _innerCanvas.width ,_innerCanvas.height );
             }
             
-            if(null != _image){
+            if(null != _image && 0 != _image.width && 0 != _image.height){
                 _innerContext.drawImage( _image
                                         ,cropXrender     ,cropYrender
                                         ,cropWidthRender ,cropHeightRender
@@ -1447,7 +1428,7 @@ window.Canvate = function(element) {
             var length = renderList.length;
             for(var index=0; index < length; index++){
                 clip = renderList[index];
-                if(null != clip){
+                if(null != clip && 0 != clip.canvas.width && 0 != clip.canvas.height){
                     canvas = clip.canvas;
                     x = (clip.x-pivotXrender)* rx;
                     y = (clip.y-pivotYrender)* ry;
@@ -1502,14 +1483,16 @@ window.Canvate = function(element) {
         }
         
         mouseCursor = DEFAULT;
-        if(Boolean(_clipMouse) && _clipMouse.hasMouse()){
+        if(null != _clipMouse && _clipMouse.hasMouse()){
             mouseCursor = POINTER;
            
             if(_clipMouse != _lastClipOvered){
                 resolveOut();
                 _lastClipOvered = _clipMouse;
                 _markToEmmit    = _clipMouse;
-                _clipMouse.emitMouseEvent(MOUSE_OVER, _lastX, _lastY);
+                if(null != _clipMouse){
+                    _clipMouse.emitMouseEvent(MOUSE_OVER, _lastX, _lastY);
+                }
                 _markToEmmit    = null;
              }
              
@@ -1542,7 +1525,7 @@ window.Canvate = function(element) {
         canvasData            = _stage.render(_mainCanvas.width, _mainCanvas.height, _lastX, _lastY);
         canvasUpdate          = canvasData.inner;
 
-        if(Boolean(canvasUpdate)){
+        if(Boolean(canvasUpdate) && 0 != canvasUpdate.width && 0 != canvasUpdate.height){
             _context.drawImage(canvasUpdate, canvasData.x, canvasData.y);
             clipMouse = canvasData.clipMouse;
             if(null != clipMouse){
@@ -1585,7 +1568,7 @@ window.Canvate = function(element) {
         
         _mainCanvas.onclick = function(event){
             event.preventDefault();
-            if(Boolean(_clipMouse) && _clipMouse.hasMouse()){
+            if(null !=_clipMouse && _clipMouse.hasMouse()){
                 _markToEmmit = _clipMouse;
                 _clipMouse.emitMouseEvent(CLICK, _lastX, _lastY);
                 _markToEmmit = null;
@@ -1594,7 +1577,7 @@ window.Canvate = function(element) {
         
         _mainCanvas.onmousedown = function(event){
             event.preventDefault();
-            if(Boolean(_clipMouse)&& _clipMouse.hasMouse()){
+            if(null !=_clipMouse && _clipMouse.hasMouse()){
                 _markToEmmit = _clipMouse;
                 _clipMouse.emitMouseEvent(MOUSE_DOWN, _lastX, _lastY);
                 _markToEmmit = null;
@@ -1603,7 +1586,7 @@ window.Canvate = function(element) {
         
         _mainCanvas.onmouseup = function(event){
             event.preventDefault();
-            if(Boolean(_clipMouse)&& _clipMouse.hasMouse()){
+            if(null !=_clipMouse && _clipMouse.hasMouse()){
                 _markToEmmit = _clipMouse;
                 _clipMouse.emitMouseEvent(MOUSE_UP, _lastX, _lastY);
                 _markToEmmit = null;
