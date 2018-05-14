@@ -1,4 +1,4 @@
-// "VERSION 0.2.5"
+// "VERSION 0.2.6"
 //minified by https://javascript-minifier.com/
 window.Canvate = function(element) {
     'use strict';
