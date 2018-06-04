@@ -1,4 +1,4 @@
-// "VERSION 0.2.6"
+// "VERSION 0.2.8"
 //minified by https://javascript-minifier.com/
 window.Canvate = function(element) {
     'use strict';
@@ -398,17 +398,17 @@ window.Canvate = function(element) {
     var Clip = function (image){
         'use strict';
         
-        var _self           = this;
-                            
-        this.TEXT_SET       = "textSet";
-        this.IMAGE_SET      = "imageSet";
-        this.IMAGE_LOADED   = "imageLoaded";
-        this.IMAGE_ERROR    = "imageError";
-        this.CLIP_ADDED     = "clipAdded";
-        this.CLIP_REMOVED   = "clipRemoved";
-        this.CYCLE_END      = "cycleEnd";
-        this.CYCLE_START    = "cycleStart";
-        this.RENDER         = "render";
+        var _self         = this;
+                          
+        this.TEXT_SET     = "textSet";
+        this.IMAGE_SET    = "imageSet";
+        this.IMAGE_LOADED = "imageLoaded";
+        this.IMAGE_ERROR  = "imageError";
+        this.ADDED    	  = "added";
+        this.REMOVED  	  = "removed";
+        this.CYCLE_END    = "cycleEnd";
+        this.CYCLE_START  = "cycleStart";
+        this.RENDER       = "render";
         
         clipCounter++;
         var _id             = CLIP + clipCounter;
@@ -820,32 +820,32 @@ window.Canvate = function(element) {
         }
         
         // Get new Clip
-        this.getNewClip = function(image){
+        this.getNew = function(image){
             return new Clip(image);
         }
-		
-		this.getNewLayer = function(image){
-			this.getNewClip(image);
-		}
         
         // Add new Clip
-        this.addNewClip = function(image){
+        this.addNew = function(image){
             var clip = new Clip(image);
             this.addClip(clip);
             return clip;
         }
-		
-		this.addNewClip = function(image){
-			addNewClip(image);
-		}
+
+        this.addAndLoad = function(url){
+            var clip = new Clip();
+                clip.loadImage(url);
+
+            this.addClip(clip);
+            return clip;
+        }
         
         // Get the Clip by depth
-        this.getClipAt = function(index){
+        this.getAt = function(index){
             return _clipList[index];
         }
         
         // Add clip
-        this.addClip = function(clip){
+        this.add = function(clip){
             if(null == clip || clip == this){
                 // Early return
                 return;
@@ -855,7 +855,7 @@ window.Canvate = function(element) {
         }
         
         // Add clip at specific depth
-        this.addClipAt = function(clip, indexTarget){
+        this.addAt = function(clip, indexTarget){
             if(null == clip || clip == this || isNaN(indexTarget)){
                 return;
             }
@@ -870,7 +870,7 @@ window.Canvate = function(element) {
         }
         
         // Remove Clip
-        this.removeClip = function(clip){
+        this.remove = function(clip){
             if(null == clip || clip == this){
                 return;
             }
@@ -885,7 +885,7 @@ window.Canvate = function(element) {
         }
         
         // Remove Clip at certaiin depth
-        this.removeClipAt = function(indexTarget){
+        this.removeAt = function(indexTarget){
             if(isNaN(indexTarget || indexTarget < 0 || !(indexTarget < _clipList.length))){
                 return;
             }
@@ -897,14 +897,14 @@ window.Canvate = function(element) {
         }
         
         // Remove all Clips
-        this.removeAllClips = function(){
+        this.removeAll = function(){
             while(_clipList.length > 0){
                 this.removeClipAt(0);
             }
         }
         
         // Get total clip
-        this.getTotalClip = function(){
+        this.getTotal = function(){
             return _clipList.length;
         }
         
@@ -925,7 +925,7 @@ window.Canvate = function(element) {
         }
         
         // Interchange the depth of 2 Clips
-        this.swapClips = function (clip1, clip2){
+        this.swap = function (clip1, clip2){
             if(null == clip1 || null == clip2){
                 return;
             }
@@ -971,27 +971,7 @@ window.Canvate = function(element) {
         this.getParent = function (){
             return _parentClip[_id];
         }
-        
-        //Returns the first occurence of a Clip with the same property and value.
-        this.getClipByProp = function (propName, value){
-            var list = getClipListByProp(propName, value);
-            return list[0];
-        }
 
-        //Returns a list of Clip with the same property and value.
-        this.getClipListByProp = function (propName, value){
-            var length = _clipList.length;
-            var list   = [];
-            var clip;
-            for(var index = 0; index < length; index++){
-                var clip = _clipList[index];
-                if(clip[propName] == value){
-                    list.push[clip];
-                }
-            }
-            return list;
-        }
-        
         var _playUntil = function (index){
             _increment = _frameIndex >= index ? -1 : 1;
             _endIndex  = index;
