@@ -1,4 +1,5 @@
 // "VERSION 0.2.9"
+// # SET MASK
 //minified by https://javascript-minifier.com/
 window.Canvate = function(element) {
     'use strict';
@@ -70,6 +71,7 @@ window.Canvate = function(element) {
     var _mainCanvas     = element;
     var _context        = _mainCanvas.getContext(D2);
     var hovering        = function(){};
+    var _maskClip       = {};
     var _markToEmmit;
     var _mainCanvasOff;
     var _mainContextOff;
@@ -451,7 +453,6 @@ window.Canvate = function(element) {
         var _framesList    = [];
         var _initialWidth  = null;
         var _initialHeight = null;
-        var _isMask        = false;
         var _isDraging     = false;
         var _mouseX;
         var _mouseY;
@@ -711,14 +712,31 @@ window.Canvate = function(element) {
                 image.src         = src + antiCache;
         }
         
-        //Set mask
-        this.setMask = function(){
-            _isMask = true;
+        //Set mask wit another clip
+        this.setMask = function(mask, type){
+            if(null == mask){
+                // Early return
+                return;
+            }
+            _maskClip[mask.getId()] = this;
+            _typeMask               = _maskTypes[type] || _maskTypes.mask;
+            _mask                   = mask;
         }
         
         //Remove the mask
-        this.unsetMask = function(){
-            _isMask = false;
+        this.removeMask = function(){
+            _typeMask = SOURCE_OVER;
+            if(_mask == null){
+                // Early return
+                return;
+            }
+            _maskClip[_mask.getId()] = null;
+            _mask                    = null;
+        }
+        
+        // Returns if is a mask
+        this.isMask = function(){
+            return null != _maskClip[_id];
         }
         
         // Sets the background
@@ -1199,6 +1217,7 @@ window.Canvate = function(element) {
                 return {};
             }
             
+            // GET FRAME DATA
             indexRender     = _frameIndex;
             cropDataRender  = _framesList[indexRender];
             try{
@@ -1207,8 +1226,7 @@ window.Canvate = function(element) {
                 _cropWidth  = cropDataRender.width;
                 _cropHeight = cropDataRender.height;
             }catch(error){
-                var name = this.name;
-                //debugger
+                throw new Error("In: " + this.name + "CROP RENDER IS NULL");
             }
             
             // FRAME RENDER
@@ -1241,6 +1259,7 @@ window.Canvate = function(element) {
                 }
             }
             
+            // TEXT RENDER
             if(null != _text){
                 _text.text       = this.text;
                 _text.size       = this.fontSize;
@@ -1256,8 +1275,14 @@ window.Canvate = function(element) {
 
                 _initialWidth    = _cropWidth  = this.width;
                 _initialHeight   = _cropHeight = this.height;
+
+                if(_isConvertion){
+                    _isConvertion = false;
+                    this.setImage(_image);
+                }
             }
             
+            // HANDLE DRAG
             if(_isDraging){
                 this.x = _mouseX-_dragX;
                 this.y = _mouseY-_dragY;
@@ -1277,10 +1302,12 @@ window.Canvate = function(element) {
             cropHeightRender = _cropHeight;
             rotationRender   = this.rotation * (Math.PI)/180;
             
-            var minX;var minY;var maxX;var maxY;var pivotX;var pivotY;
-            var bounds;var canvateBounds;
+            var minX;var minY;var maxX;var maxY;var pivotX;var pivotY;var globalX; var globalY;
+            var bounds;var canvateBounds;var parent;var maskX; var maskY; var pixel;
+            
             var renderList = [];
             
+            // GET BOUNDS
             minX = null;
             minY = null;
             maxX = null;
@@ -1405,10 +1432,6 @@ window.Canvate = function(element) {
                 cropHeightRender = totalHeight;
             }
             
-            if(_isMask){
-                _innerContext.globalCompositeOperation = SOURCE_IN;
-            }
-            
             var canvas;var x;var y;var w;var h;
             
             var canvate;
@@ -1425,8 +1448,58 @@ window.Canvate = function(element) {
                 }
             }
             
-            _innerContext.globalCompositeOperation = SOURCE_OVER;
+            // MASK RENDER
+            if(null != _mask){
+                clipData     = _mask.render(canvasWidth, canvasHeight, mouseX-minX, mouseY-minY, true);
+                canvasRender = clipData.inner;
+                
+                maskX  = _mask.x;
+                maskY  = _mask.y;
+                parent = _mask.getParent();
+                while(null != parent){
+                    maskX += parent.x;
+                    maskY += parent.y;
+                    parent = parent.getParent();
+                }
+                    
+                globalX = this.x;
+                globalY = this.y;
+                parent  = this.getParent();
+                while(null != parent){
+                    globalX += parent.x;
+                    globalY += parent.y;
+                    parent = parent.getParent();
+                }
+                
+                x = 0; 
+                y = 0; 
+                w = 0;
+                h = 0; 
+                
+                if(null != canvasRender){
+                    clipBounds = clipData.bounds;
+                    
+                    x = maskX-globalX;
+                    y = maskY-globalY;
+                    x = (x-pivotXrender)* rx;
+                    y = (y-pivotYrender)* ry;
+                    w = (canvasRender.width   * rx);
+                    h = (canvasRender.height  * ry);
+                }
+
+                _innerContext.globalCompositeOperation = DESTINATION_IN;
+                _innerContext.drawImage( canvasRender ,x ,y, w, h);
+                _innerContext.globalCompositeOperation = SOURCE_OVER;
+
+                pixel       = _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data;
+                alphaRender = pixel[3];
+                
+                if(alphaRender == 0){
+                    _canvateMouse = null;
+                }
+            }
             
+            // MOUSE CHECKING
             if(_hasMouse){
                 var pixel = _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data;
                 alphaRender = pixel[3];
@@ -1437,7 +1510,13 @@ window.Canvate = function(element) {
             }
             
             _innerContext.restore();
+
+            // EMIT RENDER EVENT
+            emit(_self.RENDER, {});
+
             _innerCanvas.id = _self.name;
+            
+            // UPDATE RENDER DATA
             var data = {
                            inner        : _innerCanvas, 
                            canvateMouse : _canvateMouse, 
@@ -1445,13 +1524,6 @@ window.Canvate = function(element) {
                            x            : minX, 
                            y            : minY
                        };
-            
-            emit(_self.RENDER, {});
-
-            if(_isConvertion){
-                _isConvertion = false;
-                this.setImage(_image);
-            }
             
             this.bounds     = bounds;
             this.realWidth  = bounds.width;
