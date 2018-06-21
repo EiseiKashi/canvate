@@ -847,8 +847,7 @@ window.Canvate = function(element) {
         this.addNewById = function(id){
             var image = document.getElementById(id);
             if(null == image){
-                // EARLY return
-                return image;
+                throw new Error("The id HTML element '" + id +"' doesnt exist.");
             }
 
             var canvate = new Canvate(image);
@@ -856,7 +855,18 @@ window.Canvate = function(element) {
             return canvate;
         }
 
+        this.addNewByURL = function(url){
+            if(null == url || 0 == url.length){
+                throw new Error("The url must by NOT null or length 0.");
+            }
+            return this.addAndLoadImage(url);
+        }
+
         this.addAndLoadImage = function(url){
+            if(null == url || 0 == url.length){
+                throw new Error("The url must by NOT null or length 0.");
+            }
+
             var canvate = new Canvate();
                 canvate.loadImage(url);
 
@@ -1495,7 +1505,7 @@ window.Canvate = function(element) {
                     h = (canvasRender.height  * ry);
                 }
 
-                _innerContext.globalCompositeOperation = DESTINATION_IN;
+                _innerContext.globalCompositeOperation = SOURCE_IN;
                 _innerContext.drawImage( canvasRender ,x ,y, w, h);
                 _innerContext.globalCompositeOperation = SOURCE_OVER;
 
