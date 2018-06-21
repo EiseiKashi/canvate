@@ -55,6 +55,8 @@ window.Canvate = function(element) {
     var ANONYMOUS       = "Anonymous";
     var SOURCE_OVER     = "source-over";
     var SOURCE_IN       = "source-in";
+    var DESTINATION_IN  = "destination-in";
+    var DESTINATION_OUT = "destination-out";
     var CANVATE         = "canvate";
     var PLAY            = "play";
     var PLAY_FROM       = "playFrom";
@@ -453,6 +455,7 @@ window.Canvate = function(element) {
         var _framesList    = [];
         var _initialWidth  = null;
         var _initialHeight = null;
+        var _mask          = null;
         var _isDraging     = false;
         var _mouseX;
         var _mouseY;
@@ -719,13 +722,11 @@ window.Canvate = function(element) {
                 return;
             }
             _maskClip[mask.getId()] = this;
-            _typeMask               = _maskTypes[type] || _maskTypes.mask;
             _mask                   = mask;
         }
         
         //Remove the mask
         this.removeMask = function(){
-            _typeMask = SOURCE_OVER;
             if(_mask == null){
                 // Early return
                 return;
@@ -838,6 +839,18 @@ window.Canvate = function(element) {
         
         // Add new Canvate
         this.addNew = function(image){
+            var canvate = new Canvate(image);
+            this.add(canvate);
+            return canvate;
+        }
+
+        this.addNewById = function(id){
+            var image = document.getElementById(id);
+            if(null == image){
+                // EARLY return
+                return image;
+            }
+
             var canvate = new Canvate(image);
             this.add(canvate);
             return canvate;
@@ -1220,13 +1233,11 @@ window.Canvate = function(element) {
             // GET FRAME DATA
             indexRender     = _frameIndex;
             cropDataRender  = _framesList[indexRender];
-            try{
+            if(null != cropDataRender){
                 _cropX      = cropDataRender.x;
                 _cropY      = cropDataRender.y;
                 _cropWidth  = cropDataRender.width;
                 _cropHeight = cropDataRender.height;
-            }catch(error){
-                throw new Error("In: " + this.name + "CROP RENDER IS NULL");
             }
             
             // FRAME RENDER
@@ -1350,8 +1361,7 @@ window.Canvate = function(element) {
             
             for(indexRender = 0; indexRender < length; indexRender++){
                 canvateRender = _canvateList[indexRender];
-                data   = canvateRender.render(mouseX-_self.x, mouseY-_self.y, 
-                                               false);
+                data   = canvateRender.render(mouseX-_self.x, mouseY-_self.y);
                 canvasRender = data.inner;
                 if(null != canvasRender){
                     canvateBounds = data.bounds;
@@ -1448,10 +1458,10 @@ window.Canvate = function(element) {
                 }
             }
             
-            // MASK RENDER
+            // Mdata
             if(null != _mask){
-                clipData     = _mask.render(canvasWidth, canvasHeight, mouseX-minX, mouseY-minY, true);
-                canvasRender = clipData.inner;
+                data         = _mask.render(mouseX-_self.x, mouseY-_self.y);
+                canvasRender = data.inner;
                 
                 maskX  = _mask.x;
                 maskY  = _mask.y;
@@ -1477,8 +1487,6 @@ window.Canvate = function(element) {
                 h = 0; 
                 
                 if(null != canvasRender){
-                    clipBounds = clipData.bounds;
-                    
                     x = maskX-globalX;
                     y = maskY-globalY;
                     x = (x-pivotXrender)* rx;
