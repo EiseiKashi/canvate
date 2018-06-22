@@ -1,5 +1,8 @@
-// "VERSION 0.2.8"
-//minified by https://javascript-minifier.com/
+/* "VERSION 0.2.10"
+# Set mask - Any canvate can be used as mask.
+# addNewById and addNewByURL methods added.
+minified by https://javascript-minifier.com/
+*/
 window.Canvate = function(element) {
     'use strict';
     
@@ -732,6 +735,7 @@ window.Canvate = function(element) {
                 return;
             }
             _maskClip[_mask.getId()] = null;
+            delete _maskClip[_mask.getId()];
             _mask                    = null;
         }
         
@@ -859,10 +863,6 @@ window.Canvate = function(element) {
             if(null == url || 0 == url.length){
                 throw new Error("The url must by NOT null or length 0.");
             }
-            return this.addAndLoadImage(url);
-        }
-        
-        this.addAndLoadImage = function(url){
             var canvate = new Canvate();
                 canvate.loadImage(url);
 
@@ -1226,13 +1226,14 @@ window.Canvate = function(element) {
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         
-        this.render = function(mouseX, mouseY){
+        this.render = function(mouseX, mouseY, isMasking){
             _mouseX         = mouseX;
             _mouseY         = mouseY;
 			this.realWidth  = 0;
             this.realHeight = 0;
-			
-            if((_canvateList.length == 0 && null == _image) || false == this.visible){
+            
+            var isNOTmasking = null != _maskClip[this.getId()] && !isMasking;
+            if((_canvateList.length == 0 && null == _image) || false == this.visible || isNOTmasking){
                 return {};
             }
             
@@ -1446,9 +1447,6 @@ window.Canvate = function(element) {
                 sakura.setMask()
                 Draw the enmasked in the mask
             */
-            if(_isMask){
-                _innerContext.globalCompositeOperation = SOURCE_IN;
-            }
             
             var canvas;var x;var y;var w;var h;
             
@@ -1466,8 +1464,6 @@ window.Canvate = function(element) {
                 }
             }
             
-            _innerContext.globalCompositeOperation = SOURCE_OVER;
-            
             if(_hasMouse){
                 var pixel = _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data;
                 alphaRender = pixel[3];
@@ -1477,33 +1473,31 @@ window.Canvate = function(element) {
                 }
             }
 
-            /*
             // MASK RENDER
-            clipRender  = _mask;
-            if(null != clipRender){
-                clipData= clipRender.render(canvasWidth, canvasHeight, mouseX-minX, mouseY-minY, true);
-                canvasRender = clipData.inner;
+            if(null != _mask){
+                data = _mask.render(mouseX-_self.x, mouseY-_self.y, true);
+                canvasRender = data.inner;
                 if(null != canvasRender){
-                    clipBounds = clipData.bounds;
-                    x = clipBounds.minX;
-                    y = clipBounds.minY;
+                    canvateBounds = data.bounds;
+                    x = canvateBounds.minX;
+                    y = canvateBounds.minY;
                     x = (0.5 + (x-pivotXrender)* rx)        << 0;
                     y = (0.5 + (y-pivotYrender)* ry)        << 0;
                     w = (0.5 + (canvasRender.width   * rx)) << 0;
                     h = (0.5 + (canvasRender.height  * ry)) << 0;
                     _innerContext.globalCompositeOperation = DESTINATION_IN;
+
                     _innerContext.drawImage( canvasRender ,x ,y, w, h);
-                    
+                    console.log("V2")
                     alphaRender= _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data[3];
                     if(alphaRender == 0){
-                        _clipMouse = null;
+                        _canvateMouse = null;
                     }
                     
                     _innerContext.globalCompositeOperation = SOURCE_OVER;
                 }
             
             }
-            */
             
             _innerContext.restore();
             _innerCanvas.id = _self.name;
