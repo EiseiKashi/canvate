@@ -1,6 +1,7 @@
 /* "VERSION 0.2.10"
 # Set mask - Any canvate can be used as mask.
 # addNewById and addNewByURL methods added.
+
 minified by https://javascript-minifier.com/
 */
 window.Canvate = function(element) {
