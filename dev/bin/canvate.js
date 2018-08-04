@@ -1,5 +1,5 @@
-/* "VERSION 0.2.13"
-# FIX addNewByURL and addNewById
+/* "VERSION 0.2.14"
+# FIX text wrap
 
 minified by https://javascript-minifier.com/
 */
@@ -31,8 +31,6 @@ window.Canvate = function(element) {
         }
     }
     
-    window.check = true;
-    var lastTime = 0;
     var vendors  = ['ms', 'moz', 'webkit', 'o'];
     
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
@@ -42,11 +40,8 @@ window.Canvate = function(element) {
     }
     
     if (!window.requestAnimationFrame){
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime   = Date.now();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id         = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
-            lastTime       = currTime + timeToCall;
+        window.requestAnimationFrame = function(callback) {
+            var id         = window.setTimeout(callback, 8);
             return id;
         };
     }
@@ -91,6 +86,7 @@ window.Canvate = function(element) {
     var _mainCanvas     = element;
     var _context        = _mainCanvas.getContext(D2);
     var hovering        = function(){};
+    var _date           = new Date();
     var _markToEmmit;
     var _mainCanvasOff;
     var _mainContextOff;
@@ -320,7 +316,7 @@ window.Canvate = function(element) {
             _context.font         = _self.size + "px " + _self.font;
             
             var text              = _self.text;
-
+                text              = null == text ? "" : text;
             maxWidth              = null == this.width  ? Math.ceil(_context.measureText(text).width) : this.width;
             maxHeight             = null == this.height ? _self.interline * _self.size                : this.height;
             
@@ -331,39 +327,41 @@ window.Canvate = function(element) {
                 var yText        = 0;
                 var lineWidth    = Math.ceil(_context.measureText(text).width);
                     _textWidth   = lineWidth;
-                var reminder     = "";
-                var isLarger     = false;
-                var line;
-                while(lineWidth > maxWidth){
-                    e1 = text.indexOf('-');
-                    e2 = text.indexOf(' ');
-                    
-                    if(e1 > 0 || e2 > 0){
-                        if(e1 == -1 ){
-                            edge = e2;
-                        }else if(e2 == -1){
-                            edge = e1;
-                        }else{
-                            edge = Mat.min(e1, e2)
-                        }
-                        line      = text.slice(0, edge + (e2==edge?1:0));
-                        remainder = text.slice(edge + 1);
-                        _lineList.push(line);
-                        yText += _lineHeight;
-                        if(!isLarger){
-                            isLarger   = true;
-                            _textWidth = 0;
-                        }
-                        lineWidth  = Math.ceil(_context.measureText(remainder).width);
-                        _textWidth = Math.max(Math.ceil(_context.measureText(line).width), _textWidth);
-                        
-                        text       = remainder;
-                        continue;
+                var line         = "";
+                
+                ////////////////////////
+                var wordList    = text.split(' ');
+                var tempText;
+                var metrics;
+                var length = wordList.length;
+                for (var index = 0; index < length; index++) {
+                    tempText    = wordList[index];
+                    metrics     = _context.measureText(tempText);
+                    while (metrics.width > maxWidth) {
+                        tempText    = tempText.substring(0, tempText.length - 1);
+                        metrics     = _context.measureText(tempText);
                     }
-                    break
+                    if (wordList[index] != tempText) {
+                        wordList.splice(index + 1, 0,  wordList[index].substr(tempText.length))
+                        wordList[index] = tempText;
+                    }  
+            
+                    tempText    = line + wordList[index] + ' ';  
+                    metrics     = _context.measureText(tempText);
+                    
+                    if (metrics.width > maxWidth && index > 0) {
+                        _lineList.push(line);
+                        line    = wordList[index] + ' ';
+                    }
+                    else {
+                        line = tempText;
+                    }
                 }
-                _lineList.push(text);
+                 
+                _lineList.push(line);
+               // _context.fillText(line, x, y);
             }
+
             /* END OF WRAPPING */
             _textHeight           = yText + _lineHeight;
             
@@ -375,20 +373,21 @@ window.Canvate = function(element) {
             _context.fillStyle    = _self.color;
             _context.font         = _self.size + "px " + _self.font;
             
-            var length = _lineList.length;
-            var yText  = 0;
-            var line;
             switch(_self.textAlign){
                 case LEFT:
-                    x = 0
+                x = 0
                 break
                 case CENTER:
-                    x = _canvas.width/2;
+                x = _canvas.width/2;
                 break;
                 case RIGHT:
-                    x = _canvas.width
+                x = _canvas.width
                 break;
             }
+            
+            var line;
+            var yText  = 0;
+            var length = _lineList.length;
             for(var index=0; index < length; index++){
                 line = _lineList[index];
                 _context.fillText(line, x, yText);
@@ -652,7 +651,7 @@ window.Canvate = function(element) {
         
         // CYCLE AND FRAME METHODS
         // Sets the Cycle animation
-        this.setCycle = function(x, y, width, height, totalFrames, gapX, gapY){
+        this.setCycle = function(x, y, width, height, gapX, gapY, totalFrames){
             tileXsetCycle  = _cropX      = isNumber(x)      ? x      : _cropX;     
             tileYsetCycle  = _cropY      = isNumber(y)      ? y      : _cropY; 
             widthSetCycle  = _cropWidth  = isNumber(width)  ? width  : _cropWidth;
@@ -694,7 +693,7 @@ window.Canvate = function(element) {
             }
             
             if(1 < _totalFrames){
-                this.setSize(widthSetCycle, AUTO);
+                this.setSize(widthSetCycle, auto);
             }
         }
         
@@ -708,6 +707,8 @@ window.Canvate = function(element) {
             return image;
         }
         
+        var date = new Date();
+
         //Load image from SRC
         this.loadImage = function(src, isAntiCache){
             var image        = new Image();
@@ -719,7 +720,7 @@ window.Canvate = function(element) {
                 image.onerror = function(event){
                     emit(_self.IMAGE_ERROR, {src:src})
                 }
-                var antiCache     = isAntiCache ? '?' + new Date().getTime() : "";
+                var antiCache     = isAntiCache ? '?' + date.getTime() : "";
                 image.src         = src + antiCache;
         }
         
@@ -1503,7 +1504,6 @@ window.Canvate = function(element) {
                     _innerContext.globalCompositeOperation = DESTINATION_IN;
 
                     _innerContext.drawImage( canvasRender ,x ,y, w, h);
-                    console.log("V2")
                     alphaRender= _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data[3];
                     if(alphaRender == 0){
                         _canvateMouse = null;
