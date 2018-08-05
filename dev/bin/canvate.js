@@ -693,7 +693,7 @@ window.Canvate = function(element) {
             }
             
             if(1 < _totalFrames){
-                this.setSize(widthSetCycle, auto);
+                this.setSize(widthSetCycle, AUTO);
             }
         }
         
