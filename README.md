@@ -67,7 +67,6 @@ var myCanvateImage = myCanvate.addNew(image);
 | **```fontSize ```** | Number that defines the **fontSize** of the text in pixels. The default value is: **12**.|
 | **``` font ```** | String that defines the **font family** of the text.|
 | **``` fontColor ```** | String or Number that defines the **text color**.|
-| **``` textBaseline ```** | String that defines the **vertical alingment** of the text. The accepted values are:  **```top```** (default value)\|**```bottom```** \| **```middle```**. | 
 | **``` textAlign ```** | String that defines the **horizontal alingment** of the text. The accpeted values are: **```start```** (default value) \|**```end```** \| **```center```** \| **```left```** \| **```right```**, the difference between **```start```** and **```left```** is: The **```start```** value does align left when you are using a **LTR** (left to right) browser. In **RTL** browsers, the start value aligns right. And the other way around with **```end```** and **```right```**.| 
 
 ### Other properties
@@ -92,7 +91,7 @@ var myCanvateImage = myCanvate.addNew(image);
 | **``` setAutoWidth() ```** | Sets the **proportional width** of the image based on his height.|
 | **``` setAutoHeight() ```** | Sets the **proportional height** of the image based on his width.|
 | **``` crop(x, y, width, height, finalWidth, finalHeight) ```** | Crops the image using the parameters **```x```**, **```y```**,**```width```** and **```height```**. The parameters **```finalWidth```** and **```finalWidth```** are optional in order to set another size. |
- **``` setViewPort(width, height) ```** | Sets the **view port** of the image in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the image.|
+| **``` setViewPort(width, height) ```** | Sets the **view port** of the image in pixels. All the children outside the **view port** wont be rendered.The **view port** doesnt affect the **width** and **height** of the image.|
 | **``` getViewPortWidth() ```** | Gets the **view Port width**, if the view port wasnt set, returns **```null```**.|
 | **``` getViewPortHeight() ```** | Gets the **view Port height**, if the view port wasnt set, returns **```null```**.|
 | **``` removeViewPort() ```** | Make all the clip visible without the view port set before.|
@@ -103,33 +102,40 @@ var myCanvateImage = myCanvate.addNew(image);
 | **``` setImage(image) ```** | Sets the **image** of the image. It can be used: external images as PNG, JPG, SVG,  sprite sheet or the following HTML elements: **img**, **canvas** and **video**.|
 | **``` setImageById(id) ```** | Sets the **image** of the image using the ```id``` of the following HTML elements: **img**, **canvas** and **video**.|
 | **``` loadImage(src, isAntiCache) ```** | Loads an external image as **PNG**, **JPG**, etc, inside the image. The parameters **```isAntiCache```** is optional to avoid the cache, the default value is false.|
-| **``` setMask() ```** | Sets a image as a mask. The image acts as a mask of his children.|
-| **``` unsetMask() ```** | The image render it self and his children in the normal way.|
+| **``` setMask() ```** | Sets a image as a mask.|
+| **``` removeMask() ```** | Removes the mask.|
+| **``` isMask() ```** | Returns a Boolean if is a mask.|
 | **``` setBackground(fillStyle)```** | Sets the image's**bakcgfround**. Please see the **[```backround```](https://github.com/EiseiKashi/canvate/blob/master/README.md#other-properties)** property. |
 | **``` setRect(width, height, color) ```** | Sets a **rectangle** with the **```width```** and **```height```**, size in pixels. The **```color```** parameter is optional, the default value is: **"black"** |
 
 ### Text methods
 | Property | Description |
 | -------------------------------- | ------------- |
-| **``` setText(text, size, font, color) ```** | Sets the **text**. The optional parameters are: **```size```**, **```font```** and **```color```**. Please check the **[text properties](https://github.com/EiseiKashi/canvate/blob/master/README.md#text-properties)** property.|
+| **``` setText(text, size, font, color, textAlign, width, height, interline) ```** | Sets the **text**. The optional parameters are: **```size```**, **```font```**, **```color```**, **```textAlign```**, **```width```**, **```height```**, **```interline```**. Please check the **[text properties](https://github.com/EiseiKashi/canvate/blob/master/README.md#text-properties)** property.|
+| **``` textToImage() ```** | Converts the **text** and can not be editable.|
+| **``` getTextWidth() ```** | gets the text width.|
+| **``` getTextHeight ```** | gets the text height.|
+| **``` fitToText ```** | Set the width and height of the image to the text.|
+
 
 ### Children methods
 | Property | Description |
 | -------------------------------- | ------------- |
 | **``` getId() ```** | Returns the image's **id**.|
-| **``` addNewClip（image） ```** | Creates and add a image．The **```image```** parameter is optional. Please see the method **```setImage```**. IIf the image parameter is null, an empty Clip is created. |
-| **``` getNewClip（image） ```** | Creates and return a image without adding it．The **```image```** parameter is optional. Please see the method **```setImage```**. IIf the image parameter is null, an empty Clip is created.|
-| **``` getClipAt(depth) ```** | Gets a image at the specific depth, countinf from 0. |
-| **``` addClip(clip) ```** | Adds the specific image. |
-| **``` addClipAt(clip, depth) ```** | Adds the specific image at specific **depth**. |
-| **``` removeClip(clip) ```** | Removes the specific image. |
-| **``` removeClipAt(depth) ```** | Removes a image at the specific **```depth```**. |
-| **``` removeAllClips() ```** | Removes all image. |
-| **``` getTotalClip()  ```** | Returns the amount of image. |
+| **``` addNew（image） ```** | Creates and add a image．The **```image```** parameter is optional. Please see the method **```setImage```**. If the image parameter is null, an empty image is created. |
+| **``` addNewById（id） ```** | Creates and add an image from img, video or canvas using it id. |
+| **``` addNewByURL（id） ```** | Creates and add an image from URL, it can be a JPG, SVG or PNG. |
+| **``` getAt(depth) ```** | Gets a image at the specific depth, countinf from 0. |
+| **``` add(image) ```** | Adds the image reference. |
+| **``` addAt(image, depth) ```** | Adds the specific image at specific **depth**. |
+| **``` remove(image) ```** | Removes the specific image. |
+| **``` removeAt(depth) ```** | Removes a image at the specific **```depth```**. |
+| **``` removeAll() ```** | Removes all image. |
+| **``` getTotal()  ```** | Returns the amount of image. |
 | **``` setDepth(clip, depth) ```** | Sets the depth of the specific image. |
-| **``` swapClips(clip1, clip2) ```** | Interchange the depth of two image. |
-| **``` toFront(clip) ```** | Bring the image to front (the highest depth). |
-| **``` toBack(clip) ```** | Bring the image to back (the lowest depth). |
+| **``` swap(canvate, canvate) ```** | Interchange the depth of two image. |
+| **``` toFront() ```** | Bring the image to front (the highest depth). |
+| **``` toBack() ```** | Bring the image to back (the lowest depth). |
 | **``` getParent() ```** | Returns the image's **parent**.|
 
 ### Sprite sheet methods
