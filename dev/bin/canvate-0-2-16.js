@@ -55,17 +55,17 @@ function Canvate(element) {
         }
     }
     
-    var MOUSE_OVER      = Emitter.MOUSE_OVER;
-    var MOUSE_OUT       = Emitter.MOUSE_OUT;
-    var MOUSE_UP        = Emitter.UP;
-    var MOUSE_DOWN      = Emitter.MOUSE_DOWN;
-    var MOUSE_LEAVE     = Emitter.MOUSE_LEAVE;
-    var CLICK           = Emitter.CLICK;
-    var DRAG            = Emitter.DRAG;
-    var DROP            = Emitter.DROP;
+    var MOUSE_OVER      = Shika.MOUSE_OVER;
+    var MOUSE_OUT       = Shika.MOUSE_OUT;
+    var MOUSE_UP        = Shika.UP;
+    var MOUSE_DOWN      = Shika.MOUSE_DOWN;
+    var MOUSE_LEAVE     = Shika.MOUSE_LEAVE;
+    var CLICK           = Shika.CLICK;
+    var DRAG            = Shika.DRAG;
+    var DROP            = Shika.DROP;
 
-    var FUNCTION        = Emitter.FUNCTION;
-    var OBJECT          = Emitter.OBJECT;
+    var FUNCTION        = Shika.FUNCTION;
+    var OBJECT          = Shika.OBJECT;
     
     var CANVAS          = "canvas";
     var D2              = "2d";
@@ -163,7 +163,7 @@ function Canvate(element) {
         var DEFAULT_ALIGN     = LEFT;
         var DEFAULT_BASE_LINE = "top";
         
-        this.text             = text;
+        this.text             = String(text);
         this.size             = isNumber(size)      ? size          : DEFAULT_SIZE;
         this.font             = null == font        ? DEFAULT_FONT  : font;
         this.color            = null == color       ? DEFAULT_COLOR : color;
@@ -213,11 +213,11 @@ function Canvate(element) {
             
             var text              = _self.text;
                 text              = null == text ? "" : text;
-            maxWidth              = null == this.width  ? Math.ceil(_context.measureText(text).width) : this.width;
-            maxHeight             = null == this.height ? _self.interline * _self.size                : this.height;
+            maxWidth              = null == _self.width  ? Math.ceil(_context.measureText(text).width) : _self.width;
+            maxHeight             = null == _self.height ? _self.interline * _self.size                : _self.height;
             
             /* START OF WRAPPING */
-            if(this.isWordWrap){
+            if(_self.isWordWrap){
                 _lineHeight      = _self.interline * _self.size;
                 _lineList.length = 0;
                 var yText        = 0;
@@ -261,8 +261,8 @@ function Canvate(element) {
             /* END OF WRAPPING */
             _textHeight           = yText + _lineHeight;
             
-            _canvas.width         = this.naturalWidth  = maxWidth;
-            _canvas.height        = this.naturalHeight = maxHeight;
+            _canvas.width         = _self.naturalWidth  = maxWidth;
+            _canvas.height        = _self.naturalHeight = maxHeight;
             
             _context.textAlign    = _self.textAlign;
             _context.textBaseline = DEFAULT_BASE_LINE;
@@ -361,7 +361,7 @@ function Canvate(element) {
         var _cropY         = 0;
         var _cropWidth     = 0;
         var _cropHeight    = 0;
-        var _emitter       = new Emitter(this);
+        var _emitter       = new Shika(this);
         var _innerCanvas   = document.createElement(CANVAS);
         var _innerContext  = _innerCanvas.getContext(D2);
 
@@ -388,6 +388,7 @@ function Canvate(element) {
         var _isConvertion;
         var _dragX;
         var _dragY;
+        var _isLoading = false;
         
         // HELPERS VARIABLES
         var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
@@ -402,11 +403,11 @@ function Canvate(element) {
         // TRANSFORMATION METHODS
         this.setPosition = function(x, y){
             if(isNumber(x)){
-                this.x = x;
+                _self.x = x;
             }
             
             if(isNumber(y)){
-                this.y = y;
+                _self.y = y;
             }
         }
 
@@ -428,27 +429,27 @@ function Canvate(element) {
                 }
             }
             
-            this.width  = width;
-            this.height = height;
+            _self.width  = width;
+            _self.height = height;
         }
         
         this.setScale = function(x, y){
             if(isNumber(x)){
-                this.scaleX = x;
+                _self.scaleX = x;
             }
             
             if(isNumber(y)){
-                this.scaleY = y;
+                _self.scaleY = y;
             }
         }
 
         this.setPivot = function(x, y){
             if(isNumber(x)){
-                this.pivotX = x;
+                _self.pivotX = x;
             }
             
             if(isNumber(y)){
-                this.pivotY = y;
+                _self.pivotY = y;
             }
         }
         
@@ -464,29 +465,29 @@ function Canvate(element) {
             if(isNotNumber(offsetY)){
                 offsetY = 0;
             }
-            this.render(0, 0);
-            var width  = this.bounds.width;
-            var height = this.bounds.height;
+            _self.render(0, 0);
+            var width  = _self.bounds.width;
+            var height = _self.bounds.height;
             var ratio  = Math.min(maxWidth / width, maxHeight / height);
-                width  = this.width  * ratio;
-                height = this.height * ratio;
+                width  = _self.width  * ratio;
+                height = _self.height * ratio;
             
-            this.setSize(width, height);
+                _self.setSize(width, height);
             
             var x  = Math.floor((maxWidth-width)/2);
             var y  = Math.floor((maxHeight-height)/2);
             
-            this.x = x + (this.pivotX * width)  + offsetX;
-            this.y = y + (this.pivotY * height) + offsetY;
+            _self.x = x + (_self.pivotX * width)  + offsetX;
+            _self.y = y + (_self.pivotY * height) + offsetY;
             
         }
         
         this.setAutoWidth = function(){
-            this.setSize(AUTO, this.height);
+            _self.setSize(AUTO, _self.height);
         }
 
         this.setAutoHeight = function(){
-            this.setSize(this.width, AUTO);
+            _self.setSize(_self.width, AUTO);
         }
         
         this.crop = function(x, y, width, height, finalWidth, finalHeight){
@@ -513,8 +514,23 @@ function Canvate(element) {
             var img             = document.createElement(IMG);
                 img.src         = canvas.toDataURL(IMG_PNG);
             
-            this.setImage(canvas);
-            this.setSize(finalWidth, finalHeight);
+            _self.setImage(img);
+            _self.setSize(finalWidth, finalHeight);
+        }
+
+        this.resizeImageToCanvas = function(){/*
+            var canvas = _self.render(0, 0, true).inner;
+            var img             = document.createElement(IMG);
+                img.src         = canvas.toDataURL(IMG_PNG);
+            
+            _self.setImage(img);
+            _self.setSize(_self.width, _self.height);*/
+        }
+
+        this.flat = function(){
+            var canvas = _self.render(0, 0, true).inner;
+            //_self.removeAll();
+            //_self.setImage(canvas);
         }
 
         //IMAGE METHODS
@@ -532,16 +548,16 @@ function Canvate(element) {
             _initialWidth  = null == _initialWidth  ? image.width  : _initialWidth;
             _initialHeight = null == _initialHeight ? image.height : _initialHeight;
 
-            this.width     = null == this.width  || 0 == this.width  ? _initialWidth  : this.width;
-            this.height    = null == this.height || 0 == this.height ? _initialHeight : this.height;
-            this.setSize(this.width, this.height);
+            _self.width     = null == _self.width  || 0 == _self.width  ? _initialWidth  : _self.width;
+            _self.height    = null == _self.height || 0 == _self.height ? _initialHeight : _self.height;
+            _self.setSize(_self.width, _self.height);
             
             _text = null;
             
             _cropWidth  = null == _cropWidth  || 0 == _cropWidth  ? _initialWidth  : _cropWidth;
             _cropHeight = null == _cropHeight || 0 == _cropHeight ? _initialHeight : _cropHeight;
             
-            this.setCycle(_cropX, _cropY, _cropWidth, _cropHeight);
+            _self.setCycle(_cropX, _cropY, _cropWidth, _cropHeight);
             emit(_self.IMAGE_SET, {image:image})
         }
 
@@ -593,7 +609,7 @@ function Canvate(element) {
             }
             
             if(1 < _totalFrames){
-                this.setSize(widthSetCycle, AUTO);
+                _self.setSize(widthSetCycle, AUTO);
             }
         }
         
@@ -603,7 +619,7 @@ function Canvate(element) {
                 throw "There is no element with the id: " + id;
                 return;
             }
-            this.setImage(image);
+            _self.setImage(image);
             return image;
         }
         
@@ -611,14 +627,17 @@ function Canvate(element) {
 
         //Load image from SRC
         this.loadImage = function(src, isAntiCache){
+            _isLoading       = true; 
             var image        = new Image();
                 image.onload = function() {
                     _self.setImage(image);
-                    emit(_self.IMAGE_LOADED, {image:image, src:src})
+                    emit(_self.IMAGE_LOADED, {image:image, src:src});
+                    _isLoading = false;
                 }
                 
                 image.onerror = function(event){
-                    emit(_self.IMAGE_ERROR, {src:src})
+                    emit(_self.IMAGE_ERROR, {src:src});
+                    _isLoading = false;
                 }
                 var antiCache     = isAntiCache ? '?' + date.getTime() : "";
                 image.src         = src + antiCache;
@@ -630,7 +649,7 @@ function Canvate(element) {
                 // Early return
                 return;
             }
-            _maskClip[mask.getId()] = this;
+            _maskClip[mask.getId()] = _self;
             _mask                   = mask;
         }
         
@@ -682,24 +701,24 @@ function Canvate(element) {
         
         // Canvate TEXT
         this.setText = function(text, size, font, color, textAlign, width, height, interline){
-            size         = null == size         ? this.fontSize     : size;
-            font         = null == font         ? this.font         : font;
-            color        = null == color        ? this.fontColor    : color;
-            width        = null == width        ? this.width        : width;
-            height       = null == height       ? this.height       : height;
-            interline    = null == interline    ? this.interline    : interline;
-            textAlign    = null == textAlign    ? this.textAlign    : textAlign;
+            size         = null == size         ? _self.fontSize     : size;
+            font         = null == font         ? _self.font         : font;
+            color        = null == color        ? _self.fontColor    : color;
+            width        = null == width        ? _self.width        : width;
+            height       = null == height       ? _self.height       : height;
+            interline    = null == interline    ? _self.interline    : interline;
+            textAlign    = null == textAlign    ? _self.textAlign    : textAlign;
             
             var text = new Text(text, size, font, color, textAlign, width, height, interline);
             
-            this.setImage(text.getCanvas());
+            _self.setImage(text.getCanvas());
 
-            this.text         = text.text;
-            this.fontSize     = text.size;
-            this.font         = text.font;
-            this.fontColor    = text.color;
-            this.interline    = text.interline;
-            this.textAlign    = text.textAlign;
+            _self.text         = text.text;
+            _self.fontSize     = text.size;
+            _self.font         = text.font;
+            _self.fontColor    = text.color;
+            _self.interline    = text.interline;
+            _self.textAlign    = text.textAlign;
      
             _text = text;
         }
@@ -731,8 +750,8 @@ function Canvate(element) {
             }
             
             _text.getCanvas();
-            this.width  = _text.getWidth();
-            this.height = _text.getHeight();
+            _self.width  = _text.getWidth();
+            _self.height = _text.getHeight();
         }
         
         // CHILDREN METHODS
@@ -749,7 +768,7 @@ function Canvate(element) {
         // Add new Canvate
         this.addNew = function(image){
             var canvate = new Canvate(image);
-            this.add(canvate);
+            _self.add(canvate);
             return canvate;
         }
 
@@ -759,7 +778,7 @@ function Canvate(element) {
                 throw new Error("The id HTML element '" + id +"' doesnt exist.");
             }
 
-            var canvate = this.addNew(image);
+            var canvate = _self.addNew(image);
             return canvate;
         }
 
@@ -767,15 +786,15 @@ function Canvate(element) {
             if(null == url || 0 == url.length){
                 throw new Error("The url must by NOT null or length 0.");
             }
-            var canvate = this.addNew();
+            var canvate = _self.addNew();
                 canvate.loadImage(url);
 
-            this.add(canvate);
+            _self.add(canvate);
             return canvate;
         }
 
         this.addNewRect = function(x, y, width, height, color){
-            var canvate = this.addNew();
+            var canvate = _self.addNew();
                 canvate.setRect(width, height, color);
                 canvate.setPosition(x, y);
             return canvate;
@@ -793,12 +812,12 @@ function Canvate(element) {
                 return;
             }
             
-            this.addAt(canvate, _canvateList.length);
+            _self.addAt(canvate, _canvateList.length);
         }
         
         // Add canvate at specific depth
         this.addAt = function(canvate, indexTarget){
-            if(null == canvate || canvate == this || isNotNumber(indexTarget)){
+            if(null == canvate || canvate == _self || isNotNumber(indexTarget)){
                 return;
             }
             
@@ -807,20 +826,17 @@ function Canvate(element) {
                 parent.remove(canvate);
             }
             _canvateList.splice(indexTarget, 0, canvate);
-            _parent[canvate.getId()] = this;
+            _parent[canvate.getId()] = _self;
             emit(_self.ADDED, {parent:parent});
         }
 
         // Replace Canvate
         this.replace = function(canvate, withCanvate){
-            if(null == canvate || canvate == this){
+
+            if(null == canvate || null == withCanvate){
                 return;
             }
 
-            if(null == withCanvate || withCanvate == this){
-                return;
-            }
-            
             var index = _canvateList.indexOf(canvate);
             if(index != -1){
                 var canvate = _canvateList.splice(index, 1, withCanvate)[0];
@@ -831,11 +847,11 @@ function Canvate(element) {
         }
 
         // Replace Canvate at certain depth
-        this.replaceAt = function(canvate, indexTarget){
-            if(null == canvate || canvate == this){
+        this.replaceAt = function(indexTarget, canvate){
+            if(null == canvate || canvate == _self){
                 return;
             }
-
+            
             if(isNotNumber(indexTarget || indexTarget < 0 || !(indexTarget < _canvateList.length))){
                 return;
             }
@@ -847,7 +863,7 @@ function Canvate(element) {
         
         // Remove Canvate
         this.remove = function(canvate){
-            if(null == canvate || canvate == this){
+            if(null == canvate || canvate == _self){
                 return;
             }
             var length = _canvateList.length;
@@ -855,7 +871,7 @@ function Canvate(element) {
             for(var index=0; index <length; index++){
                 temp = _canvateList[index];
                 if(temp == canvate){
-                     return this.removeAt(index);
+                     return _self.removeAt(index);
                 }
             }
         }
@@ -875,7 +891,7 @@ function Canvate(element) {
         // Remove all Canvate
         this.removeAll = function(){
             while(_canvateList.length > 0){
-                this.removeAt(0);
+                _self.removeAt(0);
             }
         }
         
@@ -890,7 +906,7 @@ function Canvate(element) {
                 throw new Error("The depth value must be a Number")
                 return;
             }
-            var parent      = this.getParent();
+            var parent      = _self.getParent();
             if(null == parent){
                 return;
             }
@@ -902,7 +918,7 @@ function Canvate(element) {
 
             var length      = list.length;
             var indexTarget = Math.round(Math.min(Math.max(indexTarget, 0), length-1));
-            var index       = list.indexOf(this);
+            var index       = list.indexOf(_self);
 
             if(index > -1){
                 list.splice(indexTarget, 0, list.splice(index, 1)[0]);
@@ -938,7 +954,7 @@ function Canvate(element) {
         
         // Bring a Canvate to front
         this.toFront = function (){
-            var parent      = this.getParent();
+            var parent      = _self.getParent();
             if(null == parent){
                 return;
             }
@@ -947,12 +963,12 @@ function Canvate(element) {
             if(null == list){
                 return;
             }
-            this.setDepth(list.length-1);
+            _self.setDepth(list.length-1);
         }
         
         // Bring a Canvate to back
         this.toBack = function (){
-            this.setDepth(0);
+            _self.setDepth(0);
         }
         
         // Returns the parent
@@ -1055,7 +1071,7 @@ function Canvate(element) {
         // Move to the next frame
         this.nextFrame = function(){
             if(_frameIndex >= _framesList.length-1){
-                if(this.isLoop){
+                if(_self.isLoop){
                     _frameIndex = 0;
                 }else{
                     // Early return
@@ -1076,7 +1092,7 @@ function Canvate(element) {
         // Move to the prev frame
         this.prevFrame = function(){
             if(_frameIndex == 0){
-                if(this.isLoop){
+                if(_self.isLoop){
                     _frameIndex = _framesList.length-1;
                 }else{
                     // Early return
@@ -1128,19 +1144,19 @@ function Canvate(element) {
         }
 
         this.startDrag = function(){
-            this.addEventListener(MOUSE_DOWN, _onMouseDown, this);
-            this.addEventListener(MOUSE_UP, _onMouseUp, this);
+            this.addEventListener(MOUSE_DOWN, _onMouseDown, _self);
+            this.addEventListener(MOUSE_UP, _onMouseUp, _self);
         }
         
         this.stopDrag = function(){
             _isDraging = false;
-            this.removeEventListener(MOUSE_DOWN, _onMouseDown, this);
-            this.removeEventListener(MOUSE_UP, _onMouseUp, this);
+            this.removeEventListener(MOUSE_DOWN, _onMouseDown, _self);
+            this.removeEventListener(MOUSE_UP, _onMouseUp, _self);
         }
 
         // EVENT HANDLING
         this.emitMouseEvent = function(type, x, y){
-            if(_markToEmmit == this){
+            if(_markToEmmit == _self){
                 emit(type, {x:x-_self.x, y:y-_self.y});
             }
         }
@@ -1184,13 +1200,13 @@ function Canvate(element) {
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         
         this.render = function(mouseX, mouseY, isMasking){
-            _mouseX         = mouseX;
-            _mouseY         = mouseY;
-			this.realWidth  = 0;
-            this.realHeight = 0;
+            _mouseX         = isNumber(mouseX) ? mouseX : 0;
+            _mouseY         = isNumber(mouseY) ? mouseY : 0;
+			_self.realWidth  = 0;
+            _self.realHeight = 0;
             
-            var isNOTmasking = null != _maskClip[this.getId()] && !isMasking;
-            if((_canvateList.length == 0 && null == _image) || false == this.visible || isNOTmasking){
+            var isNOTmasking = null != _maskClip[_self.getId()] && !isMasking;
+            if((_canvateList.length == 0 && null == _image) || false == _self.visible || isNOTmasking || _isLoading){
                 return {};
             }
             
@@ -1202,7 +1218,7 @@ function Canvate(element) {
                 _cropWidth  = cropDataRender.width;
                 _cropHeight = cropDataRender.height;
             }catch(error){
-                var name = this.name;
+                var name = _self.name;
             }
             
             // FRAME RENDER
@@ -1215,7 +1231,7 @@ function Canvate(element) {
                    _frameIndex += _increment;
                    _frameIndex = Math.max(0, _frameIndex);
                 }else if(_increment != 0){
-                    if(this.isLoop){
+                    if(_self.isLoop){
                         switch(_lastAction){
                             case PLAY_BETWEEN :
                             case PLAY_UNTIL :
@@ -1236,40 +1252,40 @@ function Canvate(element) {
             }
             
             if(null != _text){
-                _text.text       = this.text;
-                _text.size       = this.fontSize;
-                _text.font       = this.font;
-                _text.color      = this.fontColor;
-                _text.interline  = this.interline;
-                _text.textAlign  = this.textAlign;
-                _text.isWordWrap = this.isWordWrap;
-                _text.width      = this.width;
-                _text.height     = this.height;
+                _text.text       = _self.text;
+                _text.size       = _self.fontSize;
+                _text.font       = _self.font;
+                _text.color      = _self.fontColor;
+                _text.interline  = _self.interline;
+                _text.textAlign  = _self.textAlign;
+                _text.isWordWrap = _self.isWordWrap;
+                _text.width      = _self.width;
+                _text.height     = _self.height;
                 
                 _image           = _text.getCanvas();
 
-                _initialWidth    = _cropWidth  = this.width;
-                _initialHeight   = _cropHeight = this.height;
+                _initialWidth    = _cropWidth  = _self.width;
+                _initialHeight   = _cropHeight = _self.height;
             }
             
             if(_isDraging){
-                this.x = _mouseX-_dragX;
-                this.y = _mouseY-_dragY;
+                _self.x = _mouseX-_dragX;
+                _self.y = _mouseY-_dragY;
             }
             
-            xRender          = this.x;
-            yRender          = this.y;
-            scaleXrender     = this.scaleX;
-            scaleYrender     = this.scaleY;
-            widthRender      = this.width  * scaleXrender;
-            heightRender     = this.height * scaleYrender;
-            pivotXrender     = this.pivotX * widthRender  *scaleXrender;
-            pivotYrender     = this.pivotY * heightRender *scaleYrender;
+            xRender          = _self.x;
+            yRender          = _self.y;
+            scaleXrender     = _self.scaleX;
+            scaleYrender     = _self.scaleY;
+            widthRender      = _self.width  * scaleXrender;
+            heightRender     = _self.height * scaleYrender;
+            pivotXrender     = _self.pivotX * widthRender  *scaleXrender;
+            pivotYrender     = _self.pivotY * heightRender *scaleYrender;
             cropXrender      = _cropX;
             cropYrender      = _cropY;
             cropWidthRender  = _cropWidth;
             cropHeightRender = _cropHeight;
-            rotationRender   = this.rotation * (Math.PI)/180;
+            rotationRender   = _self.rotation * (Math.PI)/180;
             
             var minX;var minY;var maxX;var maxY;var pivotX;var pivotY;
             var bounds;var canvateBounds;
@@ -1317,7 +1333,7 @@ function Canvate(element) {
             
             for(indexRender = 0; indexRender < length; indexRender++){
                 canvateRender = _canvateList[indexRender];
-                data   = canvateRender.render(mouseX-_self.x, mouseY-_self.y, 
+                data   = canvateRender.render(_mouseX-_self.x, _mouseY-_self.y, 
                                                false);
                 canvasRender = data.inner;
                 if(null != canvasRender){
@@ -1416,7 +1432,8 @@ function Canvate(element) {
             }
             
             if(_hasMouse){
-                var pixel = _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data;
+                console.log(_mouseX, minX, _mouseY,minY);
+                var pixel = _innerContext.getImageData(_mouseX-minX, _mouseY-minY, 1, 1).data;
                 alphaRender = pixel[3];
                 
                 if(alphaRender > 0){
@@ -1463,12 +1480,12 @@ function Canvate(element) {
 
             if(_isConvertion){
                 _isConvertion = false;
-                this.setImage(_image);
+                _self.setImage(_image);
             }
             
-            this.bounds     = bounds;
-            this.realWidth  = bounds.width;
-            this.realHeight = bounds.height;
+            _self.bounds     = bounds;
+            _self.realWidth  = bounds.width;
+            _self.realHeight = bounds.height;
             
             return data;
         }
@@ -1512,8 +1529,8 @@ function Canvate(element) {
             if(isLeave){
                 _lastOvered.emitMouseEvent(MOUSE_UP, _lastX, _lastY);
             }
-            _lastOvered = null;
-            _canvateMouse      = null;
+            _lastOvered     = null;
+            _canvateMouse   = null;
             _markToEmmit    = null;
         }
     }
@@ -1554,12 +1571,12 @@ function Canvate(element) {
         _stage      = new Canvate();
         _stage.name = STAGE;
         _stage.setImage(_mainCanvas);
-        
+        /*
         delete _stage.setImage;
         delete _stage.setText;
         delete _stage.setImageById;
         delete _stage.loadImage;
-        
+        */
         _mainCanvas.onmousemove = function(event) {
             event.preventDefault();
             _bounds  = _mainCanvas.getBoundingClientRect();
@@ -1606,7 +1623,7 @@ function Canvate(element) {
             hovering = function(){};
         };
         
-        var _mainEmitter = new Emitter(_mainCanvas);
+        var _mainEmitter = new Shika(_mainCanvas);
         update();
     }
     
@@ -1616,23 +1633,23 @@ function Canvate(element) {
 
  'use strict'
 
-// ::: EMITTER ::: //
-function Emitter(target){
+// ::: Shika ::: //
+(function Shika(target){
 
-	Emitter.MOUSE_OVER   = "mouseOver";
-	Emitter.MOUSE_OUT    = "mouseOut";
-	Emitter.MOUSE_UP     = "mouseUp";
-	Emitter.MOUSE_DOWN   = "mouseDown";
-	Emitter.MOUSE_LEAVE  = "mouseLeave";
-	Emitter.CLICK        = "click";
-	Emitter.DROP         = "drop";
-	Emitter.DRAG         = "drag";
-	Emitter.DRAGING      = "draging";	
-	Emitter.FUNCTION     = "function";
-	Emitter.OBJECT       = "object";
-	Emitter.ADD		     = "add";
-	Emitter.REMOVE		 = "remove";
-	Emitter.RENDER		 = "render";
+	Shika.MOUSE_OVER   = "mouseOver";
+	Shika.MOUSE_OUT    = "mouseOut";
+	Shika.MOUSE_UP     = "mouseUp";
+	Shika.MOUSE_DOWN   = "mouseDown";
+	Shika.MOUSE_LEAVE  = "mouseLeave";
+	Shika.CLICK        = "click";
+	Shika.DROP         = "drop";
+	Shika.DRAG         = "drag";
+	Shika.DRAGING      = "draging";	
+	Shika.FUNCTION     = "function";
+	Shika.OBJECT       = "object";
+	Shika.ADD		     = "add";
+	Shika.REMOVE		 = "remove";
+	Shika.RENDER		 = "render";
 
 	var _typeCounter   = 0;
 	var _hasMouse      = false;
@@ -1647,7 +1664,7 @@ function Emitter(target){
 	var listener;
 	
 	this.addEventListener = function(type, listener, context){
-		if(null == type || type == "" || typeof listener !== Emitter.FUNCTION ){
+		if(null == type || type == "" || typeof listener !== Shika.FUNCTION ){
 			return;
 		}
 		_listenerList = _listenerTypes[type];
@@ -1664,14 +1681,14 @@ function Emitter(target){
 		}
 		_listenerTypes[type].push([context, listener]);
 		switch(type){
-			case Emitter.CLICK :
-			case Emitter.MOUSE_OVER :
-			case Emitter.MOUSE_OUT :
-			case Emitter.MOUSE_DOWN :
-			case Emitter.MOUSE_UP :
-			case Emitter.MOUSE_LEAVE :
-			case Emitter.DRAG :
-			case Emitter.DROP :
+			case Shika.CLICK :
+			case Shika.MOUSE_OVER :
+			case Shika.MOUSE_OUT :
+			case Shika.MOUSE_DOWN :
+			case Shika.MOUSE_UP :
+			case Shika.MOUSE_LEAVE :
+			case Shika.DRAG :
+			case Shika.DROP :
 			_typeCounter++;
 			break;
 		}
@@ -1681,7 +1698,7 @@ function Emitter(target){
 	}
 	
 	this.removeEventListener = function(type, listenerToRemove, context){
-		if(null == type || type == "" || typeof listenerToRemove !== Emitter.FUNCTION ){
+		if(null == type || type == "" || typeof listenerToRemove !== Shika.FUNCTION ){
 			return;
 		}
 		
@@ -1698,14 +1715,14 @@ function Emitter(target){
 			   listener[CONTEXT]  == context){
 				_listenerTypes[type].splice(index, 1);
 				switch(type){
-					case Emitter.CLICK :
-                    case Emitter.MOUSE_OVER :
-                    case Emitter.MOUSE_OUT :
-                    case Emitter.MOUSE_DOWN :
-                    case Emitter.MOUSE_UP :
-                    case Emitter.MOUSE_LEAVE :
-                    case Emitter.DRAG :
-                    case Emitter.DROP :
+					case Shika.CLICK :
+                    case Shika.MOUSE_OVER :
+                    case Shika.MOUSE_OUT :
+                    case Shika.MOUSE_DOWN :
+                    case Shika.MOUSE_UP :
+                    case Shika.MOUSE_LEAVE :
+                    case Shika.DRAG :
+                    case Shika.DROP :
 					_typeCounter--;
 					break;
 				}
@@ -1724,7 +1741,7 @@ function Emitter(target){
 		if(undefined === _listenerList){
 			return
 		}
-		data        = null == data || typeof data != Emitter.OBJECT ? {} : data;
+		data        = null == data || typeof data != Shika.OBJECT ? {} : data;
 		data.type   = type;
 		data.target = _target;
 		var length  = _listenerList.length;
@@ -1738,7 +1755,7 @@ function Emitter(target){
 		return _hasMouse;
 	}
 
-	Emitter.getKeyHandler = function(target){
+	Shika.getKeyHandler = function(target){
 		var KeyHandler = function(target){
 			'use strict'
 		
@@ -1828,7 +1845,7 @@ function Emitter(target){
 				}
 			}
 		
-			var init = function(){
+			var init = (function(){
 				var letterList = "Q,W,E,R,T,Y,U,I,O,P,A,S,D,F,G,H,J,K,L,Z,X,C,V,B,N,M".split(",");
 				var length = letterList.length;
 				var letter;
@@ -1851,15 +1868,15 @@ function Emitter(target){
 				_userKeyList.ShiftRight	= "shift";
 				_userKeyList.AltRight	= "alt";
 				
-				_emitter = new Emitter(this);
+				_emitter = new Shika(this);
 		
 				target.addEventListener("keydown", onkeydown);
 				target.addEventListener("keyup", onkeyup);
-			}
+			})
 		
 			init();
 		}
 	
 		return new KeyHandler(target);
 	}
-}
+})
