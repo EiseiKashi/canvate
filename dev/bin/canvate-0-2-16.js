@@ -1432,7 +1432,6 @@ function Canvate(element) {
             }
             
             if(_hasMouse){
-                console.log(_mouseX, minX, _mouseY,minY);
                 var pixel = _innerContext.getImageData(_mouseX-minX, _mouseY-minY, 1, 1).data;
                 alphaRender = pixel[3];
                 
