@@ -1,5 +1,5 @@
-/* "VERSION 0.2.16"
-# FIX Has Mouse
+/* "VERSION 0.2.17"
+# FIX for Firefox and Edge, parentesis adition
 
 minified by https://javascript-minifier.com/
 */
@@ -25,7 +25,14 @@ function Canvate(element) {
     
     window.isNotNumber = function(number){
 		return !isNumber(number);
-	}
+    }
+    
+    window.delegation = function(functionReference, context){
+        return function(){
+            functionReference.apply(context, arguments);
+        }
+    }
+
     var isString = typeof element === "string";
     if(isString){
         element = document.getElementById(element);
@@ -1198,7 +1205,7 @@ function Canvate(element) {
         /*  R E N D E R                 R E N D E R                  R E N D E R  */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
-        
+        //Cnavate render
         this.render = function(mouseX, mouseY, isMasking){
             _mouseX         = isNumber(mouseX) ? mouseX : 0;
             _mouseY         = isNumber(mouseY) ? mouseY : 0;
