@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; 
+    webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -ms-touch-action: none;
+    touch-action: none;
+}
+
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; 
+}
+
+body {
+    height: 100%;
+    max-width: 100vw;
+}
+
+section {
+    display: block;
+}
+
+.canvasGame #game, #gameWrapper, #canvasWraper, #canvasGame, #canvasTest {
+    width : 100%;
+    height: 100%;
+}
+
+#canvasWraper {
+    position: relative;
+}
+
+#viewPort {
+    width:1280px;
+    height:720px;
+    transform-origin: 0px, 0px, 0px;
+    transform: scale(0.271);
+    top:0;
+    left:0;
+}
+
+#game {
+    display: table;
+    background: #000;
+    background-size: 100% auto;
+}
+
+.game-container {
+    position: relative;
+    z-index: 300;
+    text-align: center;
+    margin: 0 auto;
+    -webkit-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.45);
+    -moz-transform: scale3d(0, 0, 0);
+    -webkit-transform: scale3d(0, 0, 0);
+    transform: scale3d(0, 0, 0);
+}
+
+#hero {
+    max-height: 1200px;
+    min-height: 700px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    float: left;
+    clear: both;
+    display: block;
+    padding: 140px 0px 160px 0px;
+    background-image: url("../images/background.jpg");
+}
+
+
+#canvasGame {
+    -ms-transform: scale(.5, .5); /* IE 9 */
+    -webkit-transform: scale(.5, .5); /* Safari */
+    transform: scale(.1, .1);
+}

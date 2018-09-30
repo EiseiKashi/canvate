@@ -1,6 +1,5 @@
 /* "VERSION 0.3.0"
 # Web GL support
-
 minified by https://javascript-minifier.com/
 */
 'use strict';
@@ -1811,7 +1810,6 @@ function Canvate(element) {
         {
         /*
         _stage.setImage(_mainCanvas);
-
         _mainCanvas.onmousemove = function(event) {
             event.preventDefault();
             _bounds  = _mainCanvas.getBoundingClientRect();
