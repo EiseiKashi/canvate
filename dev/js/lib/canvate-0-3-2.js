@@ -1796,8 +1796,6 @@ function CanvateWebGL(element) {
         _mainCanvasOff          = _mainCanvas.cloneNode();
         _mainContextOff         = _mainCanvasOff.getContext(name);
         
-        console.log("WebGL 頑張ったね！");
-
         _mainCanvas.width       = _mainCanvas.width;
         _mainCanvas.height      = _mainCanvas.height;
         
@@ -1806,6 +1804,8 @@ function CanvateWebGL(element) {
         
         _stage                  = new Canvate(element);
         _stage.name             = STAGE;
+
+        console.log("WebGL 頑張ったね！");
 
         {// TO MIGRATE!!!!
         /*

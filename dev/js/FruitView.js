@@ -313,6 +313,9 @@ function FruitView(id, generalRatio){
             animation.onAnimationComplete = onAnimationComplete;
         }
 
+        window.wegGLrect = _canvateMain.addNewWebGL();
+            wegGLrect.width     = 100;
+            wegGLrect.height    = 100;
         setButtons();
     }
 
@@ -394,7 +397,6 @@ function FruitView(id, generalRatio){
     }
 
     this.displayBalance = function(balance){
-        console.log(balance);
         _creditText.setText("£"+balance);
         _creditText.width = 300*_generalRatio;;
     }

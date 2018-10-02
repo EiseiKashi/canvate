@@ -25,10 +25,178 @@ function Canvate(element) {
 		return !isNumber(number);
     }
     
-    window.delegation = function(functionReference, context){
+    window.Delegator = function(functionReference, context){
         return function(){
             functionReference.apply(context, arguments);
         }
+    }
+
+    window.COLOR_NAMES = {
+        aliceblue               : "#F0F8FF" 	
+       ,antiquewhite 	        : "#FAEBD7"	 	
+       ,aqua 	                : "#00FFFF"	 	
+       ,aquamarine 	            : "#7FFFD4"	 	
+       ,azure 	                : "#F0FFFF"	 	
+       ,beige 	                : "#F5F5DC"	 	
+       ,bisque 	                : "#FFE4C4"	 	
+       ,black 	                : "#000000"	 	
+       ,blanchedalmond 	        : "#FFEBCD"	 	
+       ,blue 	                : "#0000FF"	 	
+       ,blueviolet 	            : "#8A2BE2"	 	
+       ,brown 	                : "#A52A2A"	 	
+       ,burlywood               : "#DEB887"	 	
+       ,cadetblue               : "#5F9EA0"	 	
+       ,chartreuse              : "#7FFF00"	 	
+       ,chocolate               : "#D2691E"	 	
+       ,coral                   : "#FF7F50"	 	
+       ,cornflowerblue          : "#6495ED"	 	
+       ,cornsilk                : "#FFF8DC"	 	
+       ,crimson                 : "#DC143C"	 	
+       ,cyan                    : "#00FFFF"	 	
+       ,darkblue                : "#00008B"	 	
+       ,darkcyan                : "#008B8B"	 	
+       ,darkgoldenrod           : "#B8860B"	 	
+       ,darkgray                : "#A9A9A9"	 	
+       ,darkgrey                : "#A9A9A9"	 	
+       ,darkgreen               : "#006400"	 	
+       ,darkkhaki               : "#BDB76B"	 	
+       ,darkmagenta             : "#8B008B"	 	
+       ,darkolivegreen          : "#556B2F"	 	
+       ,darkorange 	            : "#FF8C00"	 	
+       ,darkorchid 	            : "#9932CC"	 	
+       ,darkred 	            : "#8B0000"	 	
+       ,darksalmon 	            : "#E9967A"	 	
+       ,darkseagreen 	        : "#8FBC8F"	 	
+       ,darkslateblue 	        : "#483D8B"	 	
+       ,darkslategray 	        : "#2F4F4F"	 	
+       ,darkslategrey 	        : "#2F4F4F"	 	
+       ,darkturquoise 	        : "#00CED1"	 	
+       ,darkviolet 	            : "#9400D3"	 	
+       ,deeppink 	            : "#FF1493"	 	
+       ,deepskyblue 	        : "#00BFFF"	 	
+       ,dimbray 	            : "#696969"	 	
+       ,dimgrey 	            : "#696969"	 	
+       ,dodgerblue 	            : "#1E90FF"	 	
+       ,firebrick 	            : "#B22222"	 	
+       ,floralwhite 	        : "#FFFAF0"	 	
+       ,forestgreen 	        : "#228B22"	 	
+       ,fuchsia 	            : "#FF00FF"	 	
+       ,gainsboro 	            : "#DCDCDC"	 	
+       ,ghostwhite 	            : "#F8F8FF"	 	
+       ,gold 	                : "#FFD700"	 	
+       ,goldenrod 	            : "#DAA520"	 	
+       ,gray 	                : "#808080"	 	
+       ,grey 	                : "#808080"	 	
+       ,green 	                : "#008000"	 	
+       ,greenyellow 	        : "#ADFF2F"	 	
+       ,honeydew 	            : "#F0FFF0"	 	
+       ,hotpink 	            : "#FF69B4"	 	
+       ,indianred  	            : "#CD5C5C"	 	
+       ,indigo  	            : "#4B0082"	 	
+       ,ivory 	                : "#FFFFF0"	 	
+       ,khaki 	                : "#F0E68C"	 	
+       ,lavender    	        : "#E6E6FA"	 	
+       ,lavenderblush 	        : "#FFF0F5"	 	
+       ,lawngreen 	            : "#7CFC00"	 	
+       ,lemonchiffon 	        : "#FFFACD"	 	
+       ,lightblue 	            : "#ADD8E6"	 	
+       ,lightcoral 	            : "#F08080"	 	
+       ,lightcyan 	            : "#E0FFFF"	 	
+       ,lightgoldenrodyellow    : "#FAFAD2"	 	
+       ,lightgray 	            : "#D3D3D3"	 	
+       ,lightgrey 	            : "#D3D3D3"	 	
+       ,lightgreen 	            : "#90EE90"	 	
+       ,lightpink 	            : "#FFB6C1"	 	
+       ,lightsalmon 	        : "#FFA07A"	 	
+       ,lightseagreen 	        : "#20B2AA"	 	
+       ,lightskyblue 	        : "#87CEFA"	 	
+       ,lightslategray 	        : "#778899"	 	
+       ,lightslategrey 	        : "#778899"	 	
+       ,lightsteelblue 	        : "#B0C4DE"	 	
+       ,lightyellow 	        : "#FFFFE0"	 	
+       ,lime 	                : "#00FF00"	 	
+       ,limegreen 	            : "#32CD32"	 	
+       ,linen 	                : "#FAF0E6"	 	
+       ,magenta 	            : "#FF00FF"	 	
+       ,maroon 	                : "#800000"	 	
+       ,mediumaquamarine 	    : "#66CDAA"	 	
+       ,mediumblue 	            : "#0000CD"	 	
+       ,mediumorchid 	        : "#BA55D3"	 	
+       ,mediumpurple 	        : "#9370DB"	 	
+       ,mediumseagreen 	        : "#3CB371"	 	
+       ,mediumslateblue 	    : "#7B68EE"	 	
+       ,mediumspringgreen 	    : "#00FA9A"	 	
+       ,mediumturquoise 	    : "#48D1CC"	 	
+       ,mediumvioletred 	    : "#C71585"	 	
+       ,midnightblue 	        : "#191970"	 	
+       ,mintcream 	            : "#F5FFFA"	 	
+       ,mistyrose 	            : "#FFE4E1"	 	
+       ,moccasin 	            : "#FFE4B5"	 	
+       ,navajowhite 	        : "#FFDEAD"	 	
+       ,navy 	                : "#000080"	 	
+       ,oldlace 	            : "#FDF5E6"	 	
+       ,olive 	                : "#808000"	 	
+       ,olivedrab 	            : "#6B8E23"	 	
+       ,orange 	                : "#FFA500"	 	
+       ,orangered 	            : "#FF4500"	 	
+       ,orchid 	                : "#DA70D6"	 	
+       ,palegoldenrod 	        : "#EEE8AA"	 	
+       ,palegreen 	            : "#98FB98"	 	
+       ,paleturquoise 	        : "#AFEEEE"	 	
+       ,palevioletred 	        : "#DB7093"	 	
+       ,papayawhip 	            : "#FFEFD5"	 	
+       ,peachpuff 	            : "#FFDAB9"	 	
+       ,peru 	                : "#CD853F"	 	
+       ,pink 	                : "#FFC0CB"	 	
+       ,plum 	                : "#DDA0DD"	 	
+       ,powderblue 	            : "#B0E0E6"	 	
+       ,purple 	                : "#800080"	 	
+       ,rebeccapurple 	        : "#663399"	 	
+       ,red 	                : "#FF0000"	 	
+       ,rosybrown 	            : "#BC8F8F"	 	
+       ,royalblue 	            : "#4169E1"	 	
+       ,saddlebrown 	        : "#8B4513"	 	
+       ,salmon 	                : "#FA8072"	 	
+       ,sandybrown 	            : "#F4A460"	 	
+       ,seagreen 	            : "#2E8B57"	 	
+       ,seashell 	            : "#FFF5EE"	 	
+       ,sienna 	                : "#A0522D"	 	
+       ,silver 	                : "#C0C0C0"	 	
+       ,skyblue 	            : "#87CEEB"	 	
+       ,slateblue 	            : "#6A5ACD"	 	
+       ,slategray 	            : "#708090"	 	
+       ,slategrey 	            : "#708090"	 	
+       ,snow    	            : "#FFFAFA"	 	
+       ,springgreen             : "#00FF7F"	 	
+       ,steelblue 	            : "#4682B4"	 	
+       ,tan 	                : "#D2B48C"	 	
+       ,teal 	                : "#008080"	 	
+       ,thistle 	            : "#D8BFD8"	 	
+       ,tomato 	                : "#FF6347"	 	
+       ,turquoise 	            : "#40E0D0"	 	
+       ,violet 	                : "#EE82EE"	 	
+       ,wheat 	                : "#F5DEB3"	 	
+       ,white   	            : "#FFFFFF"	 	
+       ,whitesmoke 	            : "#F5F5F5"
+       ,yellow 	                : "#FFFF00"
+       ,yellowgreen             : "#9ACD32"
+    }
+
+    window.convertToRGB = function(hex, alpha){
+        alpha   = isNotNumber(alpha) ? 1 : alpha;
+        hex     = isNumber(hex) ? hex.toString(16) : hex;
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        hex = hex.toLowerCase() in COLOR_NAMES ? COLOR_NAMES[hex] : hex;
+        
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+    
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? [parseInt(result[1], 16)/255, parseInt(result[2], 16)/255, parseInt(result[3], 16)/255, alpha]
+                        :
+                        [0, 0, 0, alpha];
     }
 
     var isString = typeof element === "string";
@@ -74,6 +242,7 @@ function Canvate(element) {
     
     var CANVAS          = "canvas";
     var D2              = "2d";
+    var WEB_GL_NAMES    = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
     var IMG             = "img";
     var IMG_PNG         = "image/png";
     var DESTINATION_IN  = "destination-in";
@@ -89,6 +258,8 @@ function Canvate(element) {
     var DEFAULT         = "default";
     var POINTER         = "pointer";
     var STAGE           = "canvateStage";
+    
+    var _pixelRatio     = window.devicePixelRatio ? window.devicePixelRatio : 1.0;
     var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "width", "height", "isWordWrap"]
     var _parent         = {};
     var _maskClip       = {};
@@ -96,8 +267,9 @@ function Canvate(element) {
     var hovering        = function(){};
     var _date           = new Date();
     
+    var WEB_GL;
     var _mainCanvas;
-    var _context;
+    var _mainContext;
     var _markToEmmit;
     var _mainCanvasOff;
     var _mainContextOff;
@@ -155,6 +327,49 @@ function Canvate(element) {
                  width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
     }
 
+    var getCanvasContextWebGL = function(canvas, atributes){
+        if(!window.WebGLRenderingContext){
+            throw new Error("Web GL is not supported.");
+        }
+
+        {   // ATRIBUTES
+            /*
+            debug:true
+            ,alpha: true;                           //Boolean that indicates if the canvas contains an alpha buffer.
+            ,antialias: true;                       //Boolean that indicates whether or not to perform anti-aliasing.
+            ,depth: true;                           //Boolean that indicates that the drawing buffer has a depth buffer of at least 16 bits.
+            ,failIfMajorPerformanceCaveat: false    //Boolean that indicates if a context will be created if the system performance is low.
+            ,powerPreference: "default"             //A hint to the user agent indicating what configuration of GPU is suitable for the WebGL context. Possible values are:
+                                                    //"default": Let the user agent decide which GPU configuration is most suitable. This is the default value.
+                                                    //"consolhigh-performance": Prioritizes rendering performance over power consumption.
+                                                    //"low-power": Prioritizes power saving over rendering performance.
+            ,premultipliedAlpha: true               //Boolean that indicates that the page compositor will assume the drawing buffer contains colors with pre-multiplied alpha.
+            ,preserveDrawingBuffer:true             //If the value is true the buffers will not be cleared and will preserve their values until cleared or overwritten by the author.
+            ,stencil: true                          //Boolean that indicates that the drawing buffer has a stencil buffer of at least 8 bits.
+        */}
+        var canvas  = document.createElement(CANVAS);
+        var length  = WEB_GL_NAMES.length;
+        var context = null;
+        
+        if(WEB_GL == null){
+            for (var index = 0; index < length; ++index) {
+                WEB_GL  = WEB_GL_NAMES[index];
+                context = canvas.getContext(WEB_GL, atributes);
+                if(null != context){
+                    break;
+                }
+            }
+        }else{
+            context = canvas.getContext(WEB_GL, atributes);
+        }
+        
+        if(null == context){
+            throw new Error("The list of Web GL identifierd context are not suported: " + WEB_GL_NAMES);
+        }
+
+        return {canvas:canvas, context:context};
+    }
+
     var getCanvasContext = function(){
         if(getCanvasContext != getCanvasContextFallback){
             getCanvasContext = getCanvasContextFallback;
@@ -209,12 +424,12 @@ function Canvate(element) {
         this.naturalHeight;
         
         //this.text, size, font, color, width, height
-        var canvasContext   = getCanvasContext();
-        var _canvas         = canvasContext.canvas;
-        var _context        = canvasContext.context;
-        var _isTheSame      = false;
-        var _lastProperties = [];
-        var _lineList       = [];
+        
+        var _canvasText       = document.createElement(CANVAS);
+        var _contextText      = _canvasText.getContext(D2);
+        var _isTheSame        = false;
+        var _lastProperties   = [];
+        var _lineList         = [];
         
         var _textHeight;
         var _textWidth;
@@ -222,7 +437,7 @@ function Canvate(element) {
         
         var property;var value;var index;var line;var e1;var e2;
         var edge; var remainder;var maxWidth;var maxHeight;
-
+    
         this.getCanvas = function(){
             var isTheSame = true;
             var length    = _textProperties.length;
@@ -236,17 +451,17 @@ function Canvate(element) {
             }
             
             if(isTheSame && _isTheSame){
-                return _canvas;
+                return _canvasText;
             }
             
-            _context.textAlign    = _self.textAlign;
-            _context.textBaseline = DEFAULT_BASE_LINE;
-            _context.fillStyle    = _self.color;
-            _context.font         = _self.size + "px " + _self.font;
+            _contextText.textAlign    = _self.textAlign;
+            _contextText.textBaseline = DEFAULT_BASE_LINE;
+            _contextText.fillStyle    = _self.color;
+            _contextText.font         = _self.size + "px " + _self.font;
             
             var text              = _self.text;
                 text              = null == text ? "" : text;
-            maxWidth              = null == _self.width  ? Math.ceil(_context.measureText(text).width) : _self.width;
+            maxWidth              = null == _self.width  ? Math.ceil(_contextText.measureText(text).width) : _self.width;
             maxHeight             = null == _self.height ? _self.interline * _self.size                : _self.height;
             
             /* START OF WRAPPING */
@@ -254,7 +469,7 @@ function Canvate(element) {
                 _lineHeight      = _self.interline * _self.size;
                 _lineList.length = 0;
                 var yText        = 0;
-                var lineWidth    = Math.ceil(_context.measureText(text).width);
+                var lineWidth    = Math.ceil(_contextText.measureText(text).width);
                     _textWidth   = lineWidth;
                 var line         = "";
                 
@@ -265,10 +480,10 @@ function Canvate(element) {
                 var length = wordList.length;
                 for (var index = 0; index < length; index++) {
                     tempText    = wordList[index];
-                    metrics     = _context.measureText(tempText);
+                    metrics     = _contextText.measureText(tempText);
                     while (metrics.width > maxWidth) {
                         tempText    = tempText.substring(0, tempText.length - 1);
-                        metrics     = _context.measureText(tempText);
+                        metrics     = _contextText.measureText(tempText);
                     }
                     if (wordList[index] != tempText) {
                         wordList.splice(index + 1, 0,  wordList[index].substr(tempText.length))
@@ -276,7 +491,7 @@ function Canvate(element) {
                     }  
             
                     tempText    = line + wordList[index] + ' ';  
-                    metrics     = _context.measureText(tempText);
+                    metrics     = _contextText.measureText(tempText);
                     
                     if (metrics.width > maxWidth && index > 0) {
                         _lineList.push(line);
@@ -288,29 +503,29 @@ function Canvate(element) {
                 }
                  
                 _lineList.push(line);
-               // _context.fillText(line, x, y);
+               // _contextText.fillText(line, x, y);
             }
-
+    
             /* END OF WRAPPING */
             _textHeight           = yText + _lineHeight;
             
-            _canvas.width         = _self.naturalWidth  = maxWidth;
-            _canvas.height        = _self.naturalHeight = maxHeight;
+            _canvasText.width         = _self.naturalWidth  = maxWidth;
+            _canvasText.height        = _self.naturalHeight = maxHeight;
             
-            _context.textAlign    = _self.textAlign;
-            _context.textBaseline = DEFAULT_BASE_LINE;
-            _context.fillStyle    = _self.color;
-            _context.font         = _self.size + "px " + _self.font;
+            _contextText.textAlign    = _self.textAlign;
+            _contextText.textBaseline = DEFAULT_BASE_LINE;
+            _contextText.fillStyle    = _self.color;
+            _contextText.font         = _self.size + "px " + _self.font;
             
             switch(_self.textAlign){
                 case LEFT:
                 x = 0
                 break
                 case CENTER:
-                x = _canvas.width/2;
+                x = _canvasText.width/2;
                 break;
                 case RIGHT:
-                x = _canvas.width
+                x = _canvasText.width
                 break;
             }
             
@@ -319,13 +534,13 @@ function Canvate(element) {
             var length = _lineList.length;
             for(var index=0; index < length; index++){
                 line = _lineList[index];
-                _context.fillText(line, x, yText);
+                _contextText.fillText(line, x, yText);
                 yText += _lineHeight;
             }
             
             _isTheSame = isTheSame;
             
-            return _canvas;
+            return _canvasText;
         }
         
         this.getHeight = function(){
@@ -340,7 +555,7 @@ function Canvate(element) {
     var _canvateListById = {};
     
     // ::: CANVATE ::: //
-    var Canvate = function (image){
+    var Canvate = function (image, isWebGL){
         'use strict';
         
         var _self         = this;
@@ -405,9 +620,23 @@ function Canvate(element) {
         var _mask               = null;
         var _isDraging          = false;
         
-        var canvasContext       = getCanvasContext();         
-        var _innerCanvas        = canvasContext.canvas;
-        var _innerContext       = canvasContext.context;
+        var canvasContext;         
+        var _innerCanvas;
+        var _innerContext;
+
+        var _webGLCanvas;
+        var _webGLContext;
+
+        if(isWebGL){
+            canvasContext   = getCanvasContextWebGL();       
+            _webGLCanvas    = canvasContext.canvas;
+            _webGLContext   = canvasContext.context;
+        }
+
+        var canvasContext   = getCanvasContext();
+        _innerCanvas        = canvasContext.canvas;
+        _innerContext       = canvasContext.context;
+
         var _mouseX;
         var _mouseY;
         var _canvateMouse;
@@ -801,6 +1030,13 @@ function Canvate(element) {
             return new Canvate(image);
         }
         
+        // Add new Canvate Web GL
+        this.addNewWebGL = function(){
+            var canvate = new Canvate(image, true);
+            _self.add(canvate);
+            return canvate;
+        }
+
         // Add new Canvate
         this.addNew = function(image){
             var canvate = new Canvate(image);
@@ -1242,6 +1478,311 @@ function Canvate(element) {
             _self.realHeight = 0;
             
             var isNOTmasking = null != _maskClip[_self.getId()] && !isMasking;
+            if(!isWebGL && ( _canvateList.length == 0 && null == _image) || false == _self.visible || isNOTmasking || _isLoading){
+                return {};
+            }
+            
+            indexRender     = _frameIndex;
+            cropDataRender  = _framesList[indexRender];
+            try{
+                _cropX      = cropDataRender.x;
+                _cropY      = cropDataRender.y;
+                _cropWidth  = cropDataRender.width;
+                _cropHeight = cropDataRender.height;
+            }catch(error){
+                var name = _self.name;
+            }
+            
+            // FRAME RENDER
+            _currentFrame = indexRender+1;
+            nowRender         = Date.now();
+            
+            if((nowRender - _lastTime) >= 1000/_frameRate){
+                _lastTime = nowRender;
+                if(_frameIndex !=  _endIndex){
+                   _frameIndex += _increment;
+                   _frameIndex = Math.max(0, _frameIndex);
+                }else if(_increment != 0){
+                    if(_self.isLoop){
+                        switch(_lastAction){
+                            case PLAY_BETWEEN :
+                            case PLAY_UNTIL :
+                            case PLAY_FROM :
+                                _frameIndex = _fromIndexFrame;
+                                break;
+                            case PLAY :
+                                _frameIndex = 0;
+                        }
+                    }else{
+                        _increment = 0;
+                    }
+                    
+                    if(null != _lastAction){
+                        emit(_self.CYCLE_END, {frame:_currentFrame, action:_lastAction});
+                    }
+                }
+            }
+            
+            if(null != _text){
+                _text.text       = _self.text;
+                _text.size       = _self.fontSize;
+                _text.font       = _self.font;
+                _text.color      = _self.fontColor;
+                _text.interline  = _self.interline;
+                _text.textAlign  = _self.textAlign;
+                _text.isWordWrap = _self.isWordWrap;
+                _text.width      = _self.width;
+                _text.height     = _self.height;
+                
+                _image           = _text.getCanvas();
+
+                _initialWidth    = _cropWidth  = _self.width;
+                _initialHeight   = _cropHeight = _self.height;
+            }
+            
+            if(_isDraging){
+                _self.x = _mouseX-_dragX;
+                _self.y = _mouseY-_dragY;
+            }
+            
+            xRender          = _self.x;
+            yRender          = _self.y;
+            scaleXrender     = _self.scaleX;
+            scaleYrender     = _self.scaleY;
+            widthRender      = _self.width  * scaleXrender;
+            heightRender     = _self.height * scaleYrender;
+            pivotXrender     = _self.pivotX * widthRender  *scaleXrender;
+            pivotYrender     = _self.pivotY * heightRender *scaleYrender;
+            cropXrender      = _cropX;
+            cropYrender      = _cropY;
+            cropWidthRender  = _cropWidth;
+            cropHeightRender = _cropHeight;
+            rotationRender   = _self.rotation * (Math.PI)/180;
+            
+            var minX;var minY;var maxX;var maxY;var pivotX;var pivotY;
+            var bounds;var canvateBounds;var inner;
+            var renderList = [];
+            
+            minX = null;
+            minY = null;
+            maxX = null;
+            maxY = null;
+            
+            if(null != _image){
+                bounds = calculateBounds ( 0
+                                          ,xRender         ,yRender
+                                          ,-(pivotXrender) ,-(pivotYrender)
+                                          ,widthRender     ,heightRender );
+                
+                minX = bounds.minX;
+                minY = bounds.minY;
+                maxX = bounds.maxX;
+                maxY = bounds.maxY;
+            }
+            
+            // RENDER CHILDREN
+            var rx;
+            var ry;
+            if(null != _image){
+                rx = widthRender  / _initialWidth;
+                ry = heightRender / _initialHeight;
+                rx = isNotNumber(rx) ? 1 : rx;
+                ry = isNotNumber(ry) ? 1 : ry;
+            }else{
+                rx = 1;
+                ry = 1;
+            }
+            
+            rx *= scaleXrender;
+            ry *= scaleYrender;
+            
+            var canvateBounds;
+            
+            _canvateMouse = null;
+            var positionX = xRender-pivotXrender;
+            var positionY = yRender-pivotYrender;
+            var length    = _canvateList.length;
+            
+            for(indexRender = 0; indexRender < length; indexRender++){
+                canvateRender = _canvateList[indexRender];
+                data   = canvateRender.render(_mouseX-_self.x, _mouseY-_self.y, 
+                                               false);
+                canvasRender = data.inner;
+                if(null != canvasRender){
+                    canvateBounds = data.bounds;
+                    renderList.push({canvas:data.inner, x:canvateBounds.minX, y:canvateBounds.minY});
+                    
+                    if(Boolean(data.canvateMouse)){
+                        _canvateMouse = data.canvateMouse;
+                    }
+                    
+                    if(null != minX){
+                        minX = Math.min((canvateBounds.minX+positionX)*rx, minX);
+                        minY = Math.min((canvateBounds.minY+positionY)*ry, minY);
+                        maxX = Math.max((canvateBounds.maxX+positionX)*rx, maxX);
+                        maxY = Math.max((canvateBounds.maxY+positionY)*ry, maxY);
+                    }else{
+                        minX = (canvateBounds.minX+positionX)*rx;
+                        minY = (canvateBounds.minY+positionY)*ry;
+                        maxX = (canvateBounds.maxX+positionX)*rx;
+                        maxY = (canvateBounds.maxY+positionY)*ry;
+                    }
+                }
+            }
+            
+            var totalWidth  = Math.abs(maxX-minX);
+            var totalHeight = Math.abs(maxY-minY);
+            var pivotX      = (xRender - minX);
+            var pivotY      = (yRender - minY);
+            
+            bounds = calculateBounds ( rotationRender
+                                      ,xRender    ,yRender
+                                      ,-(pivotX)  ,-(pivotY)
+                                      ,totalWidth ,totalHeight );
+            
+            minX = bounds.minX;
+            minY = bounds.minY;
+            maxX = bounds.maxX;
+            maxY = bounds.maxY;
+            
+            if(isWebGL || _webGLCanvas){
+                _webGLContext.viewportWidth     = _webGLCanvas.width  = _self.width;
+                _webGLContext.viewportHeight    = _webGLCanvas.height = _self.height;
+                var colorArgs                   = convertToRGB("blueviolet");
+                var colorArgs                   = convertToRGB("#ff0000");
+                inner                           = _webGLCanvas;
+                _webGLContext.clearColor.apply(_webGLContext, colorArgs);
+                _webGLContext.clear(_webGLContext.COLOR_BUFFER_BIT);
+            }else{    
+                _innerCanvas.width  = bounds.width;
+                _innerCanvas.height = bounds.height;
+                
+                _innerContext.save();
+                _innerContext.globalAlpha = _self.alpha;
+                
+                var xXscale    = scaleXrender < 0 ? -_innerCanvas.width  : 0;
+                var yYscale    = scaleYrender < 0 ? -_innerCanvas.height : 0;
+                
+                var translateX = xRender-minX+xXscale;
+                var translateY = yRender-minY+yYscale;
+                
+                _innerContext.translate(translateX, translateY);
+                _innerContext.rotate(rotationRender);
+                
+                scaleXrender = scaleXrender < 0 ? -1 : 1;
+                scaleYrender = scaleYrender < 0 ? -1 : 1;
+                
+                _innerContext.scale(scaleXrender, scaleYrender);
+                
+                if(_self.background != null){
+                    _innerContext.fillStyle = _self.background;
+                    _innerContext.fillRect(0, 0, _innerCanvas.width ,_innerCanvas.height );
+                }
+                
+                if(null != _image && 0 != _image.width && 0 != _image.height){
+                    _innerContext.drawImage( _image
+                                            ,cropXrender     ,cropYrender
+                                            ,cropWidthRender ,cropHeightRender
+                                            ,-pivotXrender   ,-pivotYrender
+                                            ,widthRender     ,heightRender );
+                }else{
+                    _self.width      = totalWidth;
+                    _self.height     = totalHeight;
+                    
+                    _initialWidth    = totalWidth;
+                    _initialHeight   = totalHeight;
+                    
+                    cropWidthRender  = totalWidth;
+                    cropHeightRender = totalHeight;
+                }
+                
+                var canvas;var x;var y;var w;var h;
+                
+                var canvate;
+                var length = renderList.length;
+                for(var index=0; index < length; index++){
+                    canvate = renderList[index];
+                    canvas = canvate.canvas;
+                    if(null != canvate && 0 != canvas.width && 0 != canvas.height){
+                        x = (canvate.x-pivotXrender)* rx;
+                        y = (canvate.y-pivotYrender)* ry;
+                        w = (canvas.width  * rx);
+                        h = (canvas.height * ry);
+                        _innerContext.drawImage(canvas ,0, 0, canvas.width, canvas.height
+                                                    ,x ,y, w, h);
+                    }
+                }
+                
+                if(_hasMouse){
+                    var pixel = _innerContext.getImageData(_mouseX-minX, _mouseY-minY, 1, 1).data;
+                    alphaRender = pixel[3];
+                    
+                    if(alphaRender > 0){
+                        _canvateMouse = _self;
+                    }
+                }
+
+                // MASK RENDER
+                if(null != _mask){
+                    data = _mask.render(mouseX-_self.x, mouseY-_self.y, true);
+                    canvasRender = data.inner;
+                    if(null != canvasRender){
+                        canvateBounds = data.bounds;
+                        x = canvateBounds.minX;
+                        y = canvateBounds.minY;
+                        x = (x-pivotXrender)* rx;
+                        y = (y-pivotYrender)* ry;
+                        w = canvasRender.width   * rx;
+                        h = canvasRender.height  * ry;
+                        _innerContext.globalCompositeOperation = DESTINATION_IN;
+
+                        _innerContext.drawImage( canvasRender, 0, 0, canvasRender.width, canvasRender.height
+                                                            , x-_self.x ,y-_self.y, w, h);
+                        alphaRender= _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data[3];
+                        if(alphaRender == 0){
+                            _canvateMouse = null;
+                        }
+                        
+                        _innerContext.globalCompositeOperation = SOURCE_OVER;
+                    }
+                
+                }
+                
+                _innerContext.restore();
+
+                inner = _innerCanvas;
+            }
+
+            _innerCanvas.id = _self.name;
+            var data = {
+                           inner            : inner
+                           ,canvateMouse    : _canvateMouse
+                           ,bounds          : bounds
+                           ,x               : minX
+                           ,y               : minY
+                       };
+            
+            emit(_self.RENDER, {});
+
+            if(_isConvertion){
+                _isConvertion = false;
+                _self.setImage(_image);
+            }
+            
+            _self.bounds     = bounds;
+            _self.realWidth  = bounds.width;
+            _self.realHeight = bounds.height;
+            
+            return data;
+        }
+
+        var renderWebGL = function(mouseX, mouseY, isMasking){
+            _mouseX         = isNumber(mouseX) ? mouseX : 0;
+            _mouseY         = isNumber(mouseY) ? mouseY : 0;
+			_self.realWidth  = 0;
+            _self.realHeight = 0;
+            
+            var isNOTmasking = null != _maskClip[_self.getId()] && !isMasking;
             if((_canvateList.length == 0 && null == _image) || false == _self.visible || isNOTmasking || _isLoading){
                 return {};
             }
@@ -1584,7 +2125,7 @@ function Canvate(element) {
 
         var willDraw = Boolean(canvasUpdate) && 0 != canvasUpdate.width && 0 != canvasUpdate.height;
         if(willDraw){
-            _context.drawImage(canvasUpdate, 0, 0, canvasUpdate.width, canvasUpdate.height, 
+            _mainContext.drawImage(canvasUpdate, 0, 0, canvasUpdate.width, canvasUpdate.height, 
                                             canvasData.x, canvasData.y, canvasUpdate.width, canvasUpdate.height);
             canvateMouse = canvasData.canvateMouse;
             if(null != canvateMouse){
@@ -1592,14 +2133,14 @@ function Canvate(element) {
             }
         }
         hovering();
-       // _context.drawImage(_mainCanvasOff, 0, 0);
+       // _mainContext.drawImage(_mainCanvasOff, 0, 0);
         setTimeout(update, 10);
     }
     
      // ::: INITIALIZATION ::: //
     var initialize = function() {
         _mainCanvas             = element;
-        _context                = getContext(_mainCanvas);
+        _mainContext                = getContext(_mainCanvas);
 
         _mainCanvas.width       = _mainCanvas.width;
         _mainCanvas.height      = _mainCanvas.height;
@@ -1612,12 +2153,7 @@ function Canvate(element) {
         _stage      = new Canvate();
         _stage.name = STAGE;
         _stage.setImage(_mainCanvas);
-        /*
-        delete _stage.setImage;
-        delete _stage.setText;
-        delete _stage.setImageById;
-        delete _stage.loadImage;
-        */
+
         _mainCanvas.onmousemove = function(event) {
             event.preventDefault();
             _bounds  = _mainCanvas.getBoundingClientRect();
