@@ -1,163 +1,12 @@
-/* "VERSION 0.3.2"
-# Web GL support
+/* "VERSION 0.2.18"
+# getContext encapsulation
+
 minified by https://javascript-minifier.com/
 */
 'use strict';
 
 // ::: CANVATE ::: //
-function CanvateWebGL(element) {
-
-    window.COLOR_NAMES = {
-        aliceblue               : "#F0F8FF" 	
-       ,antiquewhite 	        : "#FAEBD7"	 	
-       ,aqua 	                : "#00FFFF"	 	
-       ,aquamarine 	            : "#7FFFD4"	 	
-       ,azure 	                : "#F0FFFF"	 	
-       ,beige 	                : "#F5F5DC"	 	
-       ,bisque 	                : "#FFE4C4"	 	
-       ,black 	                : "#000000"	 	
-       ,blanchedalmond 	        : "#FFEBCD"	 	
-       ,blue 	                : "#0000FF"	 	
-       ,blueviolet 	            : "#8A2BE2"	 	
-       ,brown 	                : "#A52A2A"	 	
-       ,burlywood               : "#DEB887"	 	
-       ,cadetblue               : "#5F9EA0"	 	
-       ,chartreuse              : "#7FFF00"	 	
-       ,chocolate               : "#D2691E"	 	
-       ,coral                   : "#FF7F50"	 	
-       ,cornflowerblue          : "#6495ED"	 	
-       ,cornsilk                : "#FFF8DC"	 	
-       ,crimson                 : "#DC143C"	 	
-       ,cyan                    : "#00FFFF"	 	
-       ,darkblue                : "#00008B"	 	
-       ,darkcyan                : "#008B8B"	 	
-       ,darkgoldenrod           : "#B8860B"	 	
-       ,darkgray                : "#A9A9A9"	 	
-       ,darkgrey                : "#A9A9A9"	 	
-       ,darkgreen               : "#006400"	 	
-       ,darkkhaki               : "#BDB76B"	 	
-       ,darkmagenta             : "#8B008B"	 	
-       ,darkolivegreen          : "#556B2F"	 	
-       ,darkorange 	            : "#FF8C00"	 	
-       ,darkorchid 	            : "#9932CC"	 	
-       ,darkred 	            : "#8B0000"	 	
-       ,darksalmon 	            : "#E9967A"	 	
-       ,darkseagreen 	        : "#8FBC8F"	 	
-       ,darkslateblue 	        : "#483D8B"	 	
-       ,darkslategray 	        : "#2F4F4F"	 	
-       ,darkslategrey 	        : "#2F4F4F"	 	
-       ,darkturquoise 	        : "#00CED1"	 	
-       ,darkviolet 	            : "#9400D3"	 	
-       ,deeppink 	            : "#FF1493"	 	
-       ,deepskyblue 	        : "#00BFFF"	 	
-       ,dimbray 	            : "#696969"	 	
-       ,dimgrey 	            : "#696969"	 	
-       ,dodgerblue 	            : "#1E90FF"	 	
-       ,firebrick 	            : "#B22222"	 	
-       ,floralwhite 	        : "#FFFAF0"	 	
-       ,forestgreen 	        : "#228B22"	 	
-       ,fuchsia 	            : "#FF00FF"	 	
-       ,gainsboro 	            : "#DCDCDC"	 	
-       ,ghostwhite 	            : "#F8F8FF"	 	
-       ,gold 	                : "#FFD700"	 	
-       ,goldenrod 	            : "#DAA520"	 	
-       ,gray 	                : "#808080"	 	
-       ,grey 	                : "#808080"	 	
-       ,green 	                : "#008000"	 	
-       ,greenyellow 	        : "#ADFF2F"	 	
-       ,honeydew 	            : "#F0FFF0"	 	
-       ,hotpink 	            : "#FF69B4"	 	
-       ,indianred  	            : "#CD5C5C"	 	
-       ,indigo  	            : "#4B0082"	 	
-       ,ivory 	                : "#FFFFF0"	 	
-       ,khaki 	                : "#F0E68C"	 	
-       ,lavender    	        : "#E6E6FA"	 	
-       ,lavenderblush 	        : "#FFF0F5"	 	
-       ,lawngreen 	            : "#7CFC00"	 	
-       ,lemonchiffon 	        : "#FFFACD"	 	
-       ,lightblue 	            : "#ADD8E6"	 	
-       ,lightcoral 	            : "#F08080"	 	
-       ,lightcyan 	            : "#E0FFFF"	 	
-       ,lightgoldenrodyellow    : "#FAFAD2"	 	
-       ,lightgray 	            : "#D3D3D3"	 	
-       ,lightgrey 	            : "#D3D3D3"	 	
-       ,lightgreen 	            : "#90EE90"	 	
-       ,lightpink 	            : "#FFB6C1"	 	
-       ,lightsalmon 	        : "#FFA07A"	 	
-       ,lightseagreen 	        : "#20B2AA"	 	
-       ,lightskyblue 	        : "#87CEFA"	 	
-       ,lightslategray 	        : "#778899"	 	
-       ,lightslategrey 	        : "#778899"	 	
-       ,lightsteelblue 	        : "#B0C4DE"	 	
-       ,lightyellow 	        : "#FFFFE0"	 	
-       ,lime 	                : "#00FF00"	 	
-       ,limegreen 	            : "#32CD32"	 	
-       ,linen 	                : "#FAF0E6"	 	
-       ,magenta 	            : "#FF00FF"	 	
-       ,maroon 	                : "#800000"	 	
-       ,mediumaquamarine 	    : "#66CDAA"	 	
-       ,mediumblue 	            : "#0000CD"	 	
-       ,mediumorchid 	        : "#BA55D3"	 	
-       ,mediumpurple 	        : "#9370DB"	 	
-       ,mediumseagreen 	        : "#3CB371"	 	
-       ,mediumslateblue 	    : "#7B68EE"	 	
-       ,mediumspringgreen 	    : "#00FA9A"	 	
-       ,mediumturquoise 	    : "#48D1CC"	 	
-       ,mediumvioletred 	    : "#C71585"	 	
-       ,midnightblue 	        : "#191970"	 	
-       ,mintcream 	            : "#F5FFFA"	 	
-       ,mistyrose 	            : "#FFE4E1"	 	
-       ,moccasin 	            : "#FFE4B5"	 	
-       ,navajowhite 	        : "#FFDEAD"	 	
-       ,navy 	                : "#000080"	 	
-       ,oldlace 	            : "#FDF5E6"	 	
-       ,olive 	                : "#808000"	 	
-       ,olivedrab 	            : "#6B8E23"	 	
-       ,orange 	                : "#FFA500"	 	
-       ,orangered 	            : "#FF4500"	 	
-       ,orchid 	                : "#DA70D6"	 	
-       ,palegoldenrod 	        : "#EEE8AA"	 	
-       ,palegreen 	            : "#98FB98"	 	
-       ,paleturquoise 	        : "#AFEEEE"	 	
-       ,palevioletred 	        : "#DB7093"	 	
-       ,papayawhip 	            : "#FFEFD5"	 	
-       ,peachpuff 	            : "#FFDAB9"	 	
-       ,peru 	                : "#CD853F"	 	
-       ,pink 	                : "#FFC0CB"	 	
-       ,plum 	                : "#DDA0DD"	 	
-       ,powderblue 	            : "#B0E0E6"	 	
-       ,purple 	                : "#800080"	 	
-       ,rebeccapurple 	        : "#663399"	 	
-       ,red 	                : "#FF0000"	 	
-       ,rosybrown 	            : "#BC8F8F"	 	
-       ,royalblue 	            : "#4169E1"	 	
-       ,saddlebrown 	        : "#8B4513"	 	
-       ,salmon 	                : "#FA8072"	 	
-       ,sandybrown 	            : "#F4A460"	 	
-       ,seagreen 	            : "#2E8B57"	 	
-       ,seashell 	            : "#FFF5EE"	 	
-       ,sienna 	                : "#A0522D"	 	
-       ,silver 	                : "#C0C0C0"	 	
-       ,skyblue 	            : "#87CEEB"	 	
-       ,slateblue 	            : "#6A5ACD"	 	
-       ,slategray 	            : "#708090"	 	
-       ,slategrey 	            : "#708090"	 	
-       ,snow    	            : "#FFFAFA"	 	
-       ,springgreen             : "#00FF7F"	 	
-       ,steelblue 	            : "#4682B4"	 	
-       ,tan 	                : "#D2B48C"	 	
-       ,teal 	                : "#008080"	 	
-       ,thistle 	            : "#D8BFD8"	 	
-       ,tomato 	                : "#FF6347"	 	
-       ,turquoise 	            : "#40E0D0"	 	
-       ,violet 	                : "#EE82EE"	 	
-       ,wheat 	                : "#F5DEB3"	 	
-       ,white   	            : "#FFFFFF"	 	
-       ,whitesmoke 	            : "#F5F5F5"
-       ,yellow 	                : "#FFFF00"
-       ,yellowgreen             : "#9ACD32"
-    }
-
+function Canvate(element) {
     window.isNumber = function(number){
 		var isNull   = null == number;
 		var isNotN   = isNaN(number);
@@ -176,26 +25,10 @@ function CanvateWebGL(element) {
 		return !isNumber(number);
     }
     
-    window.Delegator = function(functionReference, context){
+    window.delegation = function(functionReference, context){
         return function(){
             functionReference.apply(context, arguments);
         }
-    }
-
-    window.hexToRGB = function(hex, alpha){
-        alpha = isNotNumber(alpha) ? 1 : alpha;
-        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-        hex = hex.toLowerCase() in COLOR_NAMES ? COLOR_NAMES[hex] : hex;
-        
-        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-            return r + r + g + g + b + b;
-        });
-    
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? [parseInt(result[1], 16)/255, parseInt(result[2], 16)/255, parseInt(result[3], 16)/255, alpha]
-                        :
-                        [0, 0, 0, alpha];
     }
 
     var isString = typeof element === "string";
@@ -241,8 +74,6 @@ function CanvateWebGL(element) {
     
     var CANVAS          = "canvas";
     var D2              = "2d";
-    var WEB_GL_NAMES    = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
-    var _pixelRatio     = window.devicePixelRatio ? window.devicePixelRatio : 1.0;
     var IMG             = "img";
     var IMG_PNG         = "image/png";
     var DESTINATION_IN  = "destination-in";
@@ -258,15 +89,14 @@ function CanvateWebGL(element) {
     var DEFAULT         = "default";
     var POINTER         = "pointer";
     var STAGE           = "canvateStage";
-    var WEB_GL;
     var _textProperties = ["text", "size", "font", "color", "interline", "textAlign", "width", "height", "isWordWrap"]
     var _parent         = {};
     var _maskClip       = {};
     var counter         = 0;
-    var _mainCanvas     = element;
     var hovering        = function(){};
     var _date           = new Date();
     
+    var _mainCanvas;
     var _context;
     var _markToEmmit;
     var _mainCanvasOff;
@@ -324,6 +154,33 @@ function CanvateWebGL(element) {
                  maxX   : maxX        ,maxY    : maxY, 
                  width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
     }
+
+    var getCanvasContext = function(){
+        if(getCanvasContext != getCanvasContextFallback){
+            getCanvasContext = getCanvasContextFallback;
+            getContext       = getContextFallback;
+        }
+
+        return getCanvasContext();
+    };
+
+    var getContext = function(canvas){
+        if(getContext != getContextFallback){
+            getCanvasContext = getCanvasContextFallback;
+            getContext       = getContextFallback;
+        }
+
+        return getContext(canvas);
+    }
+
+    var getContextFallback = function(canvas){
+        return canvas.getContext(D2);
+    }
+
+    var getCanvasContextFallback = function(){
+        var canvas = document.createElement(CANVAS);
+        return {canvas:canvas, context:canvas.getContext(D2)};
+    }
     
     // ::: TEXT ::: //
     var Text = function(text, size, font, color, textAlign, width, height, interline){
@@ -352,12 +209,12 @@ function CanvateWebGL(element) {
         this.naturalHeight;
         
         //this.text, size, font, color, width, height
-        
-        var _canvas           = document.createElement(CANVAS);
-        var _context          = _canvas.getContext(D2);
-        var _isTheSame        = false;
-        var _lastProperties   = [];
-        var _lineList         = [];
+        var canvasContext   = getCanvasContext();
+        var _canvas         = canvasContext.canvas;
+        var _context        = canvasContext.context;
+        var _isTheSame      = false;
+        var _lastProperties = [];
+        var _lineList       = [];
         
         var _textHeight;
         var _textWidth;
@@ -522,33 +379,35 @@ function CanvateWebGL(element) {
         this.fontSize;
         this.fontColor;
         this.interline;
-        this.textAlign;        
+        this.textAlign;
         this.bounds;
 
-        var AUTO           = "auto";
+        var AUTO                = "auto";
 
-        var _increment     = 0;
-        var _frameIndex    = 0;
-        var _frameRate     = 60;
-        var _totalFrames   = 1;
-        var _cropX         = 0;
-        var _cropY         = 0;
-        var _cropWidth     = 0;
-        var _cropHeight    = 0;
-        var _emitter       = new Shika(this);
-        var _innerCanvas   = document.createElement(CANVAS);
-        var _innerContext  = _innerCanvas.getContext(D2);
-        var _canvateList   = [];
-        var _framesList    = [];
-        var _initialWidth  = null;
-        var _initialHeight = null;
-        var _isMask        = false;
-        var _mask          = null;
-        var _isDraging     = false;
-        
-        _canvateListById[_id] = _canvateList;
-        
         var _image;         
+        var _increment          = 0;
+        var _frameIndex         = 0;
+        var _frameRate          = 60;
+        var _totalFrames        = 1;
+        var _cropX              = 0;
+        var _cropY              = 0;
+        var _cropWidth          = 0;
+        var _cropHeight         = 0;
+        var _emitter            = new Shika(this);
+        
+        var _canvateList        = [];
+        _canvateListById[_id]   = _canvateList;
+        
+        var _framesList         = [];
+        var _initialWidth       = null;
+        var _initialHeight      = null;
+        var _isMask             = false;
+        var _mask               = null;
+        var _isDraging          = false;
+        
+        var canvasContext       = getCanvasContext();         
+        var _innerCanvas        = canvasContext.canvas;
+        var _innerContext       = canvasContext.context;
         var _mouseX;
         var _mouseY;
         var _canvateMouse;
@@ -666,24 +525,25 @@ function CanvateWebGL(element) {
         }
         
         this.crop = function(x, y, width, height, finalWidth, finalHeight){
-            var x        = null == x      ? _cropX      : x;
-            var y        = null == y      ? _cropY      : y;
-            var width    = null == width  ? _cropWidth  : width;
-            var height   = null == height ? _cropHeight : height;
+            var x               = null == x      ? _cropX      : x;
+            var y               = null == y      ? _cropY      : y;
+            var width           = null == width  ? _cropWidth  : width;
+            var height          = null == height ? _cropHeight : height;
                          
-            _self.width  = null;
-            _self.height = null;
-            _cropWidth   = null;
-            _cropHeight  = null;
+            _self.width         = null;
+            _self.height        = null;
+            _cropWidth          = null;
+            _cropHeight         = null;
             
-            var canvas        = document.createElement(CANVAS);
-                canvas.width  = width;
-                canvas.height = height;
+            var canvasContext   = getCanvasContext();
+            var canvas          = canvasContext.canvas;
+                canvas.width    = width;
+                canvas.height   = height;
            
-            finalWidth  = isNumber(finalWidth)  ? finalWidth  : width;
-            finalHeight = isNumber(finalHeight) ? finalHeight : height; 
+            finalWidth          = isNumber(finalWidth)  ? finalWidth  : width;
+            finalHeight         = isNumber(finalHeight) ? finalHeight : height; 
             
-            var context = canvas.getContext(D2);
+            var context         = canvasContext.context;
                 context.drawImage(_image, x, y, width, height, 0, 0, finalWidth, finalHeight);
             
             var img             = document.createElement(IMG);
@@ -860,11 +720,12 @@ function CanvateWebGL(element) {
             _cropWidth   = null;
             _cropHeight  = null;
             
-            var canvas            = document.createElement(CANVAS);
+            var canvasContext     = getCanvasContext();
+            var canvas            = canvasContext.canvas;
                 canvas.width      = width;
                 canvas.height     = height;
            
-            var context           = canvas.getContext(D2);
+            var context           = canvasContext.context;
                 context.fillStyle = color;
                 context.fillRect(0,0,width,height);
             
@@ -1596,13 +1457,14 @@ function CanvateWebGL(element) {
             var length = renderList.length;
             for(var index=0; index < length; index++){
                 canvate = renderList[index];
-                if(null != canvate && 0 != canvate.canvas.width && 0 != canvate.canvas.height){
-                    canvas = canvate.canvas;
+                canvas = canvate.canvas;
+                if(null != canvate && 0 != canvas.width && 0 != canvas.height){
                     x = (canvate.x-pivotXrender)* rx;
                     y = (canvate.y-pivotYrender)* ry;
                     w = (canvas.width  * rx);
                     h = (canvas.height * ry);
-                    _innerContext.drawImage( canvate.canvas ,x ,y, w, h);
+                    _innerContext.drawImage(canvas ,0, 0, canvas.width, canvas.height
+                                                   ,x ,y, w, h);
                 }
             }
             
@@ -1629,7 +1491,8 @@ function CanvateWebGL(element) {
                     h = canvasRender.height  * ry;
                     _innerContext.globalCompositeOperation = DESTINATION_IN;
 
-                    _innerContext.drawImage( canvasRender ,x-_self.x ,y-_self.y, w, h);
+                    _innerContext.drawImage( canvasRender, 0, 0, canvasRender.width, canvasRender.height
+                                                         , x-_self.x ,y-_self.y, w, h);
                     alphaRender= _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data[3];
                     if(alphaRender == 0){
                         _canvateMouse = null;
@@ -1643,11 +1506,11 @@ function CanvateWebGL(element) {
             _innerContext.restore();
             _innerCanvas.id = _self.name;
             var data = {
-                           inner        : _innerCanvas, 
-                           canvateMouse : _canvateMouse, 
-                           bounds       : bounds, 
-                           x            : minX, 
-                           y            : minY
+                           inner            : _innerCanvas
+                           ,canvateMouse    : _canvateMouse
+                           ,bounds          : bounds
+                           ,x               : minX
+                           ,y               : minY
                        };
             
             emit(_self.RENDER, {});
@@ -1711,105 +1574,50 @@ function CanvateWebGL(element) {
     
     // ::: RENDER ::: //
     var update = function (){
-        
         _canvateMouse         = null;
         _mainCanvas.width     = _stage.width;
         _mainCanvas.height    = _stage.height;
         _mainCanvasOff.width  = _stage.width;
         _mainCanvasOff.height = _stage.height;
-        
         canvasData            = _stage.render(_lastX, _lastY);
-
-        var colorArgs = hexToRGB("blueviolet");
-        _context.clearColor.apply(_context, colorArgs);
-        _context.clear(_context.COLOR_BUFFER_BIT); 
-
-        { // TO MIGRATE
-        /*
         canvasUpdate          = canvasData.inner;
 
         var willDraw = Boolean(canvasUpdate) && 0 != canvasUpdate.width && 0 != canvasUpdate.height;
         if(willDraw){
-            _context.drawImage(canvasUpdate, canvasData.x, canvasData.y);
+            _context.drawImage(canvasUpdate, 0, 0, canvasUpdate.width, canvasUpdate.height, 
+                                            canvasData.x, canvasData.y, canvasUpdate.width, canvasUpdate.height);
             canvateMouse = canvasData.canvateMouse;
             if(null != canvateMouse){
                 _canvateMouse = canvateMouse;
             }
         }
         hovering();
-        */
-        }
+       // _context.drawImage(_mainCanvasOff, 0, 0);
         setTimeout(update, 10);
-    }
-
-    var getWebGLContext = function(canvas, atributes){
-        if(!window.WebGLRenderingContext){
-            throw new Error("Web GL is not supported.");
-        }
-
-        {   // ATRIBUTES
-            /*
-            debug:true
-            ,alpha: true;                           //Boolean that indicates if the canvas contains an alpha buffer.
-            ,antialias: true;                       //Boolean that indicates whether or not to perform anti-aliasing.
-            ,depth: true;                           //Boolean that indicates that the drawing buffer has a depth buffer of at least 16 bits.
-            ,failIfMajorPerformanceCaveat: false    //Boolean that indicates if a context will be created if the system performance is low.
-            ,powerPreference: "default"             //A hint to the user agent indicating what configuration of GPU is suitable for the WebGL context. Possible values are:
-                                                    //"default": Let the user agent decide which GPU configuration is most suitable. This is the default value.
-                                                    //"consolhigh-performance": Prioritizes rendering performance over power consumption.
-                                                    //"low-power": Prioritizes power saving over rendering performance.
-            ,premultipliedAlpha: true               //Boolean that indicates that the page compositor will assume the drawing buffer contains colors with pre-multiplied alpha.
-            ,preserveDrawingBuffer:true             //If the value is true the buffers will not be cleared and will preserve their values until cleared or overwritten by the author.
-            ,stencil: true                          //Boolean that indicates that the drawing buffer has a stencil buffer of at least 8 bits.
-        */}
-    
-        var length  = WEB_GL_NAMES.length;
-        var context = null;
-        
-        if(WEB_GL == null){
-            for (var index = 0; index < length; ++index) {
-                WEB_GL  = WEB_GL_NAMES[index];
-                context = canvas.getContext(WEB_GL, atributes);
-                if(null != context){
-                    break;
-                }
-            }
-        }else{
-            context = canvas.getContext(WEB_GL, atributes);
-        }
-        
-        if(null == context){
-            throw new Error("The list of Web GL identifierd context are not suported: " + WEB_GL_NAMES);
-        }
-
-        return context;
-    }
-
-    var initializeShaders = function(context, vertex, fragment){
-        
     }
     
      // ::: INITIALIZATION ::: //
-    var initialize = function(){
+    var initialize = function() {
         _mainCanvas             = element;
-        _context                = getWebGLContext(_mainCanvas);
-        _mainCanvasOff          = _mainCanvas.cloneNode();
-        _mainContextOff         = _mainCanvasOff.getContext(name);
-        
-        console.log("WebGL 頑張ったね！");
+        _context                = getContext(_mainCanvas);
 
         _mainCanvas.width       = _mainCanvas.width;
         _mainCanvas.height      = _mainCanvas.height;
         
+        _mainCanvasOff          = _mainCanvas.cloneNode();
+        _mainContextOff         = getContext(_mainCanvasOff);
         _mainCanvasOff.width    = _mainCanvas.width;
         _mainCanvasOff.height   = _mainCanvas.height;
         
-        _stage                  = new Canvate(element);
-        _stage.name             = STAGE;
-
-        {// TO MIGRATE!!!!
-        /*
+        _stage      = new Canvate();
+        _stage.name = STAGE;
         _stage.setImage(_mainCanvas);
+        /*
+        delete _stage.setImage;
+        delete _stage.setText;
+        delete _stage.setImageById;
+        delete _stage.loadImage;
+        */
         _mainCanvas.onmousemove = function(event) {
             event.preventDefault();
             _bounds  = _mainCanvas.getBoundingClientRect();
@@ -1856,21 +1664,17 @@ function CanvateWebGL(element) {
             hovering = function(){};
         };
         
-        
-        */
-        }
-        
         var _mainEmitter = new Shika(_mainCanvas);
         update();
     }
     
     initialize();
     return _stage;
-};
+ };
 
 // ::: Shika ::: //
 (function Shika(target){
-
+    'use strict'
 	Shika.MOUSE_OVER   = "mouseOver";
 	Shika.MOUSE_OUT    = "mouseOut";
 	Shika.MOUSE_UP     = "mouseUp";
@@ -2114,4 +1918,4 @@ function CanvateWebGL(element) {
 	
 		return new KeyHandler(target);
 	}
-});
+})

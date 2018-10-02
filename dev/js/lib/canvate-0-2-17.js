@@ -1,5 +1,5 @@
-/* "VERSION 0.2.17"
-# FIX for Firefox and Edge, parentesis adition
+/* "VERSION 0.2.18"
+# getContext encapsulation
 
 minified by https://javascript-minifier.com/
 */
@@ -95,10 +95,11 @@ function Canvate(element) {
     var _parent         = {};
     var _maskClip       = {};
     var counter         = 0;
-    var _mainCanvas     = element;
-    var _context        = _mainCanvas.getContext(D2);
     var hovering        = function(){};
     var _date           = new Date();
+    
+    var _mainCanvas;
+    var _context;
     var _markToEmmit;
     var _mainCanvasOff;
     var _mainContextOff;
@@ -155,6 +156,33 @@ function Canvate(element) {
                  maxX   : maxX        ,maxY    : maxY, 
                  width  : Math.abs(maxX-minX) ,height : Math.abs(maxY-minY)};
     }
+
+    var getCanvasContext = function(){
+        if(getCanvasContext != getCanvasContextFallback){
+            getCanvasContext = getCanvasContextFallback;
+            getContext       = getContextFallback;
+        }
+
+        return getCanvasContext();
+    };
+
+    var getContext = function(canvas){
+        if(getContext != getContextFallback){
+            getCanvasContext = getCanvasContextFallback;
+            getContext       = getContextFallback;
+        }
+
+        return getContext(canvas);
+    }
+
+    var getContextFallback = function(canvas){
+        return canvas.getContext(D2);
+    }
+
+    var getCanvasContextFallback = function(){
+        var canvas = document.createElement(CANVAS);
+        return {canvas:canvas, context:canvas.getContext(D2)};
+    }
     
     // ::: TEXT ::: //
     var Text = function(text, size, font, color, textAlign, width, height, interline){
@@ -183,12 +211,12 @@ function Canvate(element) {
         this.naturalHeight;
         
         //this.text, size, font, color, width, height
-        
-        var _canvas           = document.createElement(CANVAS);
-        var _context          = _canvas.getContext(D2);
-        var _isTheSame        = false;
-        var _lastProperties   = [];
-        var _lineList         = [];
+        var canvasContext   = getCanvasContext();
+        var _canvas         = canvasContext.canvas;
+        var _context        = canvasContext.context;
+        var _isTheSame      = false;
+        var _lastProperties = [];
+        var _lineList       = [];
         
         var _textHeight;
         var _textWidth;
@@ -369,18 +397,19 @@ function Canvate(element) {
         var _cropWidth     = 0;
         var _cropHeight    = 0;
         var _emitter       = new Shika(this);
-        var _innerCanvas   = document.createElement(CANVAS);
-        var _innerContext  = _innerCanvas.getContext(D2);
-
+        
         var _canvateList   = [];
-            _canvateListById[_id] = _canvateList;
-
+        _canvateListById[_id] = _canvateList;
+        
         var _framesList    = [];
         var _initialWidth  = null;
         var _initialHeight = null;
         var _isMask        = false;
         var _mask          = null;
         var _isDraging     = false;
+        
+        var _innerCanvas;
+        var _innerContext;
         var _mouseX;
         var _mouseY;
         var _canvateMouse;
@@ -498,24 +527,25 @@ function Canvate(element) {
         }
         
         this.crop = function(x, y, width, height, finalWidth, finalHeight){
-            var x        = null == x      ? _cropX      : x;
-            var y        = null == y      ? _cropY      : y;
-            var width    = null == width  ? _cropWidth  : width;
-            var height   = null == height ? _cropHeight : height;
+            var x               = null == x      ? _cropX      : x;
+            var y               = null == y      ? _cropY      : y;
+            var width           = null == width  ? _cropWidth  : width;
+            var height          = null == height ? _cropHeight : height;
                          
-            _self.width  = null;
-            _self.height = null;
-            _cropWidth   = null;
-            _cropHeight  = null;
+            _self.width         = null;
+            _self.height        = null;
+            _cropWidth          = null;
+            _cropHeight         = null;
             
-            var canvas        = document.createElement(CANVAS);
-                canvas.width  = width;
-                canvas.height = height;
+            var canvasContext   = getCanvasContext();
+            var canvas          = canvasContext.canvas;
+                canvas.width    = width;
+                canvas.height   = height;
            
-            finalWidth  = isNumber(finalWidth)  ? finalWidth  : width;
-            finalHeight = isNumber(finalHeight) ? finalHeight : height; 
+            finalWidth          = isNumber(finalWidth)  ? finalWidth  : width;
+            finalHeight         = isNumber(finalHeight) ? finalHeight : height; 
             
-            var context = canvas.getContext(D2);
+            var context         = canvasContext.context;
                 context.drawImage(_image, x, y, width, height, 0, 0, finalWidth, finalHeight);
             
             var img             = document.createElement(IMG);
@@ -692,11 +722,12 @@ function Canvate(element) {
             _cropWidth   = null;
             _cropHeight  = null;
             
-            var canvas            = document.createElement(CANVAS);
+            var canvasContext     = getCanvasContext();
+            var canvas            = canvasContext.canvas;
                 canvas.width      = width;
                 canvas.height     = height;
            
-            var context           = canvas.getContext(D2);
+            var context           = canvasContext.context;
                 context.fillStyle = color;
                 context.fillRect(0,0,width,height);
             
@@ -1428,13 +1459,14 @@ function Canvate(element) {
             var length = renderList.length;
             for(var index=0; index < length; index++){
                 canvate = renderList[index];
-                if(null != canvate && 0 != canvate.canvas.width && 0 != canvate.canvas.height){
-                    canvas = canvate.canvas;
+                canvas = canvate.canvas;
+                if(null != canvate && 0 != canvas.width && 0 != canvas.height){
                     x = (canvate.x-pivotXrender)* rx;
                     y = (canvate.y-pivotYrender)* ry;
                     w = (canvas.width  * rx);
                     h = (canvas.height * ry);
-                    _innerContext.drawImage( canvate.canvas ,x ,y, w, h);
+                    _innerContext.drawImage(canvas ,0, 0, canvas.width, canvas.height
+                                                   ,x ,y, w, h);
                 }
             }
             
@@ -1461,7 +1493,8 @@ function Canvate(element) {
                     h = canvasRender.height  * ry;
                     _innerContext.globalCompositeOperation = DESTINATION_IN;
 
-                    _innerContext.drawImage( canvasRender ,x-_self.x ,y-_self.y, w, h);
+                    _innerContext.drawImage( canvasRender, 0, 0, canvasRender.width, canvasRender.height
+                                                         , x-_self.x ,y-_self.y, w, h);
                     alphaRender= _innerContext.getImageData(mouseX-minX, mouseY-minY, 1, 1).data[3];
                     if(alphaRender == 0){
                         _canvateMouse = null;
@@ -1475,11 +1508,11 @@ function Canvate(element) {
             _innerContext.restore();
             _innerCanvas.id = _self.name;
             var data = {
-                           inner        : _innerCanvas, 
-                           canvateMouse : _canvateMouse, 
-                           bounds       : bounds, 
-                           x            : minX, 
-                           y            : minY
+                           inner            : _innerCanvas
+                           ,canvateMouse    : _canvateMouse
+                           ,bounds          : bounds
+                           ,x               : minX
+                           ,y               : minY
                        };
             
             emit(_self.RENDER, {});
@@ -1553,7 +1586,8 @@ function Canvate(element) {
 
         var willDraw = Boolean(canvasUpdate) && 0 != canvasUpdate.width && 0 != canvasUpdate.height;
         if(willDraw){
-            _context.drawImage(canvasUpdate, canvasData.x, canvasData.y);
+            _context.drawImage(canvasUpdate, 0, 0, canvasUpdate.width, canvasUpdate.height, 
+                                            canvasData.x, canvasData.y, canvasUpdate.width, canvasUpdate.height);
             canvateMouse = canvasData.canvateMouse;
             if(null != canvateMouse){
                 _canvateMouse = canvateMouse;
@@ -1566,13 +1600,20 @@ function Canvate(element) {
     
      // ::: INITIALIZATION ::: //
     var initialize = function() {
-        _mainCanvas.width     = _mainCanvas.width;
-        _mainCanvas.height    = _mainCanvas.height;
+        _mainCanvas             = element;
+        _context                = getContext(_mainCanvas);
+
+        var canvasContext       = getCanvasContext();
+        _innerCanvas            = canvasContext.canvas;
+        _innerContext           = canvasContext.context;
+
+        _mainCanvas.width       = _mainCanvas.width;
+        _mainCanvas.height      = _mainCanvas.height;
         
-        _mainCanvasOff        = _mainCanvas.cloneNode();
-        _mainContextOff       = _mainCanvasOff.getContext(D2);
-        _mainCanvasOff.width  = _mainCanvas.width;
-        _mainCanvasOff.height = _mainCanvas.height;
+        _mainCanvasOff          = _mainCanvas.cloneNode();
+        _mainContextOff         = getContext(_mainCanvasOff);
+        _mainCanvasOff.width    = _mainCanvas.width;
+        _mainCanvasOff.height   = _mainCanvas.height;
         
         _stage      = new Canvate();
         _stage.name = STAGE;
