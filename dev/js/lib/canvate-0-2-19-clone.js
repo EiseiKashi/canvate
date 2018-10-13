@@ -1,5 +1,6 @@
-/* "VERSION 0.2.18"
-# Web GL
+/* "VERSION 0.2.19"
+# State encapsulation
+# Data validation
 
 minified by https://javascript-minifier.com/
 */
@@ -7,6 +8,8 @@ minified by https://javascript-minifier.com/
 
 // ::: CANVATE ::: //
 function Canvate(element) {
+    var _nullObject = {};
+
     window.isNumber = function(number){
 		var isNull   = null == number;
 		var isNotN   = isNaN(number);
@@ -398,7 +401,7 @@ function Canvate(element) {
     }
     
     // ::: TEXT ::: //
-    var Text = function(text, size, font, color, textAlign, width, height, interline){
+    var Text = function(text, size, font, color, textAlign, width, height, interline, isWordWrap){
         'use strict';
         var _self             = this;
         var LEFT              = "left";
@@ -419,7 +422,7 @@ function Canvate(element) {
         this.height           = isNumber(height)    ? height        : null;
         this.interline        = isNumber(interline) ? interline     : DEFAULT_INTERLINE;
         this.textAlign        = null == textAlign   ? DEFAULT_ALIGN : textAlign; // center | left | right
-        this.isWordWrap       = true;
+        this.isWordWrap       = null == isWordWrap  ? true : false;
         this.naturalWidth;
         this.naturalHeight;
         
@@ -427,8 +430,6 @@ function Canvate(element) {
         
         var _canvasText       = document.createElement(CANVAS);
         var _contextText      = _canvasText.getContext(D2);
-        var _isTheSame        = false;
-        var _lastProperties   = [];
         var _lineList         = [];
         
         var _textHeight;
@@ -439,21 +440,6 @@ function Canvate(element) {
         var edge; var remainder;var maxWidth;var maxHeight;
     
         this.getCanvas = function(){
-            var isTheSame = true;
-            var length    = _textProperties.length;
-            for(index = 0; index < length; index++){
-                property = _textProperties[index];
-                value    = _self[property];
-                if(_lastProperties[index] != value){
-                    isTheSame = false;
-                }
-                _lastProperties[index] = value;
-            }
-            
-            if(isTheSame && _isTheSame){
-                return _canvasText;
-            }
-            
             _contextText.textAlign    = _self.textAlign;
             _contextText.textBaseline = DEFAULT_BASE_LINE;
             _contextText.fillStyle    = _self.color;
@@ -504,6 +490,8 @@ function Canvate(element) {
                  
                 _lineList.push(line);
                // _contextText.fillText(line, x, y);
+            }else{
+                _lineList = [text];
             }
     
             /* END OF WRAPPING */
@@ -538,21 +526,24 @@ function Canvate(element) {
                 yText += _lineHeight;
             }
             
-            _isTheSame = isTheSame;
-            
             return _canvasText;
         }
         
         this.getHeight = function(){
+            this.getCanvas();
             return _textHeight;
         }
         
         this.getWidth  = function(){
+            this.getCanvas();
             return _textWidth;
         }
     }
 
     var _canvateListById = {};
+
+    var CANVATE_INNER_STATE = {};
+
     
     // ::: CANVATE ::: //
     var Canvate = function (image, isWebGL){
@@ -573,20 +564,20 @@ function Canvate(element) {
         counter++;
         var _id           = CANVATE + counter;
                             
-        this.name         = _id;
-        this.x            = 0;
-        this.y            = 0;
-        this.width        = null;
-        this.height       = null;
-        this.alpha        = 1;
-        this.scaleX       = 1;
-        this.scaleY       = 1;
-        this.rotation     = 0;
-        this.pivotX       = 0;
-        this.pivotY       = 0;
+        this.name;
+        this.x;
+        this.y;
+        this.width;
+        this.height;
+        this.alpha;
+        this.scaleX;
+        this.scaleY;
+        this.rotation;
+        this.pivotX;
+        this.pivotY;
+        this.background;
         this.visible      = true;
         this.isLoop       = false;
-        this.background   = null;
         this.isWordWrap   = true;
         
         this.text;
@@ -652,6 +643,29 @@ function Canvate(element) {
         var _dragX;
         var _dragY;
         var _isLoading = false;
+
+        ////////////////////
+        var _x          = 0;
+        var _y          = 0;
+        var _width      = _nullObject;
+        var _height     = _nullObject;
+        var _alpha      = 1;
+        var _scaleX     = 1;
+        var _scaleY     = 1;
+        var _rotation   = 0;
+        var _pivotX     = 0;
+        var _pivotY     = 0;
+        var _background = 0;
+        /*
+            this.text;
+            this.font;
+            this.fontSize;
+            this.fontColor;
+            this.interline;
+            this.textAlign;
+            this.bounds;
+        */
+        //////////////////////
         
         // HELPERS VARIABLES
         var tileXsetCycle;var tileYsetCycle;var widthSetCycle;var heightSetCycle;
@@ -759,8 +773,8 @@ function Canvate(element) {
             var width           = null == width  ? _cropWidth  : width;
             var height          = null == height ? _cropHeight : height;
                          
-            _self.width         = null;
-            _self.height        = null;
+            _self.width         = _nullObject;
+            _self.height        = _nullObject;
             _cropWidth          = null;
             _cropHeight         = null;
             
@@ -812,8 +826,8 @@ function Canvate(element) {
             _initialWidth  = null == _initialWidth  ? image.width  : _initialWidth;
             _initialHeight = null == _initialHeight ? image.height : _initialHeight;
 
-            _self.width     = null == _self.width  || 0 == _self.width  ? _initialWidth  : _self.width;
-            _self.height    = null == _self.height || 0 == _self.height ? _initialHeight : _self.height;
+            _self.width     = _nullObject == _self.width  || 0 == _self.width  ? _initialWidth  : _self.width;
+            _self.height    = _nullObject == _self.height || 0 == _self.height ? _initialHeight : _self.height;
             _self.setSize(_self.width, _self.height);
             
             _text = null;
@@ -944,8 +958,8 @@ function Canvate(element) {
                 return;
             }
             
-            _self.width  = null;
-            _self.height = null;
+            _self.width  = _nullObject;
+            _self.height = _nullObject;
             _cropWidth   = null;
             _cropHeight  = null;
             
@@ -1013,8 +1027,6 @@ function Canvate(element) {
             if(null == _text){
                 return;
             }
-            
-            _text.getCanvas();
             _self.width  = _text.getWidth();
             _self.height = _text.getHeight();
         }
@@ -1464,13 +1476,54 @@ function Canvate(element) {
         var emit = function(type, data){
             _emitter.emit(type, data);
         }
+
+        this.clone = function(){
+            var canvateList = [];
+            var length = _canvateList.length;
+            var canvate;
+            for(var index = 0; index < length; index++){
+                canvate = _canvateList[index].clone();
+                canvateList.push(canvate);
+            }
+
+            var innerState = {
+                 framesList     : JSON.parse(JSON.stringify(_framesList))
+                ,canvateList    : canvateList
+                ,image          : _image
+                ,totalFrames    : _totalFrames
+                ,frameRate      : _frameRate
+                ,initialWidth   : _initialWidth
+                ,initialHeight  : _initialHeight
+                ,webGLCanvas    : _webGLCanvas
+                ,innerCanvas    : _innerCanvas
+                ,x              :_self.x
+                ,y              :_self.y
+                ,scaleX         :_self.scaleX
+                ,scaleY         :_self.scaleY
+                ,width          :_self.width
+                ,height         :_self.height
+                ,pivotX         :_self.pivotX
+                ,pivotY         :_self.pivotY
+                ,rotation       :_self.rotation
+                ,visible        :_self.visible
+                ,isLoop         :_self.isLoop
+                ,alpha          :_self.alpha
+                ,background     :_self.background
+                ,isConvertion   :_isConvertion
+                ,isWebGL        :isWebGL
+            }
+
+            CANVATE_INNER_STATE[CANVATE + (counter + 1)] = innerState;
+
+            return new Canvate(null, isWebGL);
+        }
         
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         /*  R E N D E R                 R E N D E R                  R E N D E R  */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
         /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
-        //Cnavate render
+        //Canvate render
         this.render = function(mouseX, mouseY, isMasking){
             _mouseX         = isNumber(mouseX) ? mouseX : 0;
             _mouseY         = isNumber(mouseY) ? mouseY : 0;
@@ -1522,6 +1575,8 @@ function Canvate(element) {
                     }
                 }
             }
+
+            
             
             if(null != _text){
                 _text.text       = _self.text;
@@ -1544,7 +1599,21 @@ function Canvate(element) {
                 _self.x = _mouseX-_dragX;
                 _self.y = _mouseY-_dragY;
             }
-            
+
+            // DATA VALIDATATION
+            if(isNumber(_self.x))           {_x             = _self.x;          }else{  _self.x             = _x;}
+            if(isNumber(_self.y))           {_y             = _self.y;          }else{  _self.y             = _y;}
+            if(isNumber(_self.scaleX))      {_scaleX        = _self.scaleX;     }else{  _self.scaleX        = _scaleX;}
+            if(isNumber(_self.scaleY))      {_scaleY        = _self.scaleY;     }else{  _self.scaleY        = _scaleY;}
+            if(isNumber(_self.width))       {_width         = _self.width;      }else{  _self.width         = _width;}
+            if(isNumber(_self.height))      {_height        = _self.height;     }else{  _self.height        = _height;}
+            if(isNumber(_self.pivotX))      {_pivotX        = _self.pivotX;     }else{  _self.pivotX        = _pivotX;}
+            if(isNumber(_self.pivotY))      {_pivotY        = _self.pivotY;     }else{  _self.pivotY        = _pivotY;}
+            if(isNumber(_self.rotation))    {_rotation      = _self.rotation;   }else{  _self.rotation      = _rotation;}
+            if(isNumber(_self.alpha))       {_alpha         = _self.alpha;      }else{  _self.alpha         = _alpha;}
+            if(null == _self.background)    {_background    = _self.background; }else{  _self.background    = _background;}
+            /////////////////////
+
             xRender          = _self.x;
             yRender          = _self.y;
             scaleXrender     = _self.scaleX;
@@ -1648,8 +1717,7 @@ function Canvate(element) {
             if(isWebGL || _webGLCanvas){
                 _webGLContext.viewportWidth     = _webGLCanvas.width  = _self.width;
                 _webGLContext.viewportHeight    = _webGLCanvas.height = _self.height;
-                var colorArgs                   = convertToRGB("blueviolet");
-                var colorArgs                   = convertToRGB("#ff0000");
+                var colorArgs                   = convertToRGB("orange");
                 inner                           = _webGLCanvas;
                 _webGLContext.clearColor.apply(_webGLContext, colorArgs);
                 _webGLContext.clear(_webGLContext.COLOR_BUFFER_BIT);
@@ -2420,7 +2488,7 @@ function Canvate(element) {
 				}
 			}
 		
-			var init = (function(){
+			var initialize = (function(){
 				var letterList = "Q,W,E,R,T,Y,U,I,O,P,A,S,D,F,G,H,J,K,L,Z,X,C,V,B,N,M".split(",");
 				var length = letterList.length;
 				var letter;
@@ -2449,7 +2517,7 @@ function Canvate(element) {
 				target.addEventListener("keyup", onkeyup);
 			})
 		
-			init();
+			initialize();
 		}
 	
 		return new KeyHandler(target);

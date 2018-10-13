@@ -7,6 +7,11 @@ minified by https://javascript-minifier.com/
 
 // ::: CANVATE ::: //
 function Canvate(element) {
+    
+    window.isArray = function(array){
+        return Object.prototype.toString.call(array) === '[object Array]';
+    }
+
     window.isNumber = function(number){
 		var isNull   = null == number;
 		var isNotN   = isNaN(number);
