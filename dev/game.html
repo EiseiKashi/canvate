@@ -8,18 +8,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
 </head>
 <body>
-	<!--
-	<canvas id="canvasGame"></canvas>
-	<script src="js/lib/canvate-0-2-20.js"></script>
-	<script src="js/lib/shika-0-0-6.js"></script>
-	<script src="js/lib/yasashiku.js"></script>
-
-	<script src="js/FruitModel.js"></script>
-	<script src="js/FruitView.js"></script>
-	<script src="js/FruitController.js"></script>
-	<script src="js/Main.js"></script>
-	-->
-	<canvas id="gl"></canvas>
+	<canvas id="my_Canvas"></canvas>
 	
 	<script>
 		window.WEB_GL_NAMES    = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
@@ -215,40 +204,10 @@
 				return new Float32Array(result);
 		}
 	</script>
-
-	<script>
-		/*
-		var vertexScrip		= [
-			"attribute vec2 position_in;",
-			"void main(){",
-				"gl_Position = vec4(position_in, 0.0, 1.0);",
-			"}"
-		].join("\n");
-
-		var fragmentScript	= [
-			"precision mediump float;",
-			"uniform vec4 color;",
-			"void main(){",
-				"gl_FragColor = color;",
-			"}"
-		].join("\n");
-
-		var program = new ShaderProgram("gl");
-			program.addVertex(vertexScrip);
-			program.addFragment(fragmentScript);
-
-			program.addVertices("position", [
-										 0.0,0.5,
-										
-								-0.5, -0.5,    0.5, -0.5
-								]);
-			program.fillBackground(0xFFFF00);
-			program.setColor("color", "red");
-			
-			program.draw();
-		*/
-	</script>
 	<script src="js/lib/kasumi-0-0.js"></script>
+	<script src="js/kasumi-triangle.js"></script>
+	<script src="js/kasumi-point.js"></script>
+	<script></script>
 </body>
 </html>
 
