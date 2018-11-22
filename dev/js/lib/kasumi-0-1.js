@@ -1,13 +1,21 @@
 function Kasumi(canvasReference){
+    var WEB_GL_NAMES    = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
+
     var _webGlId;
     var _canvas;
+    var _context;
     var gl;
+
+    var _pointsList; // vertices
+    var _bufferVertex;//vertex_buffer
+    var _vertexShader;//_vertexShader
+
     var _vertexList;
-    var _vertexShader;
+    var _indexList;
     var _fragmentShader;
-    var _bufferVertex;
     var _program;
 
+     /*================Creating a canvas=================*/
     function initialize(canvasReference){
         _canvas = canvasReference;
         var isString = typeof canvasReference === "string";
@@ -18,9 +26,11 @@ function Kasumi(canvasReference){
         if(null == _canvas){
             throw new Error("Fail to get the canvas reference");
         }
+
+        _context = createContext();
     }
 
-    function getContext(){
+    function createContext(){
         var length  = WEB_GL_NAMES.length;
 				
         if(_webGlId == null){
@@ -38,134 +48,79 @@ function Kasumi(canvasReference){
         if(null == gl){
             throw new Error("The list of Web GL identifierd context are not suported: " + WEB_GL_NAMES);
         }
-        return gl;
+        _context = gl;
     }
 
-    this.createPointDrawer = function(list, vertextSource, fragmentSource){
-        setProgram(list, vertextSource, fragmentSource);
-        this.draw = drawPoints;
-        // 4. Link the shaders to the buffers
-        setPosition(_program, _bufferVertex, 3);
-    }
+    /*==========Defining and storing the geometry=======*/
+    this.setVertexBuffer = function(points){
+        if(null == gl ){
+            throw new Error("The canvas and context must be set before.");
+        }
 
-    this.createTriangleDrawer = function(list, vertextSource, fragmentSource){
-        setProgram(list, vertextSource, fragmentSource);
-        this.draw = drawTriangles;
-        // 4. Link the shaders to the buffers
-        setPosition(_program, _bufferVertex, 2);
-    }
-    
-    var setProgram = function(list, vertextSource, fragmentSource){
-        // 1. Set the _canvas and the context
-        gl = getContext();
+        if(!isArray(points)){
+            throw new Error(`The Array for the vertex buffer is not an Array\nargument was:${points}`);
+        }
 
-        // 2. Set the geometry
-        _vertexList     = list;
-        _bufferVertex   = setBufferVertex(_vertexList);
-        
-        // 3. Create and compile shaders programs
-        _program        = gl.createProgram();
-        _vertexShader   = createAndCompileVertex(_program, vertextSource);
-        _fragmentShader = createAndCompileFragment(_program, fragmentSource);
-            // Link both programs
-        gl.linkProgram(_program);
-            // Use the combined shader program object
-        gl.useProgram(_program);
-    }
-    
-    var setBufferVertex = function(list){
-        // Create a buffer
-        buffer = gl.createBuffer();
-        // Add an ArrayBuffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        // Pass the Array to the ArrayBuffer
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(list), gl.STATIC_DRAW);
+        _pointsList = points;
+
+        // Create an empty buffer object to store the vertex buffer
+        _bufferVertex = gl.createBuffer();
+
+        //Bind appropriate array buffer to it
+        gl.bindBuffer(gl.ARRAY_BUFFER, _bufferVertex);
+
+        // Pass the vertex data to the buffer
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(_pointsList), gl.STATIC_DRAW);
+
         // Unbind the buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
-        return buffer;
     }
+
+    /*=========================Shaders========================*/
+    this.createVertexProgramById = function(id){
+        var type = typeof id;
+        if(type.toLowerCase() != "string"){
+            // Early return
+            throw new Error(`The id must by a string,/nid=${id}"`);
+            return;
+        }
+
+        var elementHTML = document.getElementById(id);
+        if(null == elementHTML){
+            // Early return
+            throw new Error(`The element with id: ${id} doesnt exist.`);
+        }
+
+        this.createVertexProgram(elementHTML.text);
+    }
+
+    this.createVertexProgram = function(vertexCode){
+        if(null == gl){
+            throw new Error("The canvas and context must be set before.");
+        }
+
+        if(typeof vertexCode.toLowerCase() != "string"){
+            throw new Error("The argument must be a string.\nargument was:`${vertexCode}`");
+        }
+
+        // Create a vertex shader object
+        _vertexShader = gl.createShader(gl.VERTEX_SHADER);
     
-    var createAndCompileVertex = function(program, script){
-        if(null == script){
-            // Early return
-            return;
-        }
-        //Create a vertex shader object
-        var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-        //Attach vertex shader source code
-        gl.shaderSource(vertexShader, script);
-        //Compile the vertex shader
-        gl.compileShader(vertexShader);
-        // Attach a vertex shader
-        gl.attachShader(program, vertexShader);
+        // Attach vertex shader source code
+        gl.shaderSource(_vertexShader, vertexCode);
 
-        return vertexShader;
+        // Compile the vertex shader
+        gl.compileShader(_vertexShader);
     }
 
-    var createAndCompileFragment = function(program, script){
-        if(null == script){
-            // Early return
-            return;
-        }
-        //Create a fragment shader object
-        fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-        //Attach fragment shader source code
-        gl.shaderSource(fragmentShader, script);
-        //Compile the fragment shader
-        gl.compileShader(fragmentShader);
-        // Attach a fragment shader
-        gl.attachShader(program, fragmentShader);
+    /* INTERFACE */
 
-        return fragmentShader
+    this.getCanvas = function(){
+        return _canvas;
     }
 
-    var setPosition = function(program, buffer, length){
-        //Bind vertex buffer object
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        //Get the attribute location
-        var position = gl.getAttribLocation(program, 'position');
-        //point an attribute to the currently bound VBO
-        gl.vertexAttribPointer(position, length, gl.FLOAT, false, 0, 0);
-        //Enable the attribute
-        gl.enableVertexAttribArray(position);
-    }
-
-    this.setBackground = function(color){
-        // Clear the _canvas
-        gl.clearColor.apply(gl, convertToRGB(color));
-    }
-
-    this.setColor = function(color){
-        _program.color = gl.getUniformLocation(_program, 'color');
-        gl.uniform4fv(_program.color, convertToRGB(color));
-    }
-
-    var drawTriangles = function(){
-        // Enable the depth test
-        gl.enable(gl.DEPTH_TEST); 
-        
-        // Clear the color buffer bit
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        // Set the view port
-        gl.viewport(0,0,_canvas.width,_canvas.height);
-
-        // Draw the triangle
-        gl.drawArrays(gl.TRIANGLES, 0, _vertexList.length / 2);
-    }
-
-    var drawPoints = function(){
-        // Enable the depth test
-        gl.enable(gl.DEPTH_TEST); 
-        
-        // Clear the color buffer bit
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        // Set the view port
-        gl.viewport(0,0,_canvas.width,_canvas.height);
-
-        // Draw the points
-        gl.drawArrays(gl.POINTS, 0, 3);
+    this.getContext = function(){d
+        return _context;
     }
 
     initialize(canvasReference);

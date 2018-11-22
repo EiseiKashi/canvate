@@ -21,7 +21,7 @@ var vertices1        =  [
 ];
 
 
-var kasumi1 = new Kasumi("my_Canvas");
+var kasumi1 = new Kasumi("kasumi");
 kasumi1.createPointDrawer(vertices1, vertexScript1, fragmentScript1, 'coordinates');
 
 
