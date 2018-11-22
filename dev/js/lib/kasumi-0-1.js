@@ -15,7 +15,7 @@ function Kasumi(canvasReference){
     var _fragmentShader;
     var _program;
 
-     /*================Creating a canvas=================*/
+    /*================Creating a canvas=================*/
     function initialize(canvasReference){
         _canvas = canvasReference;
         var isString = typeof canvasReference === "string";
@@ -28,6 +28,9 @@ function Kasumi(canvasReference){
         }
 
         _context = createContext();
+
+        // Create a shader program
+        _program = gl.createProgram();
     }
 
     function createContext(){
@@ -45,17 +48,14 @@ function Kasumi(canvasReference){
             gl = _canvas.getContext(_webGlId);
         }
         
-        if(null == gl){
-            throw new Error("The list of Web GL identifierd context are not suported: " + WEB_GL_NAMES);
-        }
+        checkGl();
+
         _context = gl;
     }
 
     /*==========Defining and storing the geometry=======*/
-    this.setVertexBuffer = function(points){
-        if(null == gl ){
-            throw new Error("The canvas and context must be set before.");
-        }
+    this.setPointsBuffer = function(points){
+        checkGl();
 
         if(!isArray(points)){
             throw new Error(`The Array for the vertex buffer is not an Array\nargument was:${points}`);
@@ -74,10 +74,80 @@ function Kasumi(canvasReference){
 
         // Unbind the buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+        // Bind vertex buffer object
+        gl.bindBuffer(gl.ARRAY_BUFFER, _bufferVertex);
     }
 
     /*=========================Shaders========================*/
+    // VERTEX program
     this.createVertexProgramById = function(id){
+        checkGl();
+        var code = getElementCode(id);
+        this.createVertexProgram(code);
+    }
+
+    this.createVertexProgram = function(code){
+        _vertexShader = compileProgram(code, gl.VERTEX_SHADER);
+        // Attach a vertex shader
+        gl.attachShader(_program, _vertexShader);
+    }
+
+    // FRAGMENT program
+    this.createFragmentProgramById = function(id){
+        checkGl();
+        var code = getElementCode(id);
+        this.createFragmentProgram(code);
+    }
+
+    this.createFragmentProgram = function(code){
+        _fragmentShader = compileProgram(code, gl.FRAGMENT_SHADER);
+        // Attach a fragment shader
+        gl.attachShader(_program, _fragmentShader); 
+    }
+
+    this.startProgram = function(){
+        checkGl();
+
+        // Link both programs
+        gl.linkProgram(_program);
+
+        // Use the combined shader program object
+        gl.useProgram(_program);
+    }
+
+
+    /*======== Associating shaders to buffer objects ========*/
+    this.setPointsVariable = function(name){
+        checkGl();
+
+        // Get the attribute location
+		var variable = gl.getAttribLocation(_program, name);
+
+		// Point an attribute to the currently bound VBO
+		gl.vertexAttribPointer(variable, 3, gl.FLOAT, false, 0, 0);
+
+		// Enable the attribute
+		gl.enableVertexAttribArray(variable);
+    }
+
+    // GETTERS
+    this.getCanvas = function(){
+        return _canvas;
+    }
+
+    this.getContext = function(){d
+        return _context;
+    }
+
+    //HELPERS
+    function checkGl(){
+        if(null == gl){
+            throw new Error("The list of Web GL identifierd context are not suported: " + WEB_GL_NAMES);
+        }
+    }
+
+    function getElementCode(id){
         var type = typeof id;
         if(type.toLowerCase() != "string"){
             // Early return
@@ -90,37 +160,26 @@ function Kasumi(canvasReference){
             // Early return
             throw new Error(`The element with id: ${id} doesnt exist.`);
         }
-
-        this.createVertexProgram(elementHTML.text);
+        return elementHTML.text;
     }
 
-    this.createVertexProgram = function(vertexCode){
-        if(null == gl){
-            throw new Error("The canvas and context must be set before.");
-        }
+    function compileProgram (code, type){
+        checkGl();
 
-        if(typeof vertexCode.toLowerCase() != "string"){
-            throw new Error("The argument must be a string.\nargument was:`${vertexCode}`");
+        if(typeof code.toLowerCase() != "string"){
+            throw new Error("The argument must be a string.\nargument was:`${code}`");
         }
 
         // Create a vertex shader object
-        _vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        shader = gl.createShader(type);
     
         // Attach vertex shader source code
-        gl.shaderSource(_vertexShader, vertexCode);
+        gl.shaderSource(shader, code);
 
         // Compile the vertex shader
-        gl.compileShader(_vertexShader);
-    }
+        gl.compileShader(shader);
 
-    /* INTERFACE */
-
-    this.getCanvas = function(){
-        return _canvas;
-    }
-
-    this.getContext = function(){d
-        return _context;
+        return shader;
     }
 
     initialize(canvasReference);
