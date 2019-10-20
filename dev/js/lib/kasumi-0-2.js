@@ -5,15 +5,15 @@ function Kasumi(canvasReference){
     var _canvas;
     var _context;
     var gl;
-
-    var _pointsList; // vertices
     var _bufferVertex;//vertex_buffer
     var _vertexShader;//_vertexShader
 
-    var _vertexList;
     var _indexList;
     var _fragmentShader;
+    
+    // PROPERTIES
     var _program;
+    var _vertexList;
 
     /*================Creating a canvas=================*/
     function initialize(canvasReference){
@@ -28,9 +28,6 @@ function Kasumi(canvasReference){
         }
 
         _context = createContext();
-
-        // Create a shader program
-        _program = gl.createProgram();
     }
 
     function createContext(){
@@ -59,87 +56,109 @@ function Kasumi(canvasReference){
         _canvas.height  = height;
     }
 
-    /*==========Defining and storing the geometry=======*/
-    this.setPointsBuffer = function(points){
+    // TO REPLACE ///////////////////////////////
+    this.createProgram = function(){
+        console.log("createProgram");
         checkGl();
+        // Create a shader program object to store
+        // the combined shader program
+        _program = gl.createProgram();
+    };
 
-        if(!isArray(points)){
-            throw new Error(`The Array for the vertex buffer is not an Array\nargument was:${points}`);
-        }
-
-        _pointsList = points;
+    this.createVertexBuffer = function(vertices){
+        console.log("createVertexBuffer");
+        _vertexList = vertices;
 
         // Create an empty buffer object to store the vertex buffer
-        _bufferVertex = gl.createBuffer();
-
+        vertex_buffer = gl.createBuffer();
+    
         //Bind appropriate array buffer to it
-        gl.bindBuffer(gl.ARRAY_BUFFER, _bufferVertex);
-
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+    
         // Pass the vertex data to the buffer
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(_pointsList), gl.STATIC_DRAW);
-
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(_vertexList), gl.STATIC_DRAW);
+    
         // Unbind the buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    }
+    };
 
-    /*=========================Shaders========================*/
-    // VERTEX program
-    this.createVertexProgramById = function(id){
-        checkGl();
-        var code = getElementCode(id);
-        this.createVertexProgram(code);
-    }
+    // 4.
+    this.createVertexShader = function(code){
+        console.log("createVertexShader");
+        console.log("日本一番！！！");
+        // vertex shader source code
+        vertCode =
+            'attribute vec3 coordinates;' +
 
-    this.createVertexProgram = function(code){
+            'void main(void) {' +
+                ' gl_Position = vec4(coordinates, 1.0);' +
+                'gl_PointSize = 10.0;'+
+            '}';
+        code = vertCode;
+        vertCode = getElementCode("vertex-shader");
+
+        console.log(vertCode, typeof vertCode);
+        console.log("/////////////////");
+        console.log(code, typeof code);
+        return
         // Create a vertex shader object
-        _vertexShader = compileProgram(code, gl.FRAGMENT_SHADER);
+        vertShader = gl.createShader(gl.VERTEX_SHADER);
+        
+        // Attach vertex shader source code
+        gl.shaderSource(vertShader, vertCode);
+
+        // Compile the vertex shader
+        gl.compileShader(vertShader);
+
+        // Attach a vertex shader
+        gl.attachShader(_program, vertShader); 
+    };
+
+    // 5.
+    this.createFragmentShader = function(){
+        // fragment shader source code
+        fragCode =
+            'void main(void) {' +
+                ' gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);' +
+            '}';
+
+        // Create fragment shader object
+        fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+
+        // Attach fragment shader source code
+        gl.shaderSource(fragShader, fragCode);
+
+        // Compile the fragmentt shader
+        gl.compileShader(fragShader);
+
         // Attach a fragment shader
-        gl.attachShader(_program, _vertexShader); 
-    }
+        gl.attachShader(_program, fragShader);
+    };
 
-    // FRAGMENT program
-    this.createFragmentProgramById = function(id){
-        checkGl();
-        var code = getElementCode(id);
-        this.createFragmentProgram(code);
-    }
-
-    this.createFragmentProgram = function(code){
-        _fragmentShader = compileProgram(code, gl.FRAGMENT_SHADER);
-        // Attach a fragment shader
-        gl.attachShader(_program, _fragmentShader); 
-    }
-
-    this.startProgram = function(){
-        checkGl();
-
+    // 6.
+    this.activateShaders = function(){
         // Link both programs
         gl.linkProgram(_program);
-
         // Use the combined shader program object
         gl.useProgram(_program);
-
-        checkLog();
     }
 
-
-    /*======== Associating shaders to buffer objects ========*/
-    this.setPointsVariable = function(name){
-        checkGl();
-
+    // 7.
+    this.linkShadersToBuffers = function(){
         // Bind vertex buffer object
-        gl.bindBuffer(gl.ARRAY_BUFFER, _bufferVertex);
-            
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+
         // Get the attribute location
-		var variable = gl.getAttribLocation(_program, name);
+        coord = gl.getAttribLocation(_program, "coordinates");
 
-		// Point an attribute to the currently bound VBO
-		gl.vertexAttribPointer(variable, 3, gl.FLOAT, false, 0, 0);
+        // Point an attribute to the currently bound VBO
+        gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
 
-		// Enable the attribute
-		gl.enableVertexAttribArray(variable);
+        // Enable the attribute
+        gl.enableVertexAttribArray(coord);
     }
 
+    // 8.
     this.drawPoints = function(){
         // Clear the canvas
         gl.clearColor(0.5, 0.5, 0.5, 0.9);
@@ -156,6 +175,7 @@ function Kasumi(canvasReference){
         // Draw the triangle
         gl.drawArrays(gl.POINTS, 0, 3);
     }
+    /////////////////////////////////////////////
 
     // GETTERS
     this.getCanvas = function(){
@@ -167,6 +187,22 @@ function Kasumi(canvasReference){
     }
 
     //HELPERS
+    function getElementCode(id){
+        var type = typeof id;
+        if(type.toLowerCase() != "string"){
+            // Early return
+            throw new Error(`The id must by a string,/nid=${id}"`);
+            return;
+        }
+
+        var elementHTML = document.getElementById(id);
+        if(null == elementHTML){
+            // Early return
+            throw new Error(`The element with id: ${id} doesnt exist.`);
+        }
+        return elementHTML.text.split("\n").join(" ");
+    }
+
     function checkLog(){
         var message = "";
         if(null != _vertexShader){
@@ -196,41 +232,6 @@ function Kasumi(canvasReference){
         if(null == gl){
             throw new Error("The list of Web GL identifierd context are not suported: " + WEB_GL_NAMES);
         }
-    }
-
-    function getElementCode(id){
-        var type = typeof id;
-        if(type.toLowerCase() != "string"){
-            // Early return
-            throw new Error(`The id must by a string,/nid=${id}"`);
-            return;
-        }
-
-        var elementHTML = document.getElementById(id);
-        if(null == elementHTML){
-            // Early return
-            throw new Error(`The element with id: ${id} doesnt exist.`);
-        }
-        return elementHTML.innerHTML;
-    }
-
-    function compileProgram (code, type){
-        checkGl();
-
-        if(typeof code.toLowerCase() != "string"){
-            throw new Error("The argument must be a string.\nargument was:`${code}`");
-        }
-
-        // Create a vertex shader object
-        shader = gl.createShader(type);
-    
-        // Attach vertex shader source code
-        gl.shaderSource(shader, code);
-
-        // Compile the vertex shader
-        gl.compileShader(shader);
-
-        return shader;
     }
 
     initialize(canvasReference);
