@@ -19,6 +19,13 @@ export const CanvateGL = function (canvasReference){
         setContext();
     }
 
+    function checkError(method){
+        const error = _context.getError();
+        if(0 != error){
+            throw new Error(`${NAME}, WebGL context error when trying: ${method}. ${error}`);
+        }
+    }
+
     function setCanvas() {
         var isString = typeof canvasReference === 'string';
         if(isString){
@@ -53,6 +60,12 @@ export const CanvateGL = function (canvasReference){
             throw new Error(`${NAME}, setContext, ${errors}`);
             return;
         }
+
+        // Sets clear color to non-transparent dark blue and clears context
+        _context.clearColor(0.0, 0.0, 0.5, 1.0);
+        checkError('clearColor');
+        _context.clear(_context.COLOR_BUFFER_BIT);
+        checkError('clear');
     }
 
     initialize();
